@@ -198,7 +198,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             console.log("Datos de sesión:", sessionData);
         <?php endif; ?>
     </script>
-
     <!-- Spinner Global -->
     <script src="views/partials/spinner-global.js"></script>
 </body>
