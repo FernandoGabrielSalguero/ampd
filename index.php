@@ -55,12 +55,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             case 'admin':
                 header('Location: /views/admin/admin_dashboard.php');
                 break;
-            case 'productor':
+            case 'asistente':
                 header('Location: /views/asistente/asistente_dashboard.php');
                 break;
-            case 'sve':
+            case 'asociado':
                 header('Location: /views/asociado/asociado_dashboard.php');
                 break;
+            default:
+                die("Rol no reconocido: " . $user['rol']);
         }
         exit;
     } else {
@@ -175,6 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="form-group password-container">
                 <label for="contrasena">Contraseña:</label>
                 <input type="password" name="contrasena" id="contrasena" required>
+                <span class="toggle-password">👁️</span>
             </div>
             <div class="form-group">
                 <button type="submit">INGRESAR</button>
