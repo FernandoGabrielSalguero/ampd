@@ -38,10 +38,19 @@ public function login($usuario, $contrasenaIngresada)
     $stmt->execute(['usuario' => $usuario]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // if ($user && $user['estado'] === 'activo' && password_verify($contrasenaIngresada, $user['contrasena'])) { ATENCIÓN ESTA ES LA LÍNEA QUE MIRA EL HASH DE LA BASE DE DATOS
-    if ($user && ($user['contrasena'] === $contrasenaIngresada || password_verify($contrasenaIngresada, $user['contrasena']))) { // ELIMINAR ESTA LÍNEA PARA QUE SIGA LA VALIDACIÓN DEL HASH
+if ($user && $user['estado'] === 'activo') {
+    $hash = $user['contrasena'];
+
+    // Detectamos si es hash de bcrypt
+    $isHashed = preg_match('/^\$2y\$/', $hash);
+
+    if (
+        (!$isHashed && $hash === $contrasenaIngresada) ||
+        ($isHashed && password_verify($contrasenaIngresada, $hash))
+    ) {
         return $user;
     }
+}
 
     return false;
 }
