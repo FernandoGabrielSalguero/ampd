@@ -22,8 +22,8 @@ if (!isset($_SESSION['usuario'])) {
 }
 
 // 🔐 Protección por rol
-if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'sve') {
-    die("🚫 Acceso restringido: esta página es solo para usuarios SVE.");
+if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'asociado') {
+    die("🚫 Acceso restringido: esta página es solo para usuarios asociados.");
 }
 
 // Datos del usuario en sesión
