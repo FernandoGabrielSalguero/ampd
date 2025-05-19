@@ -176,6 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="form-group password-container">
                 <label for="contrasena">Contraseña:</label>
                 <input type="password" name="contrasena" id="contrasena" required>
+                <span class="toggle-password">👁️</span>
             </div>
             <div class="form-group">
                 <button type="submit">INGRESAR</button>
