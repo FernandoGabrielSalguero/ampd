@@ -38,7 +38,8 @@ public function login($usuario, $contrasenaIngresada)
     $stmt->execute(['usuario' => $usuario]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user && $user['estado'] === 'activo' && password_verify($contrasenaIngresada, $user['contrasena'])) {
+    // if ($user && $user['estado'] === 'activo' && password_verify($contrasenaIngresada, $user['contrasena'])) { ATENCIÓN ESTA ES LA LÍNEA QUE MIRA EL HASH DE LA BASE DE DATOS
+    if ($user && ($user['contrasena'] === $contrasenaIngresada || password_verify($contrasenaIngresada, $user['contrasena']))) { // ELIMINAR ESTA LÍNEA PARA QUE SIGA LA VALIDACIÓN DEL HASH
         return $user;
     }
 
