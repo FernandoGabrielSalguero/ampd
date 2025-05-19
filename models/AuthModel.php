@@ -20,17 +20,15 @@ public function login($usuario, $contrasenaIngresada)
                 u.rol,
                 u.estado,
                 u.fecha_creacion,
-                
-                ui.dni,
-                ui.correo,
-                ui.tel AS telefono,
-                ui.fecha_nacimiento,
-                ui.direccion,
-                ui.id AS user_info_id,
-                u.nombre AS nombre
-
+                u.nombre AS nombre,
+                COALESCE(ui.dni, '') AS dni,
+                COALESCE(ui.correo, '') AS correo,
+                COALESCE(ui.tel, '') AS telefono,
+                COALESCE(ui.fecha_nacimiento, '') AS fecha_nacimiento,
+                COALESCE(ui.direccion, '') AS direccion,
+                COALESCE(ui.id, 0) AS user_info_id
             FROM usuarios u
-            JOIN user_info ui ON u.id = ui.usuario_id
+            LEFT JOIN user_info ui ON u.id = ui.usuario_id
             WHERE u.usuario = :usuario
             LIMIT 1";
 
@@ -38,10 +36,17 @@ public function login($usuario, $contrasenaIngresada)
     $stmt->execute(['usuario' => $usuario]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if ($user && $user['estado'] === 'activo') {
-    $hash = $user['contrasena'];
+    if (!$user || $user['estado'] !== 'activo') {
+        return false;
+    }
 
-    // Detectamos si es hash de bcrypt
+    // Si no tiene contraseña y es asociado, devolvémoslo igual para que lo redirijan
+    if (empty($user['contrasena']) && $user['rol'] === 'asociado') {
+        return $user;
+    }
+
+    // Si tiene contraseña, validamos
+    $hash = $user['contrasena'];
     $isHashed = preg_match('/^\$2y\$/', $hash);
 
     if (
@@ -50,9 +55,9 @@ if ($user && $user['estado'] === 'activo') {
     ) {
         return $user;
     }
-}
 
     return false;
 }
+
 
 }

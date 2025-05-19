@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $auth = new AuthModel($pdo);
     $user = $auth->login($usuario, $contrasena);
 
-    if ($user) {
+if ($user) {
     $_SESSION['usuario'] = $user['usuario'];
     $_SESSION['rol'] = $user['rol'];
     $_SESSION['id_real'] = $user['id_real'];
@@ -49,15 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $_SESSION['LAST_ACTIVITY'] = time();
 
-    // ⚠️ Validación de datos incompletos
-    if (
-        empty($user['dni']) ||
-        empty($user['correo']) ||
-        empty($user['telefono']) ||
-        empty($user['fecha_nacimiento']) ||
-        empty($user['direccion']) ||
-        empty($user['contrasena'])
-    ) {
+    // Si no tiene contraseña y es asociado => completar datos
+    if (empty($user['contrasena']) && $user['rol'] === 'asociado') {
         header('Location: /views/partials/completar_datos.php');
         exit;
     }
@@ -78,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     exit;
 }
+
 
 }
 
