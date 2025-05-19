@@ -176,7 +176,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="form-group password-container">
                 <label for="contrasena">Contraseña:</label>
                 <input type="password" name="contrasena" id="contrasena" required>
-                <span class="toggle-password">👁️</span>
             </div>
             <div class="form-group">
                 <button type="submit">INGRESAR</button>
@@ -199,7 +198,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             const sessionData = <?= json_encode($_SESSION, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
             console.log("Datos de sesión:", sessionData);
         <?php endif; ?>
+
+        // visualizar los campos del formulario de ingreso por consola:
+        document.querySelector('form').addEventListener('submit', e => {
+            const u = document.getElementById('usuario').value;
+            const c = document.getElementById('contrasena').value;
+            console.log("Intento login con:", u, c);
+        });
     </script>
+
+
     <!-- Spinner Global -->
     <script src="views/partials/spinner-global.js"></script>
 </body>
