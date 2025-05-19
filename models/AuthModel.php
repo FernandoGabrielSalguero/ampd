@@ -11,31 +11,38 @@ class AuthModel
         $this->db = $pdo;
     }
 
-    public function login($usuario, $contrasenaIngresada)
-    {
-        $sql = "SELECT 
-            u.usuario,
-            u.contrasena,
-            u.rol,
-            u.id_real,
-            u.cuit,
-            ui.nombre,
-            ui.direccion,
-            ui.telefono,
-            ui.correo
-        FROM usuarios u
-        JOIN usuarios_info ui ON u.id = ui.usuario_id
-        WHERE u.usuario = :usuario
-          AND u.permiso_ingreso = 'Habilitado'";
+public function login($usuario, $contrasenaIngresada)
+{
+    $sql = "SELECT 
+                u.id AS id_real,
+                u.usuario,
+                u.contrasena,
+                u.rol,
+                u.estado,
+                u.fecha_creacion,
+                
+                ui.dni,
+                ui.correo,
+                ui.tel AS telefono,
+                ui.fecha_nacimiento,
+                ui.direccion,
+                ui.id AS user_info_id,
+                u.nombre AS nombre
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(['usuario' => $usuario]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            FROM usuarios u
+            JOIN user_info ui ON u.id = ui.usuario_id
+            WHERE u.usuario = :usuario
+            LIMIT 1";
 
-        if ($user && password_verify($contrasenaIngresada, $user['contrasena'])) {
-            return $user;
-        }
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute(['usuario' => $usuario]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return false;
+    if ($user && $user['estado'] === 'activo' && password_verify($contrasenaIngresada, $user['contrasena'])) {
+        return $user;
     }
+
+    return false;
+}
+
 }
