@@ -74,6 +74,9 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     <li onclick="location.href='admin_pagoFacturas.php'">
                         <span class="material-icons" style="color: #5b21b6;">upload_file</span><span class="link-text">Pago Facturas</span>
                     </li>
+                    <li onclick="location.href='admin_Eventos.php'">
+                        <span class="material-icons" style="color: #5b21b6;">nightlife</span><span class="link-text">Eventos</span>
+                    </li>
                     <li onclick="location.href='admin_sucripciones.php'">
                         <span class="material-icons" style="color: #5b21b6;">assignment</span><span class="link-text">Suscripciones</span>
                     </li>
@@ -107,12 +110,11 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
             <!-- 📦 CONTENIDO -->
             <section class="content">
 
-            <!-- Bienvenida -->
-            <div class="card">
-                <h2>Hola 👋</h2>
-                <p>En esta página, vamos a poder dar de alta a los usuarios y modificar sus propiedades</p>
-            </div>
-
+                <!-- Bienvenida -->
+                <div class="card">
+                    <h2>Hola 👋</h2>
+                    <p>En esta página, vamos a poder dar de alta a los usuarios y modificar sus propiedades</p>
+                </div>
 
                 <!-- Formulario -->
                 <div class="card">
@@ -122,7 +124,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                             <!-- DNI -->
                             <div class="input-group">
-                                <label for="usuario">DNI</label>
+                                <label for="usuario">Usuario</label>
                                 <div class="input-icon">
                                     <span class="material-icons">person</span>
                                     <input type="text" id="usuario" name="usuario" placeholder="Coloca el DNI del asociado" required>
@@ -154,10 +156,10 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 </div>
                             </div>
 
-                        <!-- Botones -->
-                        <div class="form-buttons">
-                            <button class="btn btn-aceptar" type="submit">Crear usuario</button>
-                        </div>
+                            <!-- Botones -->
+                            <div class="form-buttons">
+                                <button class="btn btn-aceptar" type="submit">Crear usuario</button>
+                            </div>
                         </div>
 
                     </form>
@@ -189,8 +191,6 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                         </div>
                     </form>
                 </div>
-
-
 
                 <!-- Tabla -->
                 <div class="card">
