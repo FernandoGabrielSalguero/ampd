@@ -126,7 +126,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                             <div class="input-group">
                                 <label for="usuario">Nombre evento</label>
                                 <div class="input-icon">
-                                    <span class="material-icons">person</span>
+                                    <span class="material-icons">emoji_events</span>
                                     <input type="text" id="usuario" name="usuario" placeholder="Coloca el nombre del evento" required>
                                 </div>
                             </div>
@@ -135,7 +135,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                             <div class="input-group">
                                 <label for="usuario">Descripción evento</label>
                                 <div class="input-icon">
-                                    <span class="material-icons">person</span>
+                                    <span class="material-icons">notes</span>
                                     <input type="text" id="usuario" name="usuario" placeholder="Describi el evento" required>
                                 </div>
                             </div>
@@ -145,7 +145,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                             <div class="input-group">
                                 <label for="usuario">Fecha</label>
                                 <div class="input-icon">
-                                    <span class="material-icons">person</span>
+                                    <span class="material-icons">event</span>
                                     <input type="text" id="usuario" name="usuario" placeholder="Fecha del evento" required>
                                 </div>
                             </div>
@@ -154,7 +154,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                             <div class="input-group">
                                 <label for="usuario">Lugar</label>
                                 <div class="input-icon">
-                                    <span class="material-icons">person</span>
+                                    <span class="material-icons">place</span>
                                     <input type="text" id="usuario" name="usuario" placeholder="Lugar del evento" required>
                                 </div>
                             </div>
