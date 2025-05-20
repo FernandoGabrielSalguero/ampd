@@ -116,22 +116,55 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 <p>Vamos a poder visualizar las solicitudes de pagos de nuestros socios.</p>
             </div>
 
-
+<!-- Tarjeta de buscador -->
                 <div class="card">
+                    <h2>Busca asociados</h2>
+
                     <form class="form-modern">
-                        <div class="input-group">
-                            <label>Correo</label>
-                            <div class="input-icon">
-                                <span class="material-icons">mail</span>
-                                <input type="email" placeholder="ejemplo@correo.com">
+                        <div class="form-grid grid-2">
+                            <!-- Buscar por DNI -->
+                            <div class="input-group">
+                                <label for="buscarCuit">Podes buscar por DNI</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">person</span>
+                                    <input type="text" id="buscarCuit" name="buscarCuit" placeholder="20123456781">
+                                </div>
+                            </div>
+
+                            <!-- Buscar por Nombre -->
+                            <div class="input-group">
+                                <label for="buscarNombre">Podes buscar por nombre</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">person</span>
+                                    <input type="text" id="buscarNombre" name="buscarNombre" placeholder="Ej: Juan Pérez">
+                                </div>
                             </div>
                         </div>
-
-                        <div class="form-buttons">
-                            <button class="btn btn-aceptar" type="submit">Enviar</button>
-                            <button class="btn btn-cancelar" type="button">Cancelar</button>
-                        </div>
                     </form>
+                </div>
+
+                <!-- Tabla -->
+                <div class="card">
+                    <h2>Listado de usuarios registrados</h2>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Beneficiario</th>
+                                    <th>Contrato</th>
+                                    <th>Importe</th>
+                                    <th>% Retención</th>
+                                    <th>Fecha pedido</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaPagoFacturas">
+                                <!-- Contenido dinámico -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
             </section>
