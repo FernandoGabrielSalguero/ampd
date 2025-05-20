@@ -60,31 +60,22 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <span class="material-icons logo-icon">dashboard</span>
-                <span class="logo-text">SVE</span>
+                <span class="logo-text">AMPD</span>
             </div>
 
             <nav class="sidebar-menu">
                 <ul>
-                    <li onclick="location.href='sve_dashboard.php'">
+                    <li onclick="location.href='asociado_dashboard.php'">
                         <span class="material-icons" style="color: #5b21b6;">home</span><span class="link-text">Inicio</span>
                     </li>
-                    <li onclick="location.href='sve_altausuarios.php'">
-                        <span class="material-icons" style="color: #5b21b6;">person</span><span class="link-text">Alta usuarios</span>
+                    <li onclick="location.href='asociado_infoPersonal.php'">
+                        <span class="material-icons" style="color: #5b21b6;">person</span><span class="link-text">Información Personal</span>
                     </li>
-                    <li onclick="location.href='sve_asociarProductores.php'">
-                        <span class="material-icons" style="color: #5b21b6;">link</span><span class="link-text">Asociaciones</span>
+                    <li onclick="location.href='asociado_solicitudPago.php'">
+                        <span class="material-icons" style="color: #5b21b6;">assignment</span><span class="link-text">Solicitud pago</span>
                     </li>
-                    <li onclick="location.href='sve_cargaMasiva.php'">
-                        <span class="material-icons" style="color: #5b21b6;">upload_file</span><span class="link-text">Carga masiva</span>
-                    </li>
-                    <li onclick="location.href='sve_operativos.php'">
-                        <span class="material-icons" style="color: #5b21b6;">assignment</span><span class="link-text">Operativos</span>
-                    </li>
-                    <li onclick="location.href='sve_mercadodigital.php'">
-                        <span class="material-icons" style="color: #5b21b6;">shopping_cart</span><span class="link-text">Mercado Digital</span>
-                    </li>
-                    <li onclick="location.href='sve_productos.php'">
-                        <span class="material-icons" style="color: #5b21b6;">inventory</span><span class="link-text">Productos</span>
+                    <li onclick="location.href='asociado_pagoSuscripcion.php'">
+                        <span class="material-icons" style="color: #5b21b6;">inventory</span><span class="link-text">Suscripción</span>
                     </li>
                     <li onclick="location.href='../../../logout.php'">
                         <span class="material-icons" style="color: red;">logout</span><span class="link-text">Salir</span>
@@ -158,8 +149,8 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
     <script src="../../views/partials/spinner-global.js"></script>
 
     <script>
-    console.log(<?php echo json_encode($_SESSION); ?>);
-</script>
+        console.log(<?php echo json_encode($_SESSION); ?>);
+    </script>
 </body>
 
 </html>
