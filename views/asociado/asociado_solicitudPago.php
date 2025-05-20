@@ -77,6 +77,9 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     <li onclick="location.href='asociado_pagoSuscripcion.php'">
                         <span class="material-icons" style="color: #5b21b6;">assignment</span><span class="link-text">Suscripción</span>
                     </li>
+                    <li onclick="location.href='asociado_certificados.php'">
+                        <span class="material-icons" style="color: #5b21b6;">workspace_premium</span><span class="link-text">Certificado</span>
+                    </li>
                     <li onclick="location.href='../../../logout.php'">
                         <span class="material-icons" style="color: red;">logout</span><span class="link-text">Salir</span>
                     </li>

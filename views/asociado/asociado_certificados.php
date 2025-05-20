@@ -101,7 +101,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 <button class="btn-icon" onclick="toggleSidebar()">
                     <span class="material-icons">menu</span>
                 </button>
-                <div class="navbar-title">Inicio</div>
+                <div class="navbar-title">Certificados</div>
             </header>
 
 
@@ -112,7 +112,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 <!-- Bienvenida -->
                 <div class="card">
                     <h2>Hola 👋</h2>
-                    <p>En esta página, podemos mostrarle algunas metricas al usuario "asociado" esta páginas es opcional.</p>
+                    <p>En esta página, vas a poder descargar tu certificado de socio, siempre y cuando tengas las cuotas al día.</p>
                 </div>
 
                 <div class="card-grid grid-4">
