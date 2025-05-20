@@ -28,7 +28,6 @@ $usuario = $_SESSION['usuario'] ?? '';
 
 <body>
 
-    <div class="main">
         <section class="content">
             <div class="container mt-4">
                 <div class="card p-4">
@@ -163,7 +162,7 @@ $usuario = $_SESSION['usuario'] ?? '';
                 </div>
             </div>
         </section>
-    </div>
+
 
     <!-- Spinner Global -->
     <script src="../../views/partials/spinner-global.js"></script>
