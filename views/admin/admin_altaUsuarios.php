@@ -101,37 +101,17 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 <button class="btn-icon" onclick="toggleSidebar()">
                     <span class="material-icons">menu</span>
                 </button>
-                <div class="navbar-title">Inicio</div>
+                <div class="navbar-title">Alta Socios</div>
             </header>
 
             <!-- 📦 CONTENIDO -->
             <section class="content">
 
-                <!-- Bienvenida -->
-                <div class="card">
-                    <h2>Hola 👋</h2>
-                    <p>En esta página, vamos a tener KPI.</p>
-                </div>
-
-
-                <div class="card-grid grid-4">
-                    <div class="card">
-                        <h3>KPI 1</h3>
-                        <p>Contenido 1</p>
-                    </div>
-                    <div class="card">
-                        <h3>KPI 2</h3>
-                        <p>Contenido 2</p>
-                    </div>
-                    <div class="card">
-                        <h3>KPI 3</h3>
-                        <p>Contenido 3</p>
-                    </div>
-                    <div class="card">
-                        <h3>KPI 4</h3>
-                        <p>Contenido 3</p>
-                    </div>
-                </div>
+            <!-- Bienvenida -->
+            <div class="card">
+                <h2>Hola 👋</h2>
+                <p>En esta página, vamos a poder dar de alta a los usuarios y modificar sus propiedades</p>
+            </div>
 
 
                 <div class="card">
