@@ -32,47 +32,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $auth = new AuthModel($pdo);
     $user = $auth->login($usuario, $contrasena);
 
-if ($user) {
-    $_SESSION['usuario'] = $user['usuario'];
-    $_SESSION['rol'] = $user['rol'];
-    $_SESSION['id_real'] = $user['id_real'];
-    $_SESSION['nombre'] = $user['nombre'];
-    $_SESSION['estado'] = $user['estado'];
-    $_SESSION['fecha_creacion'] = $user['fecha_creacion'];
+    if ($user) {
+        // Guardar datos en sesión
+        $_SESSION['usuario'] = $user['usuario'];
+        $_SESSION['rol'] = $user['rol'];
+        $_SESSION['id_real'] = $user['id_real'];
+        $_SESSION['nombre'] = $user['nombre_ui'] ?? $user['nombre'];
+        $_SESSION['estado'] = $user['estado'];
+        $_SESSION['fecha_creacion'] = $user['fecha_creacion'];
+        $_SESSION['apellido'] = $user['apellido'] ?? '';
+        $_SESSION['dni'] = $user['dni'];
+        $_SESSION['correo'] = $user['correo'];
+        $_SESSION['telefono'] = $user['telefono'];
+        $_SESSION['fecha_nacimiento'] = $user['fecha_nacimiento'];
+        $_SESSION['direccion'] = $user['direccion'];
+        $_SESSION['user_info_id'] = $user['user_info_id'];
+        $_SESSION['LAST_ACTIVITY'] = time();
 
-    $_SESSION['dni'] = $user['dni'];
-    $_SESSION['correo'] = $user['correo'];
-    $_SESSION['telefono'] = $user['telefono'];
-    $_SESSION['fecha_nacimiento'] = $user['fecha_nacimiento'];
-    $_SESSION['direccion'] = $user['direccion'];
-    $_SESSION['user_info_id'] = $user['user_info_id'];
+        // Redirección obligatoria si falta contraseña y es asociado
+        if (
+            empty($user['contrasena']) &&
+            $user['rol'] === 'asociado' &&
+            $user['estado'] === 'activo'
+        ) {
+            header('Location: /views/partials/completar_datos.php');
+            exit;
+        }
 
-    $_SESSION['LAST_ACTIVITY'] = time();
-
-    // Si no tiene contraseña y es asociado => completar datos
-    if (empty($user['contrasena']) && $user['rol'] === 'asociado') {
-        header('Location: /views/partials/completar_datos.php');
+        // Redirección normal por rol
+        switch ($user['rol']) {
+            case 'admin':
+                header('Location: /views/admin/admin_dashboard.php');
+                break;
+            case 'asistente':
+                header('Location: /views/asistente/asistente_dashboard.php');
+                break;
+            case 'asociado':
+                header('Location: /views/asociado/asociado_dashboard.php');
+                break;
+            default:
+                die("Rol no reconocido: " . $user['rol']);
+        }
         exit;
     }
-
-    // Redirección normal por rol
-    switch ($user['rol']) {
-        case 'admin':
-            header('Location: /views/admin/admin_dashboard.php');
-            break;
-        case 'asistente':
-            header('Location: /views/asistente/asistente_dashboard.php');
-            break;
-        case 'asociado':
-            header('Location: /views/asociado/asociado_dashboard.php');
-            break;
-        default:
-            die("Rol no reconocido: " . $user['rol']);
-    }
-    exit;
-}
-
-
 }
 
 ?>

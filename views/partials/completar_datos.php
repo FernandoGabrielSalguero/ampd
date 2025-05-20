@@ -22,6 +22,9 @@ $usuario = $_SESSION['usuario'] ?? '';
 <body>
     <h2>Hola <?= htmlspecialchars($nombre) ?>, por favor completá tus datos</h2>
     <form action="guardar_datos.php" method="POST">
+        <h3>Datos Personales</h3>
+        <input type="text" name="nombre" placeholder="Nombre" required>
+        <input type="text" name="apellido" placeholder="Apellido" required>
         <input type="text" name="dni" placeholder="DNI" required>
         <input type="email" name="correo" placeholder="Correo" required>
         <input type="text" name="telefono" placeholder="Teléfono" required>
@@ -31,7 +34,6 @@ $usuario = $_SESSION['usuario'] ?? '';
 
         <hr>
         <h3>Datos de Facturación</h3>
-
         <input type="text" name="cuit" placeholder="CUIT" required>
         <input type="text" name="nom_titular" placeholder="Nombre del Titular" required>
         <input type="text" name="cbu" placeholder="CBU" required>
