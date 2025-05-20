@@ -113,7 +113,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 <!-- Bienvenida -->
                 <div class="card">
                     <h2>Hola 👋</h2>
-                    <p>En esta página, vamos a poder dar de alta a los usuarios y modificar sus propiedades</p>
+                    <p>En esta página, vas a poder crear los eventos a los cuales podes facturar</p>
                 </div>
 
                 <!-- Formulario -->
@@ -127,7 +127,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 <label for="usuario">Nombre evento</label>
                                 <div class="input-icon">
                                     <span class="material-icons">person</span>
-                                    <input type="text" id="usuario" name="usuario" placeholder="Coloca el DNI del asociado" required>
+                                    <input type="text" id="usuario" name="usuario" placeholder="Coloca el nombre del evento" required>
                                 </div>
                             </div>
 
@@ -136,7 +136,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 <label for="usuario">Descripción evento</label>
                                 <div class="input-icon">
                                     <span class="material-icons">person</span>
-                                    <input type="text" id="usuario" name="usuario" placeholder="Coloca el DNI del asociado" required>
+                                    <input type="text" id="usuario" name="usuario" placeholder="Describi el evento" required>
                                 </div>
                             </div>
 
@@ -146,7 +146,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 <label for="usuario">Fecha</label>
                                 <div class="input-icon">
                                     <span class="material-icons">person</span>
-                                    <input type="text" id="usuario" name="usuario" placeholder="Coloca el DNI del asociado" required>
+                                    <input type="text" id="usuario" name="usuario" placeholder="Fecha del evento" required>
                                 </div>
                             </div>
 
@@ -155,11 +155,9 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 <label for="usuario">Lugar</label>
                                 <div class="input-icon">
                                     <span class="material-icons">person</span>
-                                    <input type="text" id="usuario" name="usuario" placeholder="Coloca el DNI del asociado" required>
+                                    <input type="text" id="usuario" name="usuario" placeholder="Lugar del evento" required>
                                 </div>
                             </div>
-
-
 
                             <!-- Botones -->
                             <div class="form-buttons">
