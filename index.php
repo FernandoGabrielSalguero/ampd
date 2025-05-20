@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['usuario'] = $user['usuario'];
         $_SESSION['rol'] = $user['rol'];
         $_SESSION['id_real'] = $user['id_real'];
-        $_SESSION['nombre'] = $user['nombre_ui'] ?? $user['nombre'];
+        $_SESSION['nombre'] = $user['nombre_ui'] ?? '';
         $_SESSION['estado'] = $user['estado'];
         $_SESSION['fecha_creacion'] = $user['fecha_creacion'];
         $_SESSION['apellido'] = $user['apellido'] ?? '';

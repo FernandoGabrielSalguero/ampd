@@ -20,7 +20,6 @@ class AuthModel
                 u.rol,
                 u.estado,
                 u.fecha_creacion,
-                u.nombre AS nombre,
 
                 ui.nombre AS nombre_ui,
                 ui.apellido,
