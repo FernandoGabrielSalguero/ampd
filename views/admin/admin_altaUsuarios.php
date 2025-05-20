@@ -122,20 +122,10 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                             <!-- Usuario -->
                             <div class="input-group">
-                                <label for="usuario">Usuario</label>
+                                <label for="usuario">DNI</label>
                                 <div class="input-icon">
                                     <span class="material-icons">person</span>
                                     <input type="text" id="usuario" name="usuario" placeholder="Asigna un usuario" required>
-                                </div>
-                            </div>
-
-                            <!-- Contraseña con ojo -->
-                            <div class="input-group password-container">
-                                <label for="contrasena">Contraseña</label>
-                                <div class="input-icon">
-                                    <span class="material-icons">lock</span>
-                                    <input type="password" id="contrasena" name="contrasena" placeholder="Asigna una contraseña" required>
-                                    <span class="material-icons toggle-password" onclick="togglePassword()">visibility</span>
                                 </div>
                             </div>
 
@@ -145,10 +135,9 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 <div class="input-icon">
                                     <span class="material-icons">supervisor_account</span>
                                     <select id="rol" name="rol" required>
-                                        <option value="sve">SVE</option>
-                                        <option value="cooperativa">Cooperativa</option>
-                                        <option value="productor">Productor</option>
-                                        <option value="ingeniero">Ingeniero</option>
+                                        <option value="admin">Administrador</option>
+                                        <option value="asistente">Asistente</option>
+                                        <option value="asociado">Asociado</option>
                                     </select>
                                 </div>
                             </div>
@@ -159,27 +148,9 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 <div class="input-icon">
                                     <span class="material-icons">check_circle</span>
                                     <select id="permiso_ingreso" name="permiso_ingreso" required>
-                                        <option value="Habilitado">Habilitado</option>
-                                        <option value="Deshabilitado">Deshabilitado</option>
+                                        <option value="activo">Habilitado</option>
+                                        <option value="inactivo">Deshabilitado</option>
                                     </select>
-                                </div>
-                            </div>
-
-                            <!-- ID Real -->
-                            <div class="input-group">
-                                <label for="id_real">ID Real</label>
-                                <div class="input-icon">
-                                    <span class="material-icons">badge</span>
-                                    <input type="number" id="id_real" name="id_real" placeholder="Coloca el ID del usuario" required>
-                                </div>
-                            </div>
-
-                            <!-- Cuit -->
-                            <div class="input-group">
-                                <label for="cuit">CUIT</label>
-                                <div class="input-icon">
-                                    <span class="material-icons">fingerprint</span>
-                                    <input type="text" id="cuit" name="cuit" inputmode="numeric" pattern="\d*" maxlength="11" placeholder="Coloca el CUIT sin guiones" required oninput="this.value = this.value.replace(/\D/g, '')">
                                 </div>
                             </div>
 
