@@ -114,7 +114,88 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
             </div>
 
 
+                <!-- Formulario -->
                 <div class="card">
+                    <h2>Crear nuevo usuario</h2>
+                    <form class="form-modern" id="formUsuario">
+                        <div class="form-grid grid-2">
+
+                            <!-- Usuario -->
+                            <div class="input-group">
+                                <label for="usuario">Usuario</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">person</span>
+                                    <input type="text" id="usuario" name="usuario" placeholder="Asigna un usuario" required>
+                                </div>
+                            </div>
+
+                            <!-- Contraseña con ojo -->
+                            <div class="input-group password-container">
+                                <label for="contrasena">Contraseña</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">lock</span>
+                                    <input type="password" id="contrasena" name="contrasena" placeholder="Asigna una contraseña" required>
+                                    <span class="material-icons toggle-password" onclick="togglePassword()">visibility</span>
+                                </div>
+                            </div>
+
+                            <!-- Rol -->
+                            <div class="input-group">
+                                <label for="rol">Rol</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">supervisor_account</span>
+                                    <select id="rol" name="rol" required>
+                                        <option value="sve">SVE</option>
+                                        <option value="cooperativa">Cooperativa</option>
+                                        <option value="productor">Productor</option>
+                                        <option value="ingeniero">Ingeniero</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Permiso -->
+                            <div class="input-group">
+                                <label for="permiso_ingreso">Permiso</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">check_circle</span>
+                                    <select id="permiso_ingreso" name="permiso_ingreso" required>
+                                        <option value="Habilitado">Habilitado</option>
+                                        <option value="Deshabilitado">Deshabilitado</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- ID Real -->
+                            <div class="input-group">
+                                <label for="id_real">ID Real</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">badge</span>
+                                    <input type="number" id="id_real" name="id_real" placeholder="Coloca el ID del usuario" required>
+                                </div>
+                            </div>
+
+                            <!-- Cuit -->
+                            <div class="input-group">
+                                <label for="cuit">CUIT</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">fingerprint</span>
+                                    <input type="text" id="cuit" name="cuit" inputmode="numeric" pattern="\d*" maxlength="11" placeholder="Coloca el CUIT sin guiones" required oninput="this.value = this.value.replace(/\D/g, '')">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="form-buttons">
+                            <button class="btn btn-aceptar" type="submit">Crear usuario</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Tarjeta de buscador -->
+                <div class="card">
+                    <h2>Busca usuarios</h2>
+
                     <form class="form-modern">
                         <div class="form-grid grid-2">
                             <!-- Buscar por CUIT -->
@@ -165,7 +246,6 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                             </tbody>
                         </table>
                     </div>
-                </div>
                 </div>
 
             </section>
