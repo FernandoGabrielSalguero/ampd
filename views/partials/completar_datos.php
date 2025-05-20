@@ -28,9 +28,9 @@ $usuario = $_SESSION['usuario'] ?? '';
 
 <body>
 
-        <section class="content">
-            <div class="container mt-4">
-                <div class="card p-4">
+<section class="content">
+    <div class="container">
+        <div class="card">
                     <h2>📝 Completar Datos</h2>
 
                     <form class="form-modern" action="guardar_datos.php" method="POST">
@@ -159,9 +159,9 @@ $usuario = $_SESSION['usuario'] ?? '';
                         <?php endif; ?>
 
                     </form>
-                </div>
-            </div>
-        </section>
+        </div>
+    </div>
+</section>
 
 
     <!-- Spinner Global -->
