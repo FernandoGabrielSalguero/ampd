@@ -23,7 +23,7 @@ if (!isset($_SESSION['usuario'])) {
 
 // 🔐 Protección por rol
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
-    die("🚫 Acceso restringido: esta página es solo para usuarios SVE.");
+    die("🚫 Acceso restringido: esta página es solo para usuarios Administrador.");
 }
 
 // Datos del usuario en sesión
@@ -41,7 +41,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SVE</title>
+    <title>AMPD</title>
 
     <!-- Íconos de Material Design -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
@@ -60,7 +60,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <span class="material-icons logo-icon">dashboard</span>
-                <span class="logo-text">SVE</span>
+                <span class="logo-text">AMPD</span>
             </div>
 
             <nav class="sidebar-menu">
@@ -71,20 +71,14 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     <li onclick="location.href='sve_altausuarios.php'">
                         <span class="material-icons" style="color: #5b21b6;">person</span><span class="link-text">Alta usuarios</span>
                     </li>
-                    <li onclick="location.href='sve_asociarProductores.php'">
-                        <span class="material-icons" style="color: #5b21b6;">link</span><span class="link-text">Asociaciones</span>
-                    </li>
                     <li onclick="location.href='sve_cargaMasiva.php'">
-                        <span class="material-icons" style="color: #5b21b6;">upload_file</span><span class="link-text">Carga masiva</span>
+                        <span class="material-icons" style="color: #5b21b6;">upload_file</span><span class="link-text">Pago Facturas</span>
                     </li>
                     <li onclick="location.href='sve_operativos.php'">
-                        <span class="material-icons" style="color: #5b21b6;">assignment</span><span class="link-text">Operativos</span>
+                        <span class="material-icons" style="color: #5b21b6;">assignment</span><span class="link-text">Suscripciones</span>
                     </li>
                     <li onclick="location.href='sve_mercadodigital.php'">
-                        <span class="material-icons" style="color: #5b21b6;">shopping_cart</span><span class="link-text">Mercado Digital</span>
-                    </li>
-                    <li onclick="location.href='sve_productos.php'">
-                        <span class="material-icons" style="color: #5b21b6;">inventory</span><span class="link-text">Productos</span>
+                        <span class="material-icons" style="color: #5b21b6;">shopping_cart</span><span class="link-text">Consumos internos</span>
                     </li>
                     <li onclick="location.href='../../../logout.php'">
                         <span class="material-icons" style="color: red;">logout</span><span class="link-text">Salir</span>
