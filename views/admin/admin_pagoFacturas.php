@@ -118,7 +118,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
 <!-- Tarjeta de buscador -->
                 <div class="card">
-                    <h2>Busca asociados</h2>
+                    <h2>Busca pedidos</h2>
 
                     <form class="form-modern">
                         <div class="form-grid grid-2">
@@ -145,7 +145,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                 <!-- Tabla -->
                 <div class="card">
-                    <h2>Listado de usuarios registrados</h2>
+                    <h2>Listado de pedidos de liquidaciones</h2>
                     <div class="table-container">
                         <table class="data-table">
                             <thead>
