@@ -120,12 +120,12 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     <form class="form-modern" id="formUsuario">
                         <div class="form-grid grid-2">
 
-                            <!-- Usuario -->
+                            <!-- DNI -->
                             <div class="input-group">
                                 <label for="usuario">DNI</label>
                                 <div class="input-icon">
                                     <span class="material-icons">person</span>
-                                    <input type="text" id="usuario" name="usuario" placeholder="Asigna un usuario" required>
+                                    <input type="text" id="usuario" name="usuario" placeholder="Coloca el DNI del asociado" required>
                                 </div>
                             </div>
 
