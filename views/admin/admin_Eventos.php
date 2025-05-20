@@ -118,43 +118,48 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                 <!-- Formulario -->
                 <div class="card">
-                    <h2>Crear nuevo usuario</h2>
+                    <h2>Crear nuevo evento</h2>
                     <form class="form-modern" id="formUsuario">
                         <div class="form-grid grid-2">
 
                             <!-- DNI -->
                             <div class="input-group">
-                                <label for="usuario">Usuario</label>
+                                <label for="usuario">Nombre evento</label>
                                 <div class="input-icon">
                                     <span class="material-icons">person</span>
                                     <input type="text" id="usuario" name="usuario" placeholder="Coloca el DNI del asociado" required>
                                 </div>
                             </div>
 
-                            <!-- Rol -->
+                            <!-- Descripcion -->
                             <div class="input-group">
-                                <label for="rol">Rol</label>
+                                <label for="usuario">Descripción evento</label>
                                 <div class="input-icon">
-                                    <span class="material-icons">supervisor_account</span>
-                                    <select id="rol" name="rol" required>
-                                        <option value="admin">Administrador</option>
-                                        <option value="asistente">Asistente</option>
-                                        <option value="asociado">Asociado</option>
-                                    </select>
+                                    <span class="material-icons">person</span>
+                                    <input type="text" id="usuario" name="usuario" placeholder="Coloca el DNI del asociado" required>
                                 </div>
                             </div>
 
-                            <!-- Permiso -->
+
+                            <!-- Fecha -->
                             <div class="input-group">
-                                <label for="permiso_ingreso">Permiso</label>
+                                <label for="usuario">Fecha</label>
                                 <div class="input-icon">
-                                    <span class="material-icons">check_circle</span>
-                                    <select id="permiso_ingreso" name="permiso_ingreso" required>
-                                        <option value="activo">Habilitado</option>
-                                        <option value="inactivo">Deshabilitado</option>
-                                    </select>
+                                    <span class="material-icons">person</span>
+                                    <input type="text" id="usuario" name="usuario" placeholder="Coloca el DNI del asociado" required>
                                 </div>
                             </div>
+
+                            <!-- Lugar -->
+                            <div class="input-group">
+                                <label for="usuario">Lugar</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">person</span>
+                                    <input type="text" id="usuario" name="usuario" placeholder="Coloca el DNI del asociado" required>
+                                </div>
+                            </div>
+
+
 
                             <!-- Botones -->
                             <div class="form-buttons">
@@ -162,33 +167,6 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                             </div>
                         </div>
 
-                    </form>
-                </div>
-
-                <!-- Tarjeta de buscador -->
-                <div class="card">
-                    <h2>Busca asociados</h2>
-
-                    <form class="form-modern">
-                        <div class="form-grid grid-2">
-                            <!-- Buscar por DNI -->
-                            <div class="input-group">
-                                <label for="buscarCuit">Podes buscar por DNI</label>
-                                <div class="input-icon">
-                                    <span class="material-icons">person</span>
-                                    <input type="text" id="buscarCuit" name="buscarCuit" placeholder="20123456781">
-                                </div>
-                            </div>
-
-                            <!-- Buscar por Nombre -->
-                            <div class="input-group">
-                                <label for="buscarNombre">Podes buscar por nombre</label>
-                                <div class="input-icon">
-                                    <span class="material-icons">person</span>
-                                    <input type="text" id="buscarNombre" name="buscarNombre" placeholder="Ej: Juan Pérez">
-                                </div>
-                            </div>
-                        </div>
                     </form>
                 </div>
 
@@ -200,19 +178,14 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Usuario</th>
-                                    <th>Rol</th>
-                                    <th>Permiso</th>
-                                    <th>DNI</th>
-                                    <th>Nombre</th>
-                                    <th>Dirección</th>
-                                    <th>Teléfono</th>
-                                    <th>Datos bancarios</th>
-                                    <th>Correo</th>
+                                    <th>Nombre evento</th>
+                                    <th>Descripción</th>
+                                    <th>Fecha</th>
+                                    <th>Lugar</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody id="tablaUsuarios">
+                            <tbody id="tablaEventos">
                                 <!-- Contenido dinámico -->
                             </tbody>
                         </table>
