@@ -101,8 +101,16 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 <div class="navbar-title">Inicio</div>
             </header>
 
+
+
             <!-- 📦 CONTENIDO -->
             <section class="content">
+
+                <!-- Bienvenida -->
+                <div class="card">
+                    <h2>Hola 👋</h2>
+                    <p>En esta página, podemos mostrarle algunas metricas al usuario "asociado" esta páginas es opcional.</p>
+                </div>
 
                 <div class="card-grid grid-4">
                     <div class="card">
