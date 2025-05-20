@@ -165,15 +165,15 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                 <!-- Tarjeta de buscador -->
                 <div class="card">
-                    <h2>Busca usuarios</h2>
+                    <h2>Busca asociados</h2>
 
                     <form class="form-modern">
                         <div class="form-grid grid-2">
-                            <!-- Buscar por CUIT -->
+                            <!-- Buscar por DNI -->
                             <div class="input-group">
-                                <label for="buscarCuit">Podes buscar por CUIT</label>
+                                <label for="buscarCuit">Podes buscar por DNI</label>
                                 <div class="input-icon">
-                                    <span class="material-icons">fingerprint</span>
+                                    <span class="material-icons">person</span>
                                     <input type="text" id="buscarCuit" name="buscarCuit" placeholder="20123456781">
                                 </div>
                             </div>
@@ -203,11 +203,11 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                     <th>Usuario</th>
                                     <th>Rol</th>
                                     <th>Permiso</th>
-                                    <th>CUIT</th>
-                                    <th>ID Real</th>
+                                    <th>DNI</th>
                                     <th>Nombre</th>
                                     <th>Dirección</th>
                                     <th>Teléfono</th>
+                                    <th>Datos bancarios</th>
                                     <th>Correo</th>
                                     <th>Acciones</th>
                                 </tr>
