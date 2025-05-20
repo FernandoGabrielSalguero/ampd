@@ -72,10 +72,10 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                         <span class="material-icons" style="color: #5b21b6;">person</span><span class="link-text">Información Personal</span>
                     </li>
                     <li onclick="location.href='asociado_solicitudPago.php'">
-                        <span class="material-icons" style="color: #5b21b6;">assignment</span><span class="link-text">Solicitud pago</span>
+                        <span class="material-icons" style="color: #5b21b6;">attach_money</span><span class="link-text">Solicitud pago</span>
                     </li>
                     <li onclick="location.href='asociado_pagoSuscripcion.php'">
-                        <span class="material-icons" style="color: #5b21b6;">inventory</span><span class="link-text">Suscripción</span>
+                        <span class="material-icons" style="color: #5b21b6;">assignment</span><span class="link-text">Suscripción</span>
                     </li>
                     <li onclick="location.href='../../../logout.php'">
                         <span class="material-icons" style="color: red;">logout</span><span class="link-text">Salir</span>
