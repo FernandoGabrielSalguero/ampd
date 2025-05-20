@@ -110,28 +110,94 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
             <!-- 📦 CONTENIDO -->
             <section class="content">
 
-            <!-- Bienvenida -->
-            <div class="card">
-                <h2>Hola 👋</h2>
-                <p>En esta página, vamos a poder cargar los consumos internor de la asociación</p>
-            </div>
-
-
+                <!-- Bienvenida -->
                 <div class="card">
-                    <form class="form-modern">
-                        <div class="input-group">
-                            <label>Correo</label>
-                            <div class="input-icon">
-                                <span class="material-icons">mail</span>
-                                <input type="email" placeholder="ejemplo@correo.com">
+                    <h2>Hola 👋</h2>
+                    <p>En esta página, vamos a poder cargar los consumos internos de la asociación</p>
+                </div>
+
+
+                <!-- Formulario -->
+                <div class="card">
+                    <h2>Crear nuevo consumo</h2>
+                    <form class="form-modern" id="formMonto">
+                        <div class="form-grid grid-2">
+
+                            <!-- MONTO -->
+                            <div class="input-group">
+                                <label for="monto">Monto</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">attach_money</span>
+                                    <input type="text" id="monto" name="monto" placeholder="¿Cuanto gastaste?" required>
+                                </div>
+                            </div>
+
+                            <!-- COMPROBANTE -->
+                            <div class="input-group">
+                                <label for="comprobante">Comprobante</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">receipt_long</span>
+                                    <input type="text" id="comprobante" name="comprobante" placeholder="Subi el comprobante" required>
+                                </div>
+                            </div>
+
+                            <!-- Botones -->
+                            <div class="form-buttons">
+                                <button class="btn btn-aceptar" type="submit">Crear consumo</button>
                             </div>
                         </div>
 
-                        <div class="form-buttons">
-                            <button class="btn btn-aceptar" type="submit">Enviar</button>
-                            <button class="btn btn-cancelar" type="button">Cancelar</button>
+                    </form>
+                </div>
+
+                <!-- Tarjeta de buscador -->
+                <div class="card">
+                    <h2>Busca cosumos</h2>
+
+                    <form class="form-modern">
+                        <div class="form-grid grid-2">
+
+                            <!-- Buscar por DNI -->
+                            <div class="input-group">
+                                <label for="buscarCuit">Podes buscar por DNI</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">person</span>
+                                    <input type="text" id="buscarCuit" name="buscarCuit" placeholder="20123456781">
+                                </div>
+                            </div>
+
+                            <!-- Buscar por Nombre -->
+                            <div class="input-group">
+                                <label for="buscarNombre">Podes buscar por nombre</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">person</span>
+                                    <input type="text" id="buscarNombre" name="buscarNombre" placeholder="Ej: Juan Pérez">
+                                </div>
+                            </div>
                         </div>
                     </form>
+                </div>
+
+                <!-- Tabla -->
+                <div class="card">
+                    <h2>Listado de usuarios registrados</h2>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usuario</th>
+                                    <th>Monto</th>
+                                    <th>Comprobante</th>
+                                    <th>Fecha</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaConsumoInternos">
+                                <!-- Contenido dinámico -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
             </section>
