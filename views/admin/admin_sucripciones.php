@@ -110,29 +110,73 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
             <!-- 📦 CONTENIDO -->
             <section class="content">
 
-            <!-- Bienvenida -->
-            <div class="card">
-                <h2>Hola 👋</h2>
-                <p>En esta página, vamos a poder ver el estado de los pagos de las sucripciones de los socios.</p>
-            </div>
-
-
+                <!-- Bienvenida -->
                 <div class="card">
-                    <form class="form-modern">
-                        <div class="input-group">
-                            <label>Correo</label>
-                            <div class="input-icon">
-                                <span class="material-icons">mail</span>
-                                <input type="email" placeholder="ejemplo@correo.com">
-                            </div>
-                        </div>
+                    <h2>Hola 👋</h2>
+                    <p>En esta página, vamos a poder ver el estado de los pagos de las sucripciones de los socios.</p>
+                </div>
 
-                        <div class="form-buttons">
-                            <button class="btn btn-aceptar" type="submit">Enviar</button>
-                            <button class="btn btn-cancelar" type="button">Cancelar</button>
+
+                <!-- Tarjeta de buscador -->
+                <div class="card">
+                    <h2>Busca socios para verificar el estado de su cuota mensual</h2>
+
+                    <form class="form-modern">
+                        <div class="form-grid grid-2">
+                            <!-- Buscar por DNI -->
+                            <div class="input-group">
+                                <label for="buscarCuit">Podes buscar por DNI</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">person</span>
+                                    <input type="text" id="buscarCuit" name="buscarCuit" placeholder="20123456781">
+                                </div>
+                            </div>
+
+                            <!-- Buscar por Nombre -->
+                            <div class="input-group">
+                                <label for="buscarNombre">Podes buscar por nombre</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">person</span>
+                                    <input type="text" id="buscarNombre" name="buscarNombre" placeholder="Ej: Juan Pérez">
+                                </div>
+                            </div>
+
+                            <!-- Buscar por Mes y año -->
+                            <div class="input-group">
+                                <label for="buscarNombre">Podes buscar por mes y año</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">event</span>
+                                    <input type="text" id="buscarNombre" name="buscarNombre" placeholder="Ej: Juan Pérez">
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
+
+                <!-- Tabla -->
+                <div class="card">
+                    <h2>Listado de pago de suscripciones</h2>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usuario</th>
+                                    <th>Mes</th>
+                                    <th>Importe</th>
+                                    <th>Comprobante</th>
+                                    <th>Fecha Pago</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaPagoSuscripciones">
+                                <!-- Contenido dinámico -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
 
             </section>
 

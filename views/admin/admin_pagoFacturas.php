@@ -110,13 +110,13 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
             <!-- 📦 CONTENIDO -->
             <section class="content">
 
-            <!-- Bienvenida -->
-            <div class="card">
-                <h2>Hola 👋</h2>
-                <p>Vamos a poder visualizar las solicitudes de pagos de nuestros socios.</p>
-            </div>
+                <!-- Bienvenida -->
+                <div class="card">
+                    <h2>Hola 👋</h2>
+                    <p>Vamos a poder visualizar las solicitudes de pagos de nuestros socios.</p>
+                </div>
 
-<!-- Tarjeta de buscador -->
+                <!-- Tarjeta de buscador -->
                 <div class="card">
                     <h2>Busca pedidos</h2>
 
