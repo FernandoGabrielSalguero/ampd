@@ -180,6 +180,15 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                             </div>
 
                             <div class="input-group">
+                                <label for="monto">Número de orden</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">number</span>
+                                    <input type="number" step="0.01" name="monto" id="monto" required>
+                                </div>
+                            </div>
+
+
+                            <div class="input-group">
                                 <label for="sellado">Sellado (%)</label>
                                 <div class="input-icon">
                                     <span class="material-icons">percent</span>
