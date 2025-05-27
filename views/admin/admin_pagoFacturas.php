@@ -265,23 +265,25 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                 <!-- Tabla -->
                 <div class="card">
-                    <h2>Listado de pedidos de liquidaciones</h2>
+                    <h2>Listado de pagos de eventos</h2>
                     <div class="table-container">
                         <table class="data-table">
                             <thead>
                                 <tr>
                                     <th>ID</th>
+                                    <th>Fecha</th>
                                     <th>Beneficiario</th>
-                                    <th>Contrato</th>
-                                    <th>Importe</th>
-                                    <th>% Retención</th>
-                                    <th>Fecha pedido</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
+                                    <th>Evento</th>
+                                    <th>Monto</th>
+                                    <th>Sellado</th>
+                                    <th>Impuesto Cheque</th>
+                                    <th>Retención</th>
+                                    <th>Total</th>
+                                    <th>Comprobantes</th>
                                 </tr>
                             </thead>
                             <tbody id="tablaPagoFacturas">
-                                <!-- Contenido dinámico -->
+                                <!-- Rellenado con JS -->
                             </tbody>
                         </table>
                     </div>
@@ -338,6 +340,38 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
         ['monto', 'sellado', 'impuesto_cheque', 'retencion'].forEach(id => {
             document.getElementById(id).addEventListener('input', calcularTotal);
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('../../controllers/admin_PagoEventoController.php?ajax=1')
+                .then(res => res.json())
+                .then(data => {
+                    const tbody = document.getElementById('tablaPagoFacturas');
+                    tbody.innerHTML = '';
+
+                    data.forEach(pago => {
+                        const fila = document.createElement('tr');
+                        fila.innerHTML = `
+                    <td>${pago.id_}</td>
+                    <td>${pago.fecha}</td>
+                    <td>${pago.nombre_completo_beneficiario}</td>
+                    <td>${pago.evento}</td>
+                    <td>$${parseFloat(pago.monto).toFixed(2)}</td>
+                    <td>${pago.sellado}%</td>
+                    <td>${pago.impuesto_cheque}%</td>
+                    <td>${pago.retencion}%</td>
+                    <td><strong>$${parseFloat(pago.total_despues_impuestos).toFixed(2)}</strong></td>
+                    <td>
+                        <a href="${pago.pedido}" target="_blank">📄 Pedido</a> |
+                        <a href="${pago.factura}" target="_blank">📄 Factura</a>
+                    </td>
+                `;
+                        tbody.appendChild(fila);
+                    });
+                })
+                .catch(err => {
+                    console.error('Error al cargar pagos:', err);
+                });
         });
     </script>
 
