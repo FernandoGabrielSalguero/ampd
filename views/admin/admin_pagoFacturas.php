@@ -373,6 +373,58 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     console.error('Error al cargar pagos:', err);
                 });
         });
+
+
+        document.getElementById('formPagoEvento').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.ok ? res.text() : Promise.reject(res))
+                .then(() => {
+                    alert('✅ Pago guardado correctamente');
+                    form.reset();
+                    document.getElementById('total_despues_impuestos').value = '';
+                    cargarTablaPagos(); // recarga tabla
+                })
+                .catch(err => {
+                    console.error('Error al enviar formulario:', err);
+                    alert('❌ Ocurrió un error al guardar el pago.');
+                });
+        });
+
+        // Función separada para reutilizar
+        function cargarTablaPagos() {
+            fetch('../../controllers/admin_PagoEventoController.php?ajax=1')
+                .then(res => res.json())
+                .then(data => {
+                    const tbody = document.getElementById('tablaPagoFacturas');
+                    tbody.innerHTML = '';
+                    data.forEach(pago => {
+                        const fila = document.createElement('tr');
+                        fila.innerHTML = `
+                    <td>${pago.id_}</td>
+                    <td>${pago.fecha}</td>
+                    <td>${pago.nombre_completo_beneficiario}</td>
+                    <td>${pago.evento}</td>
+                    <td>$${parseFloat(pago.monto).toFixed(2)}</td>
+                    <td>${pago.sellado}%</td>
+                    <td>${pago.impuesto_cheque}%</td>
+                    <td>${pago.retencion}%</td>
+                    <td><strong>$${parseFloat(pago.total_despues_impuestos).toFixed(2)}</strong></td>
+                    <td>
+                        <a href="${pago.pedido}" target="_blank">📄 Pedido</a> |
+                        <a href="${pago.factura}" target="_blank">📄 Factura</a>
+                    </td>
+                `;
+                        tbody.appendChild(fila);
+                    });
+                });
+        }
     </script>
 
     <!-- Spinner Global -->
