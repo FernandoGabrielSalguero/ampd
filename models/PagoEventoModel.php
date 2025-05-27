@@ -2,30 +2,33 @@
 
 require_once __DIR__ . '/../config.php';
 
-class PagoEventoModel {
+class PagoEventoModel
+{
     private $pdo;
 
-    public function __construct($pdo) {
+    public function __construct($pdo)
+    {
         $this->pdo = $pdo;
     }
 
-    public function insertarPagoEvento($data) {
+    public function insertarPagoEvento($data)
+    {
         $sql = "
-            INSERT INTO pagos_evento (
-                cuit_beneficiario, cbu_beneficiario, alias_beneficiario, 
-                nombre_completo_beneficiario, telefono_beneficiario, evento,
-                monto, sellado, impuesto_cheque, retencion,
-                total_despues_impuestos, factura, pedido, fecha
-            ) VALUES (
-                :cuit_beneficiario, :cbu_beneficiario, :alias_beneficiario, 
-                :nombre_completo_beneficiario, :telefono_beneficiario, :evento,
-                :monto, :sellado, :impuesto_cheque, :retencion,
-                :total_despues_impuestos, :factura, :pedido, NOW()
-            )
-        ";
+        INSERT INTO pagos_evento (
+            cuit_beneficiario, cbu_beneficiario, alias_beneficiario, 
+            nombre_completo_beneficiario, telefono_beneficiario, evento,
+            monto, sellado, impuesto_cheque, retencion,
+            total_despues_impuestos, factura, pedido, fecha
+        ) VALUES (
+            :cuit_beneficiario, :cbu_beneficiario, :alias_beneficiario, 
+            :nombre_completo_beneficiario, :telefono_beneficiario, :evento,
+            :monto, :sellado, :impuesto_cheque, :retencion,
+            :total_despues_impuestos, :factura, :pedido, NOW()
+        )
+    ";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([
+        $exito = $stmt->execute([
             ':cuit_beneficiario' => $data['cuit_beneficiario'],
             ':cbu_beneficiario' => $data['cbu_beneficiario'],
             ':alias_beneficiario' => $data['alias_beneficiario'],
@@ -40,5 +43,10 @@ class PagoEventoModel {
             ':factura' => $data['factura'],
             ':pedido' => $data['pedido']
         ]);
+
+        if (!$exito) {
+            $error = $stmt->errorInfo();
+            die('❌ Error al insertar: ' . $error[2]);
+        }
     }
 }
