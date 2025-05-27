@@ -118,32 +118,8 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                 <div class="card">
                     <h2>Nuevo pago de evento</h2>
-                    <form class="form-modern" action="../../controllers/admin_PagoEventoController.php" method="POST" enctype="multipart/form-data">
+                    <form class="form-modern" action="../../controllers/admin_PagoEventoController.php" method="POST" enctype="multipart/form-data" id="formPagoEvento">
                         <div class="form-grid grid-2">
-
-                            <div class="input-group">
-                                <label for="evento_id">ID Evento</label>
-                                <div class="input-icon">
-                                    <span class="material-icons">event</span>
-                                    <input type="number" name="evento_id" id="evento_id" required>
-                                </div>
-                            </div>
-
-                            <div class="input-group">
-                                <label for="usuario_id">ID Usuario</label>
-                                <div class="input-icon">
-                                    <span class="material-icons">person</span>
-                                    <input type="number" name="usuario_id" id="usuario_id" required>
-                                </div>
-                            </div>
-
-                            <div class="input-group">
-                                <label for="monto">Monto</label>
-                                <div class="input-icon">
-                                    <span class="material-icons">attach_money</span>
-                                    <input type="number" step="0.01" name="monto" id="monto" required>
-                                </div>
-                            </div>
 
                             <div class="input-group">
                                 <label for="cuit_beneficiario">CUIT Beneficiario</label>
@@ -162,7 +138,79 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                             </div>
 
                             <div class="input-group">
-                                <label for="pedido">Archivo Pedido (PDF)</label>
+                                <label for="alias_beneficiario">Alias Beneficiario</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">alternate_email</span>
+                                    <input type="text" name="alias_beneficiario" id="alias_beneficiario">
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="nombre_completo_beneficiario">Nombre completo</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">person</span>
+                                    <input type="text" name="nombre_completo_beneficiario" id="nombre_completo_beneficiario" required>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="telefono_beneficiario">Teléfono</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">call</span>
+                                    <input type="text" name="telefono_beneficiario" id="telefono_beneficiario">
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="evento">Evento</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">event</span>
+                                    <input type="text" name="evento" id="evento" required>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="monto">Monto</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">attach_money</span>
+                                    <input type="number" step="0.01" name="monto" id="monto" required>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="sellado">Sellado (%)</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">percent</span>
+                                    <input type="number" step="0.01" name="sellado" id="sellado" required>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="impuesto_cheque">Impuesto al Cheque (%)</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">percent</span>
+                                    <input type="number" step="0.01" name="impuesto_cheque" id="impuesto_cheque" required>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="retencion">Retención (%)</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">percent</span>
+                                    <input type="number" step="0.01" name="retencion" id="retencion" required>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="total_despues_impuestos">Total Final</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">calculate</span>
+                                    <input type="text" name="total_despues_impuestos" id="total_despues_impuestos" readonly required>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="pedido">Archivo Pedido</label>
                                 <div class="input-icon">
                                     <span class="material-icons">upload_file</span>
                                     <input type="file" name="pedido" id="pedido" accept="application/pdf" required>
@@ -170,15 +218,13 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                             </div>
 
                             <div class="input-group">
-                                <label for="factura">Archivo Factura (PDF)</label>
+                                <label for="factura">Archivo Factura</label>
                                 <div class="input-icon">
                                     <span class="material-icons">upload_file</span>
                                     <input type="file" name="factura" id="factura" accept="application/pdf" required>
                                 </div>
                             </div>
                         </div>
-
-                        <input type="hidden" name="cargado_por" value="<?php echo $_SESSION['usuario'] ?? ''; ?>">
 
                         <div class="mt-3">
                             <button type="submit" class="btn-primary">
@@ -275,6 +321,21 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 .catch(error => {
                     console.error('Error al cargar pagos:', error);
                 });
+        });
+
+
+        function calcularTotal() {
+            const monto = parseFloat(document.getElementById('monto').value) || 0;
+            const sellado = parseFloat(document.getElementById('sellado').value) || 0;
+            const cheque = parseFloat(document.getElementById('impuesto_cheque').value) || 0;
+            const ret = parseFloat(document.getElementById('retencion').value) || 0;
+
+            const total = monto - (monto * sellado / 100) - (monto * cheque / 100) - (monto * ret / 100);
+            document.getElementById('total_despues_impuestos').value = total.toFixed(2);
+        }
+
+        ['monto', 'sellado', 'impuesto_cheque', 'retencion'].forEach(id => {
+            document.getElementById(id).addEventListener('input', calcularTotal);
         });
     </script>
 

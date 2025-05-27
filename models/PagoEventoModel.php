@@ -12,24 +12,33 @@ class PagoEventoModel {
     public function insertarPagoEvento($data) {
         $sql = "
             INSERT INTO pagos_evento (
-                evento_id, usuario_id, monto, cuit_beneficiario, cbu_beneficiario,
-                pedido, factura, fecha_solicitud, cargado_por
+                cuit_beneficiario, cbu_beneficiario, alias_beneficiario, 
+                nombre_completo_beneficiario, telefono_beneficiario, evento,
+                monto, sellado, impuesto_cheque, retencion,
+                total_despues_impuestos, factura, pedido, fecha
             ) VALUES (
-                :evento_id, :usuario_id, :monto, :cuit_beneficiario, :cbu_beneficiario,
-                :pedido, :factura, NOW(), :cargado_por
+                :cuit_beneficiario, :cbu_beneficiario, :alias_beneficiario, 
+                :nombre_completo_beneficiario, :telefono_beneficiario, :evento,
+                :monto, :sellado, :impuesto_cheque, :retencion,
+                :total_despues_impuestos, :factura, :pedido, NOW()
             )
         ";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
-            ':evento_id' => $data['evento_id'],
-            ':usuario_id' => $data['usuario_id'],
-            ':monto' => $data['monto'],
             ':cuit_beneficiario' => $data['cuit_beneficiario'],
             ':cbu_beneficiario' => $data['cbu_beneficiario'],
-            ':pedido' => $data['pedido'],
+            ':alias_beneficiario' => $data['alias_beneficiario'],
+            ':nombre_completo_beneficiario' => $data['nombre_completo_beneficiario'],
+            ':telefono_beneficiario' => $data['telefono_beneficiario'],
+            ':evento' => $data['evento'],
+            ':monto' => $data['monto'],
+            ':sellado' => $data['sellado'],
+            ':impuesto_cheque' => $data['impuesto_cheque'],
+            ':retencion' => $data['retencion'],
+            ':total_despues_impuestos' => $data['total_despues_impuestos'],
             ':factura' => $data['factura'],
-            ':cargado_por' => $data['cargado_por']
+            ':pedido' => $data['pedido']
         ]);
     }
 }
