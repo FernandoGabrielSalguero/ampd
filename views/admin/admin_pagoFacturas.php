@@ -65,16 +65,16 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
             <nav class="sidebar-menu">
                 <ul>
-                    <li onclick="location.href='admin_dashboard.php'">
+                    <!-- <li onclick="location.href='admin_dashboard.php'">
                         <span class="material-icons" style="color: #5b21b6;">home</span><span class="link-text">Inicio</span>
                     </li>
                     <li onclick="location.href='admin_altaUsuarios.php'">
                         <span class="material-icons" style="color: #5b21b6;">person</span><span class="link-text">Alta usuarios</span>
-                    </li>
+                    </li> -->
                     <li onclick="location.href='admin_pagoFacturas.php'">
                         <span class="material-icons" style="color: #5b21b6;">upload_file</span><span class="link-text">Pago Facturas</span>
                     </li>
-                    <li onclick="location.href='admin_Eventos.php'">
+                    <!-- <li onclick="location.href='admin_Eventos.php'">
                         <span class="material-icons" style="color: #5b21b6;">nightlife</span><span class="link-text">Eventos</span>
                     </li>
                     <li onclick="location.href='admin_sucripciones.php'">
@@ -82,7 +82,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     </li>
                     <li onclick="location.href='admin_consumoInternos.php'">
                         <span class="material-icons" style="color: #5b21b6;">shopping_cart</span><span class="link-text">Consumos internos</span>
-                    </li>
+                    </li> -->
                     <li onclick="location.href='../../../logout.php'">
                         <span class="material-icons" style="color: red;">logout</span><span class="link-text">Salir</span>
                     </li>
@@ -385,17 +385,18 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     method: 'POST',
                     body: formData
                 })
-                .then(res => res.ok ? res.text() : Promise.reject(res))
-                .then(() => {
-                    alert('✅ Pago guardado correctamente');
-                    form.reset();
-                    document.getElementById('total_despues_impuestos').value = '';
-                    cargarTablaPagos(); // recarga tabla
+                .then(res => res.text())
+                .then(text => {
+                    if (text.trim() === 'ok') {
+                        alert('✅ Pago guardado correctamente');
+                        form.reset();
+                        document.getElementById('total_despues_impuestos').value = '';
+                        cargarTablaPagos();
+                    } else {
+                        alert('❌ Hubo un problema al guardar:\n' + text);
+                        console.error('Respuesta:', text);
+                    }
                 })
-                .catch(err => {
-                    console.error('Error al enviar formulario:', err);
-                    alert('❌ Ocurrió un error al guardar el pago.');
-                });
         });
 
         // Función separada para reutilizar
