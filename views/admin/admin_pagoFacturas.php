@@ -215,7 +215,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 <label for="pedido">Archivo Pedido</label>
                                 <div class="input-icon">
                                     <span class="material-icons">upload_file</span>
-                                    <input type="file" name="pedido" id="pedido" accept="application/pdf" required>
+                                    <input type="file" name="pedido" id="pedido" accept="application/pdf">
                                 </div>
                             </div>
 
@@ -223,13 +223,13 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 <label for="factura">Archivo Factura</label>
                                 <div class="input-icon">
                                     <span class="material-icons">upload_file</span>
-                                    <input type="file" name="factura" id="factura" accept="application/pdf" required>
+                                    <input type="file" name="factura" id="factura" accept="application/pdf">
                                 </div>
                             </div>
                         </div>
 
                         <div class="mt-3">
-                            <button type="submit" class="btn-primary">
+                            <button type="submit" class="btn btn-primary">
                                 <span class="material-icons">save</span> Guardar pago
                             </button>
                         </div>
