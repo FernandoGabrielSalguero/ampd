@@ -116,7 +116,6 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     <p>Vamos a poder visualizar las solicitudes de pagos de nuestros socios.</p>
                 </div>
 
-<!-- Formulario de carga de pago de evento -->
 <div class="card">
     <h2>Nuevo pago de evento</h2>
     <form class="form-modern" action="../../controllers/admin_PagoEventoController.php" method="POST" enctype="multipart/form-data">
@@ -124,49 +123,70 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
             <div class="input-group">
                 <label for="evento_id">ID Evento</label>
-                <input type="number" name="evento_id" class="input" required>
+                <div class="input-icon">
+                    <span class="material-icons">event</span>
+                    <input type="number" name="evento_id" id="evento_id" required>
+                </div>
             </div>
 
             <div class="input-group">
                 <label for="usuario_id">ID Usuario</label>
-                <input type="number" name="usuario_id" class="input" required>
+                <div class="input-icon">
+                    <span class="material-icons">person</span>
+                    <input type="number" name="usuario_id" id="usuario_id" required>
+                </div>
             </div>
 
             <div class="input-group">
                 <label for="monto">Monto</label>
-                <input type="number" name="monto" class="input" step="0.01" required>
+                <div class="input-icon">
+                    <span class="material-icons">attach_money</span>
+                    <input type="number" step="0.01" name="monto" id="monto" required>
+                </div>
             </div>
 
             <div class="input-group">
                 <label for="cuit_beneficiario">CUIT Beneficiario</label>
-                <input type="text" name="cuit_beneficiario" class="input" required>
+                <div class="input-icon">
+                    <span class="material-icons">badge</span>
+                    <input type="text" name="cuit_beneficiario" id="cuit_beneficiario" required>
+                </div>
             </div>
 
             <div class="input-group">
                 <label for="cbu_beneficiario">CBU Beneficiario</label>
-                <input type="text" name="cbu_beneficiario" class="input" required>
+                <div class="input-icon">
+                    <span class="material-icons">credit_card</span>
+                    <input type="text" name="cbu_beneficiario" id="cbu_beneficiario" required>
+                </div>
             </div>
 
             <div class="input-group">
                 <label for="pedido">Archivo Pedido (PDF)</label>
-                <input type="file" name="pedido" class="input" accept="application/pdf" required>
+                <div class="input-icon">
+                    <span class="material-icons">upload_file</span>
+                    <input type="file" name="pedido" id="pedido" accept="application/pdf" required>
+                </div>
             </div>
 
             <div class="input-group">
                 <label for="factura">Archivo Factura (PDF)</label>
-                <input type="file" name="factura" class="input" accept="application/pdf" required>
+                <div class="input-icon">
+                    <span class="material-icons">upload_file</span>
+                    <input type="file" name="factura" id="factura" accept="application/pdf" required>
+                </div>
             </div>
         </div>
 
         <input type="hidden" name="cargado_por" value="<?php echo $_SESSION['usuario'] ?? ''; ?>">
 
         <div class="mt-3">
-            <button type="submit" class="btn-primary">💾 Guardar pago</button>
+            <button type="submit" class="btn-primary">
+                <span class="material-icons">save</span> Guardar pago
+            </button>
         </div>
     </form>
 </div>
-
-
 
                 <!-- Tarjeta de buscador -->
                 <div class="card">
