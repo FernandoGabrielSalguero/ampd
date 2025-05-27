@@ -228,11 +228,12 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                             </div>
                         </div>
 
-                        <div class="mt-3">
-                            <button type="submit" class="btn btn-primary">
+                        <div class="form-buttons">
+                            <button type="submit" class="btn btn-aceptar">
                                 <span class="material-icons">save</span> Guardar pago
                             </button>
                         </div>
+
                     </form>
                 </div>
 
