@@ -119,7 +119,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 <div class="card">
                     <h2>Nuevo pago de evento</h2>
                     <form class="form-modern" action="../../controllers/admin_PagoEventoController.php" method="POST" enctype="multipart/form-data" id="formPagoEvento">
-                        <div class="form-grid grid-2">
+                        <div class="form-grid grid-4">
 
                             <div class="input-group">
                                 <label for="cuit_beneficiario">CUIT Beneficiario</label>
