@@ -122,6 +122,14 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                         <div class="form-grid grid-4">
 
                             <div class="input-group">
+                                <label for="nombre_completo_beneficiario">Nombre completo</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">person</span>
+                                    <input type="text" name="nombre_completo_beneficiario" id="nombre_completo_beneficiario" required>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
                                 <label for="cuit_beneficiario">CUIT Beneficiario</label>
                                 <div class="input-icon">
                                     <span class="material-icons">badge</span>
@@ -145,13 +153,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 </div>
                             </div>
 
-                            <div class="input-group">
-                                <label for="nombre_completo_beneficiario">Nombre completo</label>
-                                <div class="input-icon">
-                                    <span class="material-icons">person</span>
-                                    <input type="text" name="nombre_completo_beneficiario" id="nombre_completo_beneficiario" required>
-                                </div>
-                            </div>
+
 
                             <div class="input-group">
                                 <label for="telefono_beneficiario">Teléfono</label>
