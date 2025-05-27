@@ -116,6 +116,85 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     <p>Vamos a poder visualizar las solicitudes de pagos de nuestros socios.</p>
                 </div>
 
+                <!-- Formulario de alta de pagos -->
+<div class="card">
+    <h2>Nuevo Pedido de Pago</h2>
+    <form class="form-modern" id="formNuevoPago" method="POST" action="procesar_pago_evento.php">
+        <div class="form-grid grid-2">
+            <!-- Selección de Usuario -->
+            <div class="input-group">
+                <label for="usuario_id">Beneficiario</label>
+                <select name="usuario_id" id="usuario_id" required>
+                    <?php
+                    require_once '../../conexion.php';
+                    $usuarios = mysqli_query($conexion, "SELECT u.id, CONCAT(i.nombre, ' ', i.apellido, ' (DNI: ', i.dni, ')') as nombre_completo FROM usuarios u JOIN user_info i ON u.id = i.usuario_id ORDER BY i.nombre ASC");
+                    while ($u = mysqli_fetch_assoc($usuarios)) {
+                        echo "<option value='{$u['id']}'>{$u['nombre_completo']}</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+
+            <!-- Selección de Evento -->
+            <div class="input-group">
+                <label for="evento_id">Evento</label>
+                <select name="evento_id" id="evento_id" required>
+                    <?php
+                    $eventos = mysqli_query($conexion, "SELECT id, nombre FROM eventos ORDER BY fecha DESC");
+                    while ($e = mysqli_fetch_assoc($eventos)) {
+                        echo "<option value='{$e['id']}'>{$e['nombre']}</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+
+            <!-- Monto del Contrato -->
+            <div class="input-group">
+                <label for="monto">Monto Contrato</label>
+                <input type="number" step="0.01" name="monto" id="monto" required>
+            </div>
+
+            <!-- Cálculo Automático -->
+            <div class="input-group">
+                <label for="sellado">Sellado</label>
+                <select name="sellado" id="sellado" required>
+                    <option value="0.65">0.65%</option>
+                    <option value="0.50">0.50%</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="impuesto_al_cheque">Impuesto al Cheque</label>
+                <select name="impuesto_al_cheque" id="impuesto_al_cheque" required>
+                    <option value="1.2">1.2%</option>
+                    <option value="1.0">1.0%</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="retencion">Retención</label>
+                <select name="retencion" id="retencion" required>
+                    <option value="3">3%</option>
+                    <option value="5">5%</option>
+                </select>
+            </div>
+
+            <!-- Comprobante -->
+            <div class="input-group">
+                <label for="comprobante">Comprobante</label>
+                <input type="text" name="comprobante" id="comprobante">
+            </div>
+
+        </div>
+
+        <!-- Botón -->
+        <button class="btn" type="submit">Registrar pago</button>
+    </form>
+</div>
+
+
+
+
                 <!-- Tarjeta de buscador -->
                 <div class="card">
                     <h2>Busca pedidos</h2>
