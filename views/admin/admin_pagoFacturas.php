@@ -116,77 +116,77 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     <p>Vamos a poder visualizar las solicitudes de pagos de nuestros socios.</p>
                 </div>
 
-<div class="card">
-    <h2>Nuevo pago de evento</h2>
-    <form class="form-modern" action="../../controllers/admin_PagoEventoController.php" method="POST" enctype="multipart/form-data">
-        <div class="form-grid grid-2">
+                <div class="card">
+                    <h2>Nuevo pago de evento</h2>
+                    <form class="form-modern" action="../../controllers/admin_PagoEventoController.php" method="POST" enctype="multipart/form-data">
+                        <div class="form-grid grid-2">
 
-            <div class="input-group">
-                <label for="evento_id">ID Evento</label>
-                <div class="input-icon">
-                    <span class="material-icons">event</span>
-                    <input type="number" name="evento_id" id="evento_id" required>
+                            <div class="input-group">
+                                <label for="evento_id">ID Evento</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">event</span>
+                                    <input type="number" name="evento_id" id="evento_id" required>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="usuario_id">ID Usuario</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">person</span>
+                                    <input type="number" name="usuario_id" id="usuario_id" required>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="monto">Monto</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">attach_money</span>
+                                    <input type="number" step="0.01" name="monto" id="monto" required>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="cuit_beneficiario">CUIT Beneficiario</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">badge</span>
+                                    <input type="text" name="cuit_beneficiario" id="cuit_beneficiario" required>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="cbu_beneficiario">CBU Beneficiario</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">credit_card</span>
+                                    <input type="text" name="cbu_beneficiario" id="cbu_beneficiario" required>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="pedido">Archivo Pedido (PDF)</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">upload_file</span>
+                                    <input type="file" name="pedido" id="pedido" accept="application/pdf" required>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="factura">Archivo Factura (PDF)</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">upload_file</span>
+                                    <input type="file" name="factura" id="factura" accept="application/pdf" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="cargado_por" value="<?php echo $_SESSION['usuario'] ?? ''; ?>">
+
+                        <div class="mt-3">
+                            <button type="submit" class="btn-primary">
+                                <span class="material-icons">save</span> Guardar pago
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </div>
-
-            <div class="input-group">
-                <label for="usuario_id">ID Usuario</label>
-                <div class="input-icon">
-                    <span class="material-icons">person</span>
-                    <input type="number" name="usuario_id" id="usuario_id" required>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label for="monto">Monto</label>
-                <div class="input-icon">
-                    <span class="material-icons">attach_money</span>
-                    <input type="number" step="0.01" name="monto" id="monto" required>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label for="cuit_beneficiario">CUIT Beneficiario</label>
-                <div class="input-icon">
-                    <span class="material-icons">badge</span>
-                    <input type="text" name="cuit_beneficiario" id="cuit_beneficiario" required>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label for="cbu_beneficiario">CBU Beneficiario</label>
-                <div class="input-icon">
-                    <span class="material-icons">credit_card</span>
-                    <input type="text" name="cbu_beneficiario" id="cbu_beneficiario" required>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label for="pedido">Archivo Pedido (PDF)</label>
-                <div class="input-icon">
-                    <span class="material-icons">upload_file</span>
-                    <input type="file" name="pedido" id="pedido" accept="application/pdf" required>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label for="factura">Archivo Factura (PDF)</label>
-                <div class="input-icon">
-                    <span class="material-icons">upload_file</span>
-                    <input type="file" name="factura" id="factura" accept="application/pdf" required>
-                </div>
-            </div>
-        </div>
-
-        <input type="hidden" name="cargado_por" value="<?php echo $_SESSION['usuario'] ?? ''; ?>">
-
-        <div class="mt-3">
-            <button type="submit" class="btn-primary">
-                <span class="material-icons">save</span> Guardar pago
-            </button>
-        </div>
-    </form>
-</div>
 
                 <!-- Tarjeta de buscador -->
                 <div class="card">
@@ -243,6 +243,41 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('../../controllers/admin_PagoEventoController.php?ajax=1')
+                .then(res => res.json())
+                .then(data => {
+                    const tbody = document.getElementById('tablaPagoFacturas');
+                    tbody.innerHTML = '';
+
+                    data.forEach(pago => {
+                        const fila = document.createElement('tr');
+
+                        fila.innerHTML = `
+                    <td>${pago.id}</td>
+                    <td>${pago.beneficiario}</td>
+                    <td>${pago.contrato}</td>
+                    <td>$${parseFloat(pago.monto).toFixed(2)}</td>
+                    <td>${pago.retencion ?? '-'}</td>
+                    <td>${pago.fecha_solicitud}</td>
+                    <td>${pago.estado}</td>
+                    <td>
+                        <a href="${pago.pedido}" target="_blank">Pedido</a> | 
+                        <a href="${pago.factura}" target="_blank">Factura</a>
+                    </td>
+                `;
+
+                        tbody.appendChild(fila);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error al cargar pagos:', error);
+                });
+        });
+    </script>
+
     <!-- Spinner Global -->
     <script src="../../views/partials/spinner-global.js"></script>
 
