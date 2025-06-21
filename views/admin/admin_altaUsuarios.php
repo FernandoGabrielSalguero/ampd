@@ -16,15 +16,15 @@ if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 
 }
 $_SESSION['LAST_ACTIVITY'] = time(); // Actualiza el tiempo de actividad
 
-// // 🚧 Protección de acceso general
-// if (!isset($_SESSION['usuario'])) {
-//     die("⚠️ Acceso denegado. No has iniciado sesión.");
-// }
+// 🚧 Protección de acceso general
+if (!isset($_SESSION['usuario'])) {
+    die("⚠️ Acceso denegado. No has iniciado sesión.");
+}
 
-// // 🔐 Protección por rol
-// if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
-//     die("🚫 Acceso restringido: esta página es solo para usuarios Administrador.");
-// }
+// 🔐 Protección por rol
+if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
+    die("🚫 Acceso restringido: esta página es solo para usuarios Administrador.");
+}
 
 // Datos del usuario en sesión
 $nombre = $_SESSION['nombre'] ?? 'Sin nombre';
@@ -248,6 +248,49 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     alert("Hubo un error al crear el usuario.");
                 });
         });
+
+        // cargamos usuarios
+        function cargarUsuarios() {
+            const dni = document.getElementById("buscarCuit").value;
+            const nombre = document.getElementById("buscarNombre").value;
+
+            fetch(`../../controllers/admin_altaUsuariosController.php?dni=${dni}&nombre=${nombre}`)
+                .then(res => res.json())
+                .then(data => {
+                    const tabla = document.getElementById("tablaUsuarios");
+                    tabla.innerHTML = "";
+
+                    if (data.status === "success") {
+                        data.data.forEach(user => {
+                            const fila = `
+                            <tr>
+                                <td>${user.nombre}</td>
+                                <td>${user.correo}</td>
+                                <td>${user.telefono}</td>
+                                <td>${user.dni}</td>
+                                <td>${user.n_socio}</td>
+                                <td>
+                                    <button class="btn btn-editar">✏️</button>
+                                    <button class="btn btn-borrar">🗑️</button>
+                                </td>
+                            </tr>`;
+                            tabla.innerHTML += fila;
+                        });
+                    } else {
+                        tabla.innerHTML = `<tr><td colspan="6">Error al cargar usuarios.</td></tr>`;
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        }
+
+        // Cargar al iniciar
+        window.addEventListener("DOMContentLoaded", cargarUsuarios);
+
+        // Buscar al escribir
+        document.getElementById("buscarCuit").addEventListener("input", cargarUsuarios);
+        document.getElementById("buscarNombre").addEventListener("input", cargarUsuarios);
     </script>
 </body>
 
