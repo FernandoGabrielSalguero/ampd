@@ -237,9 +237,8 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
     </div>
 
     <!-- Modal para editar usuario -->
-    <!-- Modal para editar usuario -->
     <div id="modal-editar" class="modal hidden">
-        <div class="modal-content" style="max-height: 80vh; overflow-y: auto;">
+        <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
             <h3>Editar usuario</h3>
             <form class="form-modern" id="formEditarUsuario">
                 <input type="hidden" name="usuario_id" id="edit_usuario_id">
