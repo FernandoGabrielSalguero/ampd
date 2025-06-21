@@ -12,7 +12,7 @@ $model = new AdminImportarUsuariosModel($pdo);
 ob_start();
 
 try {
-    // 1. PREVISUALIZAR CSV (POST con archivo)
+    // 1. Previsualizar CSV
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv'])) {
         $csvFile = $_FILES['csv']['tmp_name'];
         $rows = [];
@@ -29,25 +29,38 @@ try {
         exit;
     }
 
-    // 2. IMPORTAR A BASE DE DATOS (PUT)
+    // 2. Importar CSV
     if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $input = json_decode(file_get_contents("php://input"), true);
         if (!isset($input['data']) || !is_array($input['data'])) {
             throw new Exception("Datos no válidos");
         }
 
-        foreach ($input['data'] as $row) {
-            $model->importarFila($row);
+        $errores = [];
+        foreach ($input['data'] as $i => $row) {
+            try {
+                $model->importarFila($row);
+            } catch (Exception $e) {
+                $errores[] = [
+                    'fila' => $i + 1,
+                    'dni' => $row['dni'] ?? '',
+                    'error' => $e->getMessage()
+                ];
+            }
         }
 
-        echo json_encode(['status' => 'success', 'message' => 'Importación completada.']);
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Importación finalizada',
+            'errores' => $errores
+        ]);
         exit;
     }
 
-    // Método no permitido
     http_response_code(405);
     echo json_encode(['status' => 'error', 'message' => 'Método no permitido']);
 } catch (Exception $e) {
+    http_response_code(500);
     echo json_encode([
         'status' => 'error',
         'message' => $e->getMessage(),

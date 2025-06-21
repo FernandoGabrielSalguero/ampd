@@ -45,10 +45,11 @@ class AdminImportarUsuariosModel
         ]);
 
         // Insertar en user_bancarios (solo cuenta A en esta versión)
+        $cbu_a = preg_replace('/[^0-9]/', '', (string) ($row['cbu_a'] ?? ''));
         $stmt = $this->db->prepare("INSERT INTO user_bancarios (cbu_a, alias_a, titular_a, banco_a, cuit_a, usuario_id)
-                                    VALUES (:cbu, :alias, :titular, :banco, :cuit, :uid)");
+                            VALUES (:cbu, :alias, :titular, :banco, :cuit, :uid)");
         $stmt->execute([
-            ':cbu' => $row['cbu_a'] ?? '',
+            ':cbu' => $cbu_a,
             ':alias' => $row['alias_a'] ?? '',
             ':titular' => $row['titular_a'] ?? '',
             ':banco' => $row['banco_a'] ?? '',
