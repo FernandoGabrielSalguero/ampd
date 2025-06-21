@@ -9,7 +9,7 @@ require_once __DIR__ . '/../models/admin_importarUsuariosModel.php';
 header('Content-Type: application/json');
 
 $model = new AdminImportarUsuariosModel($pdo);
-
+ob_start();
 try {
     // 1. PREVISUALIZAR CSV (POST con archivo)
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv'])) {
@@ -48,4 +48,9 @@ try {
     echo json_encode(['status' => 'error', 'message' => 'Método no permitido']);
 } catch (Exception $e) {
     echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    echo json_encode([
+    'status' => 'error',
+    'message' => $e->getMessage(),
+    'trace' => ob_get_clean() // devuelve cualquier output del buffer
+]);
 }
