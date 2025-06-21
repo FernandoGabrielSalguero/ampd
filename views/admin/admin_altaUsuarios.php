@@ -16,15 +16,15 @@ if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 
 }
 $_SESSION['LAST_ACTIVITY'] = time(); // Actualiza el tiempo de actividad
 
-// 🚧 Protección de acceso general
-if (!isset($_SESSION['usuario'])) {
-    die("⚠️ Acceso denegado. No has iniciado sesión.");
-}
+// // 🚧 Protección de acceso general
+// if (!isset($_SESSION['usuario'])) {
+//     die("⚠️ Acceso denegado. No has iniciado sesión.");
+// }
 
-// 🔐 Protección por rol
-if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
-    die("🚫 Acceso restringido: esta página es solo para usuarios Administrador.");
-}
+// // 🔐 Protección por rol
+// if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
+//     die("🚫 Acceso restringido: esta página es solo para usuarios Administrador.");
+// }
 
 // Datos del usuario en sesión
 $nombre = $_SESSION['nombre'] ?? 'Sin nombre';
