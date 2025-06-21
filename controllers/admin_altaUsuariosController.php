@@ -12,46 +12,55 @@ try {
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // Si viene con detalle=1&id=xx => obtener info extendida
-        if (isset($_GET['detalle']) && $_GET['detalle'] == 1 && isset($_GET['id'])) {
-            $id = $_GET['id'];
+if (isset($_GET['detalle']) && $_GET['detalle'] == 1 && isset($_GET['id'])) {
+    $id = $_GET['id'];
 
-            // Query a cada tabla asociada
-            $stmt = $pdo->prepare("SELECT * FROM user_info WHERE usuario_id = ?");
-            $stmt->execute([$id]);
-            $info = $stmt->fetch(PDO::FETCH_ASSOC) ?: [
-                'user_direccion' => '',
-                'user_localidad' => '',
-                'user_fecha_nacimiento' => ''
-            ];
-            $stmt = $pdo->prepare("SELECT disciplina_id FROM user_disciplinas WHERE usuario_id = ?");
-            $stmt->execute([$id]);
-            $disciplinas = $stmt->fetchAll(PDO::FETCH_COLUMN) ?: [];
+    // 🚀 Traer datos básicos del usuario (usuarios)
+    $stmt = $pdo->prepare("SELECT nombre, correo, telefono, dni FROM usuarios WHERE id_ = ?");
+    $stmt->execute([$id]);
+    $usuarioBase = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            $stmt = $pdo->prepare("SELECT disciplina FROM user_disciplina WHERE usuario_id = ?");
-            $stmt->execute([$id]);
-            $disciplinaLibre = $stmt->fetch(PDO::FETCH_ASSOC) ?: [
-                'disciplina' => ''
-            ];
-            $stmt = $pdo->prepare("SELECT * FROM user_bancarios WHERE usuario_id = ?");
-            $stmt->execute([$id]);
-            $bancarios = $stmt->fetch(PDO::FETCH_ASSOC) ?: [
-                'alias_a' => '',
-                'cbu_a' => '',
-                'titular_a' => '',
-                'cuit_a' => '',
-                'banco_a' => ''
-            ];
-            echo json_encode([
-                'status' => 'success',
-                'data' => [
-                    'info' => $info,
-                    'disciplinas' => $disciplinas,
-                    'disciplinaLibre' => $disciplinaLibre,
-                    'bancarios' => $bancarios
-                ]
-            ]);
-            exit;
-        }
+    // Info adicional
+    $stmt = $pdo->prepare("SELECT * FROM user_info WHERE usuario_id = ?");
+    $stmt->execute([$id]);
+    $info = $stmt->fetch(PDO::FETCH_ASSOC) ?: [
+        'user_direccion' => '',
+        'user_localidad' => '',
+        'user_fecha_nacimiento' => ''
+    ];
+
+    // Disciplinas múltiples
+    $stmt = $pdo->prepare("SELECT disciplina_id FROM user_disciplinas WHERE usuario_id = ?");
+    $stmt->execute([$id]);
+    $disciplinas = $stmt->fetchAll(PDO::FETCH_COLUMN) ?: [];
+
+    // Disciplina libre
+    $stmt = $pdo->prepare("SELECT disciplina FROM user_disciplina WHERE usuario_id = ?");
+    $stmt->execute([$id]);
+    $disciplinaLibre = $stmt->fetch(PDO::FETCH_ASSOC) ?: [
+        'disciplina' => ''
+    ];
+
+    // Bancarios
+    $stmt = $pdo->prepare("SELECT * FROM user_bancarios WHERE usuario_id = ?");
+    $stmt->execute([$id]);
+$bancarios = $stmt->fetch(PDO::FETCH_ASSOC) ?: [
+    'alias_a' => '', 'cbu_a' => '', 'titular_a' => '', 'cuit_a' => '', 'banco_a' => '',
+    'alias_b' => '', 'cbu_b' => '', 'titular_b' => '', 'cuit_b' => '', 'banco_b' => '',
+    'alias_c' => '', 'cbu_c' => '', 'titular_c' => '', 'cuit_c' => '', 'banco_c' => ''
+];
+
+    echo json_encode([
+        'status' => 'success',
+        'data' => [
+            'info' => array_merge($info, $usuarioBase), // 🧠 Combina los datos en uno solo
+            'disciplinas' => $disciplinas,
+            'disciplinaLibre' => $disciplinaLibre,
+            'bancarios' => $bancarios
+        ]
+    ]);
+    exit;
+}
 
         // Si no se pidió detalle, seguir con la búsqueda normal
         $filtroDNI = $_GET['dni'] ?? '';
