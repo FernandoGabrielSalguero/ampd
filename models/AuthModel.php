@@ -14,26 +14,27 @@ class AuthModel
     public function login($usuario, $contrasenaIngresada)
     {
         $sql = "SELECT 
-                u.id AS id_real,
-                u.usuario,
-                u.contrasena,
-                u.rol,
-                u.estado,
-                u.fecha_creacion,
+                    u.id_ AS id_real,
+                    u.usuario,
+                    u.contrasena,
+                    u.rol,
+                    u.estado,
+                    u.fecha_creacion,
+                    u.nombre,
+                    u.correo,
+                    u.telefono,
+                    u.dni,
+                    u.n_socio,
 
-                ui.nombre AS nombre_ui,
-                ui.apellido,
-                ui.dni,
-                ui.correo,
-                ui.tel AS telefono,
-                ui.fecha_nacimiento,
-                ui.direccion,
-                ui.id AS user_info_id
+                    ui.user_direccion,
+                    ui.user_localidad,
+                    ui.user_fecha_nacimiento,
+                    ui.id_ AS user_info_id
 
-            FROM usuarios u
-            LEFT JOIN user_info ui ON u.id = ui.usuario_id
-            WHERE u.usuario = :usuario
-            LIMIT 1";
+                FROM usuarios u
+                LEFT JOIN user_info ui ON u.id_ = ui.usuario_id
+                WHERE u.usuario = :usuario
+                LIMIT 1";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['usuario' => $usuario]);
@@ -43,6 +44,7 @@ class AuthModel
             return false;
         }
 
+        // Permitir acceso si no tiene contraseña y es asociado
         if (empty($user['contrasena']) && $user['rol'] === 'asociado') {
             return $user;
         }
