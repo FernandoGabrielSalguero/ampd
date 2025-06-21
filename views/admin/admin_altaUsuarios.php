@@ -385,11 +385,19 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
         function abrirModalEditar(id) {
             window.usuarioEditandoId = id;
 
-            // Limpiar los contenidos antes de cargar nuevos
-            document.getElementById('info').innerHTML = '<p>Cargando...</p>';
-            document.getElementById('disciplinas').innerHTML = '<p>Cargando...</p>';
-            document.getElementById('disciplinaLibre').innerHTML = '<p>Cargando...</p>';
-            document.getElementById('bancarios').innerHTML = '<p>Cargando...</p>';
+// Asignar valores a los inputs directamente
+document.getElementById('edit_direccion').value = info?.user_direccion || '';
+document.getElementById('edit_localidad').value = info?.user_localidad || '';
+document.getElementById('edit_nacimiento').value = info?.user_fecha_nacimiento || '';
+
+document.getElementById('edit_disciplinas').value = disciplinas?.join(',') || '';
+document.getElementById('edit_disciplinaLibre').value = disciplinaLibre?.disciplina || '';
+
+document.getElementById('edit_alias_a').value = bancarios?.alias_a || '';
+document.getElementById('edit_cbu_a').value = bancarios?.cbu_a || '';
+document.getElementById('edit_titular_a').value = bancarios?.titular_a || '';
+document.getElementById('edit_cuit_a').value = bancarios?.cuit_a || '';
+document.getElementById('edit_banco_a').value = bancarios?.banco_a || '';
 
             // Mostrar el modal antes del fetch
             document.getElementById("modalEditar").classList.remove("hidden");
@@ -468,40 +476,50 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
         });
     </script>
 
-    <!-- 🟦 MODAL EDITAR USUARIO CON TABS -->
+    <!-- 🟦 MODAL EDITAR USUARIO -->
     <div id="modalEditar" class="modal hidden">
-        <div class="modal-content">
-            <h3>Editar usuario</h3>
+        <div class="card" id="contenedor-edicion-usuario">
+            <h3>Editar información del usuario</h3>
+            <!-- Info personal -->
+            <label>Dirección</label>
+            <input type="text" id="edit_direccion">
 
-            <!-- Tabs -->
-            <div class="tabs">
-                <button class="tab-button active" data-tab="info">📝 Info personal</button>
-                <button class="tab-button" data-tab="disciplinas">🏅 Disciplinas múltiples</button>
-                <button class="tab-button" data-tab="disciplinaLibre">📄 Disciplina libre</button>
-                <button class="tab-button" data-tab="bancarios">💳 Datos bancarios</button>
-            </div>
+            <label>Localidad</label>
+            <input type="text" id="edit_localidad">
 
-            <!-- Contenido de los tabs -->
-            <div class="tab-content">
-                <div id="info" class="tab-panel active">
-                    <p>Cargando datos de user_info...</p>
-                </div>
-                <div id="disciplinas" class="tab-panel">
-                    <p>Cargando datos de user_disciplinas...</p>
-                </div>
-                <div id="disciplinaLibre" class="tab-panel">
-                    <p>Cargando datos de user_disciplina...</p>
-                </div>
-                <div id="bancarios" class="tab-panel">
-                    <p>Cargando datos de user_bancarios...</p>
-                </div>
-            </div>
+            <label>Fecha de Nacimiento</label>
+            <input type="date" id="edit_nacimiento">
 
-            <div class="form-buttons">
-                <button class="btn btn-aceptar" id="guardarCambiosUsuario">💾 Guardar Cambios</button>
-                <button class="btn btn-cancelar" onclick="cerrarModalEditar()">Cancelar</button>
-            </div>
+            <!-- Disciplinas múltiples -->
+            <label>Disciplinas (IDs separadas por coma)</label>
+            <input type="text" id="edit_disciplinas" placeholder="Ej: 1,2,3">
+
+            <!-- Disciplina libre -->
+            <label>Disciplina libre</label>
+            <input type="text" id="edit_disciplinaLibre">
+
+            <!-- Datos bancarios -->
+            <label>Alias A</label>
+            <input type="text" id="edit_alias_a">
+
+            <label>CBU A</label>
+            <input type="text" id="edit_cbu_a">
+
+            <label>Titular A</label>
+            <input type="text" id="edit_titular_a">
+
+            <label>CUIT A</label>
+            <input type="text" id="edit_cuit_a">
+
+            <label>Banco A</label>
+            <input type="text" id="edit_banco_a">
         </div>
+
+        <div class="form-buttons">
+            <button class="btn btn-aceptar" id="guardarCambiosUsuario">💾 Guardar Cambios</button>
+            <button class="btn btn-cancelar" onclick="cerrarModalEditar()">Cancelar</button>
+        </div>
+    </div>
     </div>
 </body>
 
