@@ -376,7 +376,15 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 function abrirModalEditar(id) {
     window.usuarioEditandoId = id;
 
-    // Llamamos al backend para obtener datos extendidos
+    // Limpiar los contenidos antes de cargar nuevos
+    document.getElementById('tab-info').innerHTML = '<p>Cargando...</p>';
+    document.getElementById('tab-disciplinas').innerHTML = '<p>Cargando...</p>';
+    document.getElementById('tab-disciplinaLibre').innerHTML = '<p>Cargando...</p>';
+    document.getElementById('tab-bancarios').innerHTML = '<p>Cargando...</p>';
+
+    // Mostrar el modal antes del fetch
+    document.getElementById("modalEditar").classList.remove("hidden");
+
     fetch(`../../controllers/admin_altaUsuariosController.php?detalle=1&id=${id}`)
         .then(res => res.json())
         .then(data => {
@@ -387,7 +395,6 @@ function abrirModalEditar(id) {
 
             const { info, disciplinas, disciplinaLibre, bancarios } = data.data;
 
-            // TAB INFO PERSONAL
             document.getElementById('tab-info').innerHTML = `
                 <label>Dirección</label>
                 <input type="text" id="edit_direccion" value="${info?.user_direccion || ''}">
@@ -399,19 +406,16 @@ function abrirModalEditar(id) {
                 <input type="date" id="edit_nacimiento" value="${info?.user_fecha_nacimiento || ''}">
             `;
 
-            // TAB DISCIPLINAS MÚLTIPLES (esto luego se convertirá en checkboxes dinámicos)
             document.getElementById('tab-disciplinas').innerHTML = `
-                <label>ID de disciplinas (simulado por ahora)</label>
+                <label>Disciplinas (IDs separadas por coma)</label>
                 <input type="text" id="edit_disciplinas" value="${disciplinas.join(',')}" placeholder="Ej: 1,2,3">
             `;
 
-            // TAB DISCIPLINA LIBRE
             document.getElementById('tab-disciplinaLibre').innerHTML = `
-                <label>Disciplina</label>
+                <label>Disciplina libre</label>
                 <input type="text" id="edit_disciplinaLibre" value="${disciplinaLibre?.disciplina || ''}">
             `;
 
-            // TAB BANCARIOS
             document.getElementById('tab-bancarios').innerHTML = `
                 <label>Alias A</label>
                 <input type="text" id="edit_alias_a" value="${bancarios?.alias_a || ''}">
@@ -423,18 +427,14 @@ function abrirModalEditar(id) {
                 <input type="text" id="edit_cuit_a" value="${bancarios?.cuit_a || ''}">
                 <label>Banco A</label>
                 <input type="text" id="edit_banco_a" value="${bancarios?.banco_a || ''}">
-                <br>
-                <em>⚠️ Campos B y C se agregan después</em>
             `;
-
-            // Mostramos el modal
-            document.getElementById("modalEditar").classList.remove("hidden");
         })
         .catch(err => {
             console.error(err);
             showAlert('error', 'Error al cargar datos del usuario');
         });
 }
+
 
         function cerrarModalEditar() {
             document.getElementById("modalEditar").classList.add("hidden");
