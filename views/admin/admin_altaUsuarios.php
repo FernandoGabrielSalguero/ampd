@@ -453,24 +453,24 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
             <!-- Tabs -->
             <div class="tabs">
-                <button class="tab-button active" data-tab="tab-info">📝 Info personal</button>
-                <button class="tab-button" data-tab="tab-disciplinas">🏅 Disciplinas múltiples</button>
-                <button class="tab-button" data-tab="tab-disciplinaLibre">📄 Disciplina libre</button>
-                <button class="tab-button" data-tab="tab-bancarios">💳 Datos bancarios</button>
+<button class="tab-button active" data-tab="info">📝 Info personal</button>
+<button class="tab-button" data-tab="disciplinas">🏅 Disciplinas múltiples</button>
+<button class="tab-button" data-tab="disciplinaLibre">📄 Disciplina libre</button>
+<button class="tab-button" data-tab="bancarios">💳 Datos bancarios</button>
             </div>
 
             <!-- Contenido de los tabs -->
             <div class="tab-content">
-                <div id="tab-info" class="tab-panel active">
+                <div id="info" class="tab-panel active">
                     <p>Cargando datos de user_info...</p>
                 </div>
-                <div id="tab-disciplinas" class="tab-panel">
+                <div id="disciplinas" class="tab-panel">
                     <p>Cargando datos de user_disciplinas...</p>
                 </div>
-                <div id="tab-disciplinaLibre" class="tab-panel">
+                <div id="disciplinaLibre" class="tab-panel">
                     <p>Cargando datos de user_disciplina...</p>
                 </div>
-                <div id="tab-bancarios" class="tab-panel">
+                <div id="bancarios" class="tab-panel">
                     <p>Cargando datos de user_bancarios...</p>
                 </div>
             </div>
