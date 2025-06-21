@@ -363,7 +363,62 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     closeModal();
                 });
         });
+
+        // modal editar usuario
+        document.addEventListener("click", function(e) {
+            if (e.target.closest(".btn-editar")) {
+                const fila = e.target.closest("tr");
+                const idUsuario = fila.querySelector("td").textContent.trim();
+                abrirModalEditar(idUsuario);
+            }
+        });
+
+        function abrirModalEditar(id) {
+            // Guardamos el ID globalmente para usarlo en otros pasos
+            window.usuarioEditandoId = id;
+
+            // Por ahora solo mostramos el modal
+            document.getElementById("modalEditar").classList.remove("hidden");
+        }
+
+        function cerrarModalEditar() {
+            document.getElementById("modalEditar").classList.add("hidden");
+        }
     </script>
+
+    <!-- 🟦 MODAL EDITAR USUARIO CON TABS -->
+    <div id="modalEditar" class="modal hidden">
+        <div class="modal-content">
+            <h3>Editar usuario</h3>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-button active" data-tab="info">📝 Info personal</button>
+                <button class="tab-button" data-tab="disciplinas">🏅 Disciplinas múltiples</button>
+                <button class="tab-button" data-tab="disciplinaLibre">📄 Disciplina libre</button>
+                <button class="tab-button" data-tab="bancarios">💳 Datos bancarios</button>
+            </div>
+
+            <!-- Contenido de cada tab -->
+            <div class="tab-content active" id="tab-info">
+                <p><em>Cargando datos de user_info...</em></p>
+            </div>
+            <div class="tab-content" id="tab-disciplinas">
+                <p><em>Cargando datos de user_disciplinas...</em></p>
+            </div>
+            <div class="tab-content" id="tab-disciplinaLibre">
+                <p><em>Cargando datos de user_disciplina...</em></p>
+            </div>
+            <div class="tab-content" id="tab-bancarios">
+                <p><em>Cargando datos de user_bancarios...</em></p>
+            </div>
+
+            <div class="form-buttons">
+                <button class="btn btn-aceptar" id="guardarCambiosUsuario">💾 Guardar Cambios</button>
+                <button class="btn btn-cancelar" onclick="cerrarModalEditar()">Cancelar</button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
