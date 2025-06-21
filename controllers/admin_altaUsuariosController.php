@@ -84,15 +84,14 @@ try {
         $total = $model->contarUsuarios($filtroDNI, $filtroNombre);
         $usuarios = $model->obtenerUsuarios($filtroDNI, $filtroNombre, $limit, $offset);
 
-        echo json_encode([
-            'status' => 'success',
-            'data' => $usuarios,
-            'total' => $total,
-            'page' => $page,
-            'pages' => ceil($total / $limit)
-        ]);
-        echo json_encode(['status' => 'success', 'data' => $usuarios]);
-        exit;
+echo json_encode([
+    'status' => 'success',
+    'data' => $usuarios,
+    'total' => $total,
+    'page' => $page,
+    'pages' => ceil($total / $limit)
+]);
+exit; // ⬅️ Este exit corta la ejecución y evita un segundo echo
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
