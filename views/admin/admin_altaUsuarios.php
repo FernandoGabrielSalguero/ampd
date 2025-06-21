@@ -151,7 +151,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                             <!-- Botones -->
                             <div class="form-buttons">
-                                <button class="btn btn-aceptar" type="submit">Crear usuario</button>
+                                <button class="btn btn-aceptar" type="submit">Asociar</button>
                             </div>
                         </div>
 
