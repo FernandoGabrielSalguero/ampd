@@ -77,6 +77,9 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     <li onclick="location.href='../../../logout.php'">
                         <span class="material-icons" style="color: red;">logout</span><span class="link-text">Salir</span>
                     </li>
+                    <li onclick="location.href='admin_importarUsuarios.php'">
+                        <span class="material-icons" style="color: red;">upload_file</span><span class="link-text">Salir</span>
+                    </li>
                 </ul>
             </nav>
 
