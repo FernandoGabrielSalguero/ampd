@@ -49,6 +49,15 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
     <!-- Framework Success desde CDN -->
     <link rel="stylesheet" href="https://www.fernandosalguero.com/cdn/assets/css/framework.css">
     <script src="https://www.fernandosalguero.com/cdn/assets/javascript/framework.js" defer></script>
+    <style>
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+    </style>
 </head>
 
 <body>
@@ -442,6 +451,21 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
         function cerrarModalEditar() {
             document.getElementById("modalEditar").classList.add("hidden");
         }
+
+        // Lógica para cambiar de tabs
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const tab = button.dataset.tab;
+
+                // Desactivar todos
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+
+                // Activar actual
+                button.classList.add('active');
+                document.getElementById(tab).classList.add('active');
+            });
+        });
     </script>
 
     <!-- 🟦 MODAL EDITAR USUARIO CON TABS -->
