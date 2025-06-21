@@ -266,14 +266,14 @@ const fila = `
         <td>${user.telefono}</td>
         <td>${user.dni ?? '-'}</td>
         <td>${user.n_socio ?? '-'}</td>
-        <td>
-            <button class="btn btn-icon btn-editar" title="Editar">
-                <span class="material-icons" style:"color: red" >edit</span>
-            </button>
-            <button class="btn btn-icon btn-borrar" title="Borrar">
-                <span class="material-icons">delete</span>
-            </button>
-        </td>
+<td>
+    <button class="btn btn-icon btn-editar" title="Editar">
+        <span class="material-icons" style="color: #2563eb;">edit</span> <!-- azul -->
+    </button>
+    <button class="btn btn-icon btn-borrar" title="Borrar">
+        <span class="material-icons" style="color: #dc2626;">delete</span> <!-- rojo -->
+    </button>
+</td>
     </tr>`;
                             tabla.innerHTML += fila;
                         });
