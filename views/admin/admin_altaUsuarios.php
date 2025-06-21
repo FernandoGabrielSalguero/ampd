@@ -373,29 +373,34 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
             }
         });
 
-function abrirModalEditar(id) {
-    window.usuarioEditandoId = id;
+        function abrirModalEditar(id) {
+            window.usuarioEditandoId = id;
 
-    // Limpiar los contenidos antes de cargar nuevos
-    document.getElementById('tab-info').innerHTML = '<p>Cargando...</p>';
-    document.getElementById('tab-disciplinas').innerHTML = '<p>Cargando...</p>';
-    document.getElementById('tab-disciplinaLibre').innerHTML = '<p>Cargando...</p>';
-    document.getElementById('tab-bancarios').innerHTML = '<p>Cargando...</p>';
+            // Limpiar los contenidos antes de cargar nuevos
+            document.getElementById('tab-info').innerHTML = '<p>Cargando...</p>';
+            document.getElementById('tab-disciplinas').innerHTML = '<p>Cargando...</p>';
+            document.getElementById('tab-disciplinaLibre').innerHTML = '<p>Cargando...</p>';
+            document.getElementById('tab-bancarios').innerHTML = '<p>Cargando...</p>';
 
-    // Mostrar el modal antes del fetch
-    document.getElementById("modalEditar").classList.remove("hidden");
+            // Mostrar el modal antes del fetch
+            document.getElementById("modalEditar").classList.remove("hidden");
 
-    fetch(`../../controllers/admin_altaUsuariosController.php?detalle=1&id=${id}`)
-        .then(res => res.json())
-        .then(data => {
-            if (data.status !== 'success') {
-                showAlert('error', 'No se pudieron cargar los datos del usuario');
-                return;
-            }
+            fetch(`../../controllers/admin_altaUsuariosController.php?detalle=1&id=${id}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status !== 'success') {
+                        showAlert('error', 'No se pudieron cargar los datos del usuario');
+                        return;
+                    }
 
-            const { info, disciplinas, disciplinaLibre, bancarios } = data.data;
+                    const {
+                        info,
+                        disciplinas,
+                        disciplinaLibre,
+                        bancarios
+                    } = data.data;
 
-            document.getElementById('tab-info').innerHTML = `
+                    document.getElementById('tab-info').innerHTML = `
                 <label>Dirección</label>
                 <input type="text" id="edit_direccion" value="${info?.user_direccion || ''}">
 
@@ -406,17 +411,17 @@ function abrirModalEditar(id) {
                 <input type="date" id="edit_nacimiento" value="${info?.user_fecha_nacimiento || ''}">
             `;
 
-            document.getElementById('tab-disciplinas').innerHTML = `
+                    document.getElementById('tab-disciplinas').innerHTML = `
                 <label>Disciplinas (IDs separadas por coma)</label>
                 <input type="text" id="edit_disciplinas" value="${disciplinas.join(',')}" placeholder="Ej: 1,2,3">
             `;
 
-            document.getElementById('tab-disciplinaLibre').innerHTML = `
+                    document.getElementById('tab-disciplinaLibre').innerHTML = `
                 <label>Disciplina libre</label>
                 <input type="text" id="edit_disciplinaLibre" value="${disciplinaLibre?.disciplina || ''}">
             `;
 
-            document.getElementById('tab-bancarios').innerHTML = `
+                    document.getElementById('tab-bancarios').innerHTML = `
                 <label>Alias A</label>
                 <input type="text" id="edit_alias_a" value="${bancarios?.alias_a || ''}">
                 <label>CBU A</label>
@@ -428,12 +433,12 @@ function abrirModalEditar(id) {
                 <label>Banco A</label>
                 <input type="text" id="edit_banco_a" value="${bancarios?.banco_a || ''}">
             `;
-        })
-        .catch(err => {
-            console.error(err);
-            showAlert('error', 'Error al cargar datos del usuario');
-        });
-}
+                })
+                .catch(err => {
+                    console.error(err);
+                    showAlert('error', 'Error al cargar datos del usuario');
+                });
+        }
 
 
         function cerrarModalEditar() {
@@ -454,18 +459,20 @@ function abrirModalEditar(id) {
                 <button class="tab-button" data-tab="bancarios">💳 Datos bancarios</button>
             </div>
 
-            <!-- Contenido de cada tab -->
-            <div class="tab-content active" id="tab-info">
-                <p><em>Cargando datos de user_info...</em></p>
-            </div>
-            <div class="tab-content" id="tab-disciplinas">
-                <p><em>Cargando datos de user_disciplinas...</em></p>
-            </div>
-            <div class="tab-content" id="tab-disciplinaLibre">
-                <p><em>Cargando datos de user_disciplina...</em></p>
-            </div>
-            <div class="tab-content" id="tab-bancarios">
-                <p><em>Cargando datos de user_bancarios...</em></p>
+            <!-- Contenido de los tabs -->
+            <div class="tab-content">
+                <div id="tab-info" class="tab-panel active">
+                    <p>Cargando datos de user_info...</p>
+                </div>
+                <div id="tab-disciplinas" class="tab-panel">
+                    <p>Cargando datos de user_disciplinas...</p>
+                </div>
+                <div id="tab-disciplinaLibre" class="tab-panel">
+                    <p>Cargando datos de user_disciplina...</p>
+                </div>
+                <div id="tab-bancarios" class="tab-panel">
+                    <p>Cargando datos de user_bancarios...</p>
+                </div>
             </div>
 
             <div class="form-buttons">
