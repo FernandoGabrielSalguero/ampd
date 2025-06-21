@@ -212,6 +212,21 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
         </div>
     </div>
+
+
+        <!-- modal para eliminar a un socio -->
+    <div id="modal" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="modal-title">¿Eliminar usuario?</h3>
+            <p id="modal-body">Esta acción no se puede deshacer.</p>
+            <div class="form-buttons">
+                <button class="btn btn-aceptar" id="confirmarEliminar">Eliminar</button>
+                <button class="btn btn-cancelar" onclick="closeModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    
     <!-- Spinner Global -->
     <script src="../../views/partials/spinner-global.js"></script>
 
@@ -348,18 +363,6 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 });
         });
     </script>
-
-    <!-- modal para eliminar a un socio -->
-    <div id="modal" class="modal hidden">
-        <div class="modal-content">
-            <h3 id="modal-title">¿Eliminar usuario?</h3>
-            <p id="modal-body">Esta acción no se puede deshacer.</p>
-            <div class="form-buttons">
-                <button class="btn btn-aceptar" id="confirmarEliminar">Eliminar</button>
-                <button class="btn btn-cancelar" onclick="closeModal()">Cancelar</button>
-            </div>
-        </div>
-    </div>
 </body>
 
 </html>
