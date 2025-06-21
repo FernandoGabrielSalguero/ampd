@@ -268,7 +268,7 @@ const fila = `
         <td>${user.n_socio ?? '-'}</td>
         <td>
             <button class="btn btn-icon btn-editar" title="Editar">
-                <span class="material-icons">edit</span>
+                <span class="material-icons" style:"color: red" >edit</span>
             </button>
             <button class="btn btn-icon btn-borrar" title="Borrar">
                 <span class="material-icons">delete</span>
