@@ -193,15 +193,11 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Usuario</th>
-                                    <th>Rol</th>
-                                    <th>Permiso</th>
-                                    <th>DNI</th>
                                     <th>Nombre</th>
-                                    <th>Dirección</th>
-                                    <th>Teléfono</th>
-                                    <th>Datos bancarios</th>
                                     <th>Correo</th>
+                                    <th>Telefono</th>
+                                    <th>DNI</th>
+                                    <th>N° Socio</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
