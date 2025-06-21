@@ -229,7 +229,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
             const formData = new FormData(this);
 
-            fetch("admin_altaUsuariosController.php", {
+            fetch("../../controllers/admin_altaUsuariosController.php", {
                     method: "POST",
                     body: formData,
                 })
