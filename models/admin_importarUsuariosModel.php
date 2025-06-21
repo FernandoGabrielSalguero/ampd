@@ -35,7 +35,7 @@ class AdminImportarUsuariosModel
                 ':nombre' => $row['nombre'],
                 ':correo' => $row['correo'],
                 ':telefono' => $row['telefono'],
-                ':n_socio' => isset($row['n_socio']) ? (int)$row['n_socio'] : null,
+                ':n_socio' => isset($row['n_socio']) ? trim($row['n_socio']) : null,
                 ':id' => $usuarioId
             ]);
 
@@ -83,12 +83,11 @@ class AdminImportarUsuariosModel
             ]);
 
             return 'actualizado';
-
         } else {
             // ✅ INSERTAR NUEVO REGISTRO
 
             $contrasenaHash = password_hash($row['dni'], PASSWORD_BCRYPT);
-            $n_socio = isset($row['n_socio']) ? (int)$row['n_socio'] : null;
+            $n_socio = isset($row['n_socio']) ? trim($row['n_socio']) : null;
 
             $stmt = $this->db->prepare("INSERT INTO usuarios (usuario, contrasena, nombre, correo, telefono, dni, n_socio)
                 VALUES (:usuario, :contrasena, :nombre, :correo, :telefono, :dni, :n_socio)");
