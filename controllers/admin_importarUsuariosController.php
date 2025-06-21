@@ -8,10 +8,9 @@ require_once __DIR__ . '/../models/admin_importarUsuariosModel.php';
 
 header('Content-Type: application/json');
 
-$model = new AdminImportarUsuariosModel($pdo);
-ob_start();
-
 try {
+    $model = new AdminImportarUsuariosModel($pdo);
+
     // 1. Previsualizar CSV
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv'])) {
         $csvFile = $_FILES['csv']['tmp_name'];
@@ -33,13 +32,24 @@ try {
     if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $input = json_decode(file_get_contents("php://input"), true);
         if (!isset($input['data']) || !is_array($input['data'])) {
-            throw new Exception("Datos no válidos");
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'Datos inválidos']);
+            exit;
         }
 
         $errores = [];
+        $insertados = 0;
+        $actualizados = 0;
+
         foreach ($input['data'] as $i => $row) {
             try {
-                $model->importarFila($row);
+                // Le pedimos al modelo que nos diga si fue insertado o actualizado
+                $resultado = $model->importarFila($row);
+                if ($resultado === 'insertado') {
+                    $insertados++;
+                } elseif ($resultado === 'actualizado') {
+                    $actualizados++;
+                }
             } catch (Exception $e) {
                 $errores[] = [
                     'fila' => $i + 1,
@@ -51,7 +61,7 @@ try {
 
         echo json_encode([
             'status' => 'success',
-            'message' => 'Importación finalizada',
+            'message' => "Importación finalizada. Insertados: $insertados. Actualizados: $actualizados.",
             'errores' => $errores
         ]);
         exit;
@@ -59,11 +69,10 @@ try {
 
     http_response_code(405);
     echo json_encode(['status' => 'error', 'message' => 'Método no permitido']);
-} catch (Exception $e) {
+} catch (Throwable $e) {
     http_response_code(500);
     echo json_encode([
         'status' => 'error',
-        'message' => $e->getMessage(),
-        'trace' => ob_get_clean()
+        'message' => $e->getMessage()
     ]);
 }
