@@ -399,40 +399,38 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                         disciplinaLibre,
                         bancarios
                     } = data.data;
-
+                    console.log("INFO", info);
                     document.getElementById('info').innerHTML = `
-                <label>Dirección</label>
-                <input type="text" id="edit_direccion" value="${info?.user_direccion || ''}">
-
-                <label>Localidad</label>
-                <input type="text" id="edit_localidad" value="${info?.user_localidad || ''}">
-
-                <label>Fecha de Nacimiento</label>
-                <input type="date" id="edit_nacimiento" value="${info?.user_fecha_nacimiento || ''}">
-            `;
+    <label>Dirección</label>
+    <input type="text" id="edit_direccion" value="${info?.user_direccion || ''}">
+    <label>Localidad</label>
+    <input type="text" id="edit_localidad" value="${info?.user_localidad || ''}">
+    <label>Fecha de Nacimiento</label>
+    <input type="date" id="edit_nacimiento" value="${info?.user_fecha_nacimiento || ''}">
+`;
 
                     document.getElementById('disciplinas').innerHTML = `
-                <label>Disciplinas (IDs separadas por coma)</label>
-                <input type="text" id="edit_disciplinas" value="${disciplinas.join(',')}" placeholder="Ej: 1,2,3">
-            `;
+    <label>Disciplinas (IDs separadas por coma)</label>
+    <input type="text" id="edit_disciplinas" value="${disciplinas?.join(',') || ''}" placeholder="Ej: 1,2,3">
+`;
 
                     document.getElementById('disciplinaLibre').innerHTML = `
-                <label>Disciplina libre</label>
-                <input type="text" id="edit_disciplinaLibre" value="${disciplinaLibre?.disciplina || ''}">
-            `;
+    <label>Disciplina libre</label>
+    <input type="text" id="edit_disciplinaLibre" value="${disciplinaLibre?.disciplina || ''}">
+`;
 
                     document.getElementById('bancarios').innerHTML = `
-                <label>Alias A</label>
-                <input type="text" id="edit_alias_a" value="${bancarios?.alias_a || ''}">
-                <label>CBU A</label>
-                <input type="text" id="edit_cbu_a" value="${bancarios?.cbu_a || ''}">
-                <label>Titular A</label>
-                <input type="text" id="edit_titular_a" value="${bancarios?.titular_a || ''}">
-                <label>CUIT A</label>
-                <input type="text" id="edit_cuit_a" value="${bancarios?.cuit_a || ''}">
-                <label>Banco A</label>
-                <input type="text" id="edit_banco_a" value="${bancarios?.banco_a || ''}">
-            `;
+    <label>Alias A</label>
+    <input type="text" id="edit_alias_a" value="${bancarios?.alias_a || ''}">
+    <label>CBU A</label>
+    <input type="text" id="edit_cbu_a" value="${bancarios?.cbu_a || ''}">
+    <label>Titular A</label>
+    <input type="text" id="edit_titular_a" value="${bancarios?.titular_a || ''}">
+    <label>CUIT A</label>
+    <input type="text" id="edit_cuit_a" value="${bancarios?.cuit_a || ''}">
+    <label>Banco A</label>
+    <input type="text" id="edit_banco_a" value="${bancarios?.banco_a || ''}">
+`;
                 })
                 .catch(err => {
                     console.error(err);
@@ -453,10 +451,10 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
             <!-- Tabs -->
             <div class="tabs">
-<button class="tab-button active" data-tab="info">📝 Info personal</button>
-<button class="tab-button" data-tab="disciplinas">🏅 Disciplinas múltiples</button>
-<button class="tab-button" data-tab="disciplinaLibre">📄 Disciplina libre</button>
-<button class="tab-button" data-tab="bancarios">💳 Datos bancarios</button>
+                <button class="tab-button active" data-tab="info">📝 Info personal</button>
+                <button class="tab-button" data-tab="disciplinas">🏅 Disciplinas múltiples</button>
+                <button class="tab-button" data-tab="disciplinaLibre">📄 Disciplina libre</button>
+                <button class="tab-button" data-tab="bancarios">💳 Datos bancarios</button>
             </div>
 
             <!-- Contenido de los tabs -->
