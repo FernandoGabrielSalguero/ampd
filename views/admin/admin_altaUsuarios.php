@@ -221,6 +221,33 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
     <script>
         console.log(<?php echo json_encode($_SESSION); ?>);
+
+
+        // alta usuarios
+        document.getElementById("formUsuario").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+
+            fetch("admin_altaUsuariosController.php", {
+                    method: "POST",
+                    body: formData,
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        alert(data.message);
+                        this.reset(); // limpiar el formulario
+                        // ⚠️ luego acá vamos a llamar a la función que actualiza la tabla dinámicamente
+                    } else {
+                        alert("Error: " + data.message);
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Hubo un error al crear el usuario.");
+                });
+        });
     </script>
 </body>
 
