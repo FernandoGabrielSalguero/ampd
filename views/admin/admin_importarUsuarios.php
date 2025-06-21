@@ -107,7 +107,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     <h2>Subir archivo CSV</h2>
                     <form id="formImportar" class="form-modern">
                         <div class="input-group">
-                            <label for="csv">Seleccionar archivo CSV (UTF-8, ;)</label>
+                            <label for="csv">Seleccionar archivo CSV (UTF-8)</label>
                             <input type="file" id="csv" name="csv" accept=".csv" required>
                         </div>
                         <div class="form-buttons">

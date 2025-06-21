@@ -13,7 +13,7 @@ class AdminAltaUsuariosModel
         $this->db = $pdo;
     }
 
-    public function obtenerUsuarios($filtroDNI = '', $filtroNombre = '', $limit = 20, $offset = 0)
+    public function obtenerUsuarios($filtroDNI = '', $filtroNombre = '', $filtroNSocio = '', $limit = 20, $offset = 0)
     {
         $sql = "SELECT id_ AS id, nombre, correo, telefono, dni, n_socio FROM usuarios WHERE 1=1";
         $params = [];
@@ -26,6 +26,11 @@ class AdminAltaUsuariosModel
         if (!empty($filtroNombre)) {
             $sql .= " AND nombre LIKE :nombre";
             $params[':nombre'] = '%' . $filtroNombre . '%';
+        }
+
+        if (!empty($filtroNSocio)) {
+            $sql .= " AND n_socio LIKE :n_socio";
+            $params[':n_socio'] = '%' . $filtroNSocio . '%';
         }
 
         $sql .= " ORDER BY id_ DESC LIMIT :limit OFFSET :offset";
@@ -137,7 +142,8 @@ class AdminAltaUsuariosModel
         ]);
     }
 
-    public function contarUsuarios($filtroDNI = '', $filtroNombre = '')
+    public function contarUsuarios($filtroDNI = '', $filtroNombre = '', $filtroNSocio = '')
+
     {
         $sql = "SELECT COUNT(*) FROM usuarios WHERE 1=1";
         $params = [];
@@ -150,6 +156,11 @@ class AdminAltaUsuariosModel
         if (!empty($filtroNombre)) {
             $sql .= " AND nombre LIKE :nombre";
             $params[':nombre'] = '%' . $filtroNombre . '%';
+        }
+
+        if (!empty($filtroNSocio)) {
+            $sql .= " AND n_socio LIKE :n_socio";
+            $params[':n_socio'] = '%' . $filtroNSocio . '%';
         }
 
         $stmt = $this->db->prepare($sql);

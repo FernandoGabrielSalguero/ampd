@@ -77,12 +77,14 @@ try {
         // Si no se pidió detalle, seguir con la búsqueda normal
         $filtroDNI = $_GET['dni'] ?? '';
         $filtroNombre = $_GET['nombre'] ?? '';
+        $filtroNSocio = $_GET['n_socio'] ?? '';
         $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
         $limit = 20;
         $offset = ($page - 1) * $limit;
 
-        $total = $model->contarUsuarios($filtroDNI, $filtroNombre);
-        $usuarios = $model->obtenerUsuarios($filtroDNI, $filtroNombre, $limit, $offset);
+$total = $model->contarUsuarios($filtroDNI, $filtroNombre, $filtroNSocio);
+$usuarios = $model->obtenerUsuarios($filtroDNI, $filtroNombre, $filtroNSocio, $limit, $offset);
+
 
 echo json_encode([
     'status' => 'success',

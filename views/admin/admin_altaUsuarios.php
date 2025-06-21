@@ -193,6 +193,16 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                     <input type="text" id="buscarNombre" name="buscarNombre" placeholder="Ej: Juan Pérez">
                                 </div>
                             </div>
+
+                            <!-- Buscar por N° Socio -->
+<div class="input-group">
+    <label for="buscarNSocio">Podes buscar por N° Socio</label>
+    <div class="input-icon">
+        <span class="material-icons">tag</span>
+        <input type="number" id="buscarNSocio" name="buscarNSocio" placeholder="Ej: 123">
+    </div>
+</div>
+
                         </div>
                     </form>
                 </div>
@@ -515,24 +525,25 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
         // cargamos usuarios
         let paginaActual = 1;
 
-        function cargarUsuarios(pagina = 1) {
-            const dni = document.getElementById("buscarCuit").value;
-            const nombre = document.getElementById("buscarNombre").value;
+function cargarUsuarios(pagina = 1) {
+    const dni = document.getElementById("buscarCuit").value;
+    const nombre = document.getElementById("buscarNombre").value;
+    const nSocio = document.getElementById("buscarNSocio")?.value || "";
 
-            fetch(`../../controllers/admin_altaUsuariosController.php?dni=${dni}&nombre=${nombre}&page=${pagina}`)
-                .then(res => res.json())
-                .then(data => {
-                    const tabla = document.getElementById("tablaUsuarios");
-                    tabla.innerHTML = "";
+    fetch(`../../controllers/admin_altaUsuariosController.php?dni=${dni}&nombre=${nombre}&n_socio=${nSocio}&page=${pagina}`)
+        .then(res => res.json())
+        .then(data => {
+            const tabla = document.getElementById("tablaUsuarios");
+            tabla.innerHTML = "";
 
-                    if (data.status === "success") {
-                        if (data.data.length === 0) {
-                            tabla.innerHTML = `<tr><td colspan="7">No hay resultados.</td></tr>`;
-                            return;
-                        }
+            if (data.status === "success") {
+                if (data.data.length === 0) {
+                    tabla.innerHTML = `<tr><td colspan="7">No hay resultados.</td></tr>`;
+                    return;
+                }
 
-                        data.data.forEach(user => {
-                            const fila = `
+                data.data.forEach(user => {
+                    const fila = `
 <tr>
     <td>${user.id}</td>
     <td>${user.nombre}</td>
@@ -545,18 +556,19 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
         <button class="btn btn-icon btn-borrar" title="Borrar"><span class="material-icons" style="color: #dc2626;">delete</span></button>
     </td>
 </tr>`;
-                            tabla.innerHTML += fila;
-                        });
-
-                        renderPaginacion(data.page, data.pages);
-                    } else {
-                        tabla.innerHTML = `<tr><td colspan="7">Error al cargar usuarios.</td></tr>`;
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
+                    tabla.innerHTML += fila;
                 });
-        }
+
+                renderPaginacion(data.page, data.pages);
+            } else {
+                tabla.innerHTML = `<tr><td colspan="7">Error al cargar usuarios.</td></tr>`;
+            }
+        })
+        .catch(err => {
+            console.error(err);
+        });
+}
+
 
         function renderPaginacion(pagina, totalPaginas) {
             const container = document.getElementById("paginacionUsuarios");
