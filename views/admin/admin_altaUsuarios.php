@@ -267,11 +267,11 @@ const fila = `
         <td>${user.dni ?? '-'}</td>
         <td>${user.n_socio ?? '-'}</td>
 <td>
-    <button class="btn btn-icon btn-editar" title="Editar">
-        <span class="material-icons" style="color: #2563eb;">edit</span> <!-- azul -->
+    <button class="btn btn-icon btn-editar" title="Editar" data-tooltip="Editar usuario">
+        <span class="material-icons" style="color: #2563eb;">edit</span>
     </button>
-    <button class="btn btn-icon btn-borrar" title="Borrar">
-        <span class="material-icons" style="color: #dc2626;">delete</span> <!-- rojo -->
+    <button class="btn btn-icon btn-borrar" title="Borrar" data-tooltip="Borrar usuario">
+        <span class="material-icons" style="color: #dc2626;">delete</span>
     </button>
 </td>
     </tr>`;
