@@ -65,24 +65,15 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
             <nav class="sidebar-menu">
                 <ul>
-                    <!-- <li onclick="location.href='admin_dashboard.php'">
+                    <li onclick="location.href='admin_dashboard.php'">
                         <span class="material-icons" style="color: #5b21b6;">home</span><span class="link-text">Inicio</span>
                     </li>
                     <li onclick="location.href='admin_altaUsuarios.php'">
                         <span class="material-icons" style="color: #5b21b6;">person</span><span class="link-text">Alta usuarios</span>
-                    </li> -->
+                    </li>
                     <li onclick="location.href='admin_pagoFacturas.php'">
                         <span class="material-icons" style="color: #5b21b6;">upload_file</span><span class="link-text">Pago Facturas</span>
                     </li>
-                    <!-- <li onclick="location.href='admin_Eventos.php'">
-                        <span class="material-icons" style="color: #5b21b6;">nightlife</span><span class="link-text">Eventos</span>
-                    </li>
-                    <li onclick="location.href='admin_sucripciones.php'">
-                        <span class="material-icons" style="color: #5b21b6;">assignment</span><span class="link-text">Suscripciones</span>
-                    </li>
-                    <li onclick="location.href='admin_consumoInternos.php'">
-                        <span class="material-icons" style="color: #5b21b6;">shopping_cart</span><span class="link-text">Consumos internos</span>
-                    </li> -->
                     <li onclick="location.href='../../../logout.php'">
                         <span class="material-icons" style="color: red;">logout</span><span class="link-text">Salir</span>
                     </li>
