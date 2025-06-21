@@ -279,9 +279,10 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     </div>
                 </div>
 
+                <hr>
                 <!-- Información adicional -->
                 <h4>Información adicional</h4>
-                <div class="form-grid grid-2">
+                <div class="form-grid grid-3">
                     <div class="input-group">
                         <label for="edit_direccion">Dirección</label>
                         <div class="input-icon">
@@ -307,9 +308,11 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     </div>
                 </div>
 
+                <hr>
                 <!-- Cuenta A -->
-                <h4>Cuenta A</h4>
-                <div class="form-grid grid-2">
+                <h4>Datos bancarios</h4>
+                <h5>Cuenta A</h5>
+                <div class="form-grid grid-4">
                     <div class="input-group">
                         <label for="edit_alias_a">Alias A</label>
                         <div class="input-icon">
@@ -352,8 +355,8 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 </div>
 
                 <!-- Cuenta B -->
-                <h4>Cuenta B</h4>
-                <div class="form-grid grid-2">
+                <h5>Cuenta B</h5>
+                <div class="form-grid grid-4">
                     <div class="input-group">
                         <label for="edit_alias_b">Alias B</label>
                         <div class="input-icon">
@@ -396,8 +399,8 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 </div>
 
                 <!-- Cuenta C -->
-                <h4>Cuenta C</h4>
-                <div class="form-grid grid-2">
+                <h5>Cuenta C</h5>
+                <div class="form-grid grid-4">
                     <div class="input-group">
                         <label for="edit_alias_c">Alias C</label>
                         <div class="input-icon">
@@ -439,6 +442,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     </div>
                 </div>
 
+                <hr>
                 <!-- Disciplina libre -->
                 <h4>Disciplina libre</h4>
                 <div class="input-group">
