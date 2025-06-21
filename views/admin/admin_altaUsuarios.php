@@ -373,13 +373,68 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
             }
         });
 
-        function abrirModalEditar(id) {
-            // Guardamos el ID globalmente para usarlo en otros pasos
-            window.usuarioEditandoId = id;
+function abrirModalEditar(id) {
+    window.usuarioEditandoId = id;
 
-            // Por ahora solo mostramos el modal
+    // Llamamos al backend para obtener datos extendidos
+    fetch(`../../controllers/admin_altaUsuariosController.php?detalle=1&id=${id}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.status !== 'success') {
+                showAlert('error', 'No se pudieron cargar los datos del usuario');
+                return;
+            }
+
+            const { info, disciplinas, disciplinaLibre, bancarios } = data.data;
+
+            // TAB INFO PERSONAL
+            document.getElementById('tab-info').innerHTML = `
+                <label>Dirección</label>
+                <input type="text" id="edit_direccion" value="${info?.user_direccion || ''}">
+
+                <label>Localidad</label>
+                <input type="text" id="edit_localidad" value="${info?.user_localidad || ''}">
+
+                <label>Fecha de Nacimiento</label>
+                <input type="date" id="edit_nacimiento" value="${info?.user_fecha_nacimiento || ''}">
+            `;
+
+            // TAB DISCIPLINAS MÚLTIPLES (esto luego se convertirá en checkboxes dinámicos)
+            document.getElementById('tab-disciplinas').innerHTML = `
+                <label>ID de disciplinas (simulado por ahora)</label>
+                <input type="text" id="edit_disciplinas" value="${disciplinas.join(',')}" placeholder="Ej: 1,2,3">
+            `;
+
+            // TAB DISCIPLINA LIBRE
+            document.getElementById('tab-disciplinaLibre').innerHTML = `
+                <label>Disciplina</label>
+                <input type="text" id="edit_disciplinaLibre" value="${disciplinaLibre?.disciplina || ''}">
+            `;
+
+            // TAB BANCARIOS
+            document.getElementById('tab-bancarios').innerHTML = `
+                <label>Alias A</label>
+                <input type="text" id="edit_alias_a" value="${bancarios?.alias_a || ''}">
+                <label>CBU A</label>
+                <input type="text" id="edit_cbu_a" value="${bancarios?.cbu_a || ''}">
+                <label>Titular A</label>
+                <input type="text" id="edit_titular_a" value="${bancarios?.titular_a || ''}">
+                <label>CUIT A</label>
+                <input type="text" id="edit_cuit_a" value="${bancarios?.cuit_a || ''}">
+                <label>Banco A</label>
+                <input type="text" id="edit_banco_a" value="${bancarios?.banco_a || ''}">
+                <br>
+                <em>⚠️ Campos B y C se agregan después</em>
+            `;
+
+            // Mostramos el modal
             document.getElementById("modalEditar").classList.remove("hidden");
-        }
+        })
+        .catch(err => {
+            console.error(err);
+            showAlert('error', 'Error al cargar datos del usuario');
+        });
+}
 
         function cerrarModalEditar() {
             document.getElementById("modalEditar").classList.add("hidden");
