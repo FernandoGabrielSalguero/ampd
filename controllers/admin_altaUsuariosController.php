@@ -21,16 +21,26 @@ try {
     $usuario = $dni;
     $contrasenaHash = password_hash($dni, PASSWORD_BCRYPT);
 
+    // Buscar el n_socio más alto actual
+    $stmt = $pdo->query("SELECT MAX(n_socio) AS max_n_socio FROM usuarios");
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Si no hay ninguno aún, empezamos desde 1
+    $n_socio = $result['max_n_socio'] ? $result['max_n_socio'] + 1 : 1;
+
     // Insertar en tabla usuarios
-    $stmt = $pdo->prepare("INSERT INTO usuarios (usuario, contrasena, nombre, correo, telefono, dni) 
-                            VALUES (:usuario, :contrasena, :nombre, :correo, :telefono, :dni)");
+    $stmt = $pdo->prepare("INSERT INTO usuarios 
+    (usuario, contrasena, nombre, correo, telefono, dni, n_socio)
+    VALUES (:usuario, :contrasena, :nombre, :correo, :telefono, :dni, :n_socio)");
+
     $stmt->execute([
         ':usuario' => $usuario,
         ':contrasena' => $contrasenaHash,
         ':nombre' => $nombre,
         ':correo' => $correo,
         ':telefono' => $telefono,
-        ':dni' => $dni
+        ':dni' => $dni,
+        ':n_socio' => $n_socio
     ]);
 
     echo json_encode(['status' => 'success', 'message' => 'Usuario creado correctamente.']);
