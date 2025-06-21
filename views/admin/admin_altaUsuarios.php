@@ -122,15 +122,6 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 </div>
                             </div>
 
-                            <!-- Apellido -->
-                            <div class="input-group">
-                                <label for="usuario">Apellido</label>
-                                <div class="input-icon">
-                                    <span class="material-icons">person</span>
-                                    <input type="text" id="user_apellido" name="user_apellido" placeholder="Coloca el Apellido del asociado" required>
-                                </div>
-                            </div>
-
                             <!-- DNI -->
                             <div class="input-group">
                                 <label for="usuario">DNI</label>
