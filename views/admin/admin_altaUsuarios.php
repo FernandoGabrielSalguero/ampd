@@ -207,14 +207,15 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                         </table>
                     </div>
                 </div>
-
+                <!-- Alert -->
+                <div class="alert-container" id="alertContainer"></div>
             </section>
 
         </div>
     </div>
 
 
-        <!-- modal para eliminar a un socio -->
+    <!-- modal para eliminar a un socio -->
     <div id="modal" class="modal hidden">
         <div class="modal-content">
             <h3 id="modal-title">¿Eliminar usuario?</h3>
@@ -226,7 +227,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
         </div>
     </div>
 
-    
+
     <!-- Spinner Global -->
     <script src="../../views/partials/spinner-global.js"></script>
 
@@ -247,16 +248,16 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 .then(res => res.json())
                 .then(data => {
                     if (data.status === "success") {
-                        alert(data.message);
-                        this.reset(); // limpiar el formulario
-                        cargarUsuarios(); // 🔄 recargar la tabla dinámicamente
+                        showAlert('success', data.message);
+                        this.reset();
+                        cargarUsuarios();
                     } else {
-                        alert("Error: " + data.message);
+                        showAlert('error', data.message);
                     }
                 })
                 .catch(err => {
                     console.error(err);
-                    alert("Hubo un error al crear el usuario.");
+                    showAlert('error', "Hubo un error al crear el usuario.");
                 });
         })
 
@@ -348,17 +349,17 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 .then(res => res.json())
                 .then(data => {
                     if (data.status === "success") {
-                        alert("Usuario eliminado correctamente.");
+                        showAlert('success', "Usuario eliminado correctamente.");
                         cargarUsuarios();
                     } else {
-                        alert("Error al eliminar: " + data.message);
+                        showAlert('error', data.message);
                     }
                     closeModal();
                     idUsuarioAEliminar = null;
                 })
                 .catch(err => {
                     console.error(err);
-                    alert("Error de conexión.");
+                    showAlert('error', "Error de conexión.");
                     closeModal();
                 });
         });
