@@ -619,6 +619,8 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
         // Buscar al escribir
         document.getElementById("buscarCuit").addEventListener("input", cargarUsuarios);
         document.getElementById("buscarNombre").addEventListener("input", cargarUsuarios);
+        document.getElementById("buscarNSocio").addEventListener("input", cargarUsuarios);
+
 
         // funcion para eliminar usuario
         let idUsuarioAEliminar = null;
