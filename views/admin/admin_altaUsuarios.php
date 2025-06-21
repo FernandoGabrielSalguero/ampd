@@ -359,9 +359,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                         </div>
                     </div>
                 </div>
-                <br>
-                <hr>
-                <br>
+
                 <!-- Cuenta B -->
                 <h5>Cuenta B</h5>
                 <div class="form-grid grid-4">
@@ -405,9 +403,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                         </div>
                     </div>
                 </div>
-                <br>
-                <hr>
-                <br>
+
                 <!-- Cuenta C -->
                 <h5>Cuenta C</h5>
                 <div class="form-grid grid-4">
