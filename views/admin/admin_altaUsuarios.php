@@ -126,7 +126,8 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                             <div class="input-group">
                                 <label for="usuario">DNI</label>
                                 <div class="input-icon">
-                                    <span class="material-icons">person</span>
+                                    <span class="material-icons">assignment_ind</span>
+                                    <span class="material-icons">badge </span>
                                     <input type="number" id="user_dni" name="user_dni" placeholder="Coloca el DNI del asociado" required>
                                 </div>
                             </div>
@@ -135,14 +136,14 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                             <div class="input-group">
                                 <label for="usuario">Correo</label>
                                 <div class="input-icon">
-                                    <span class="material-icons">person</span>
+                                    <span class="material-icons">email</span>
                                     <input type="email" id="user_correo" name="user_correo" placeholder="Coloca el Apellido del asociado" required>
                                 </div>
                             </div>
 
                             <!-- Telefono -->
                             <div class="input-group">
-                                <label for="usuario">Telefono</label>
+                                <label for="usuario">call</label>
                                 <div class="input-icon">
                                     <span class="material-icons">person</span>
                                     <input type="text" id="user_telefono" name="user_telefono" placeholder="Coloca el Telefono del asociado" required>
@@ -169,7 +170,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 <label for="buscarCuit">Podes buscar por DNI</label>
                                 <div class="input-icon">
                                     <span class="material-icons">person</span>
-                                    <input type="text" id="buscarCuit" name="buscarCuit" placeholder="20123456781">
+                                    <input type="number" id="buscarCuit" name="buscarCuit" placeholder="20123456781">
                                 </div>
                             </div>
 
