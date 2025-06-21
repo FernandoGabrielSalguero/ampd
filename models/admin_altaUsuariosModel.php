@@ -10,25 +10,25 @@ class AdminAltaUsuariosModel
         $this->db = $pdo;
     }
 
-public function obtenerUsuarios($filtroDNI = '', $filtroNombre = '')
-{
-    $sql = "SELECT id_ AS id, nombre, correo, telefono, dni, n_socio FROM usuarios WHERE 1=1";
-    $params = [];
+    public function obtenerUsuarios($filtroDNI = '', $filtroNombre = '')
+    {
+        $sql = "SELECT id_ AS id, nombre, correo, telefono, dni, n_socio FROM usuarios WHERE 1=1";
+        $params = [];
 
-    if (!empty($filtroDNI)) {
-        $sql .= " AND dni LIKE :dni";
-        $params[':dni'] = '%' . $filtroDNI . '%';
+        if (!empty($filtroDNI)) {
+            $sql .= " AND dni LIKE :dni";
+            $params[':dni'] = '%' . $filtroDNI . '%';
+        }
+
+        if (!empty($filtroNombre)) {
+            $sql .= " AND nombre LIKE :nombre";
+            $params[':nombre'] = '%' . $filtroNombre . '%';
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-    if (!empty($filtroNombre)) {
-        $sql .= " AND nombre LIKE :nombre";
-        $params[':nombre'] = '%' . $filtroNombre . '%';
-    }
-
-    $stmt = $this->db->prepare($sql);
-    $stmt->execute($params);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
 
     public function crearUsuario($nombre, $dni, $correo, $telefono)
     {
@@ -58,5 +58,11 @@ public function obtenerUsuarios($filtroDNI = '', $filtroNombre = '')
             ':dni' => $dni,
             ':n_socio' => $n_socio
         ]);
+    }
+
+    public function eliminarUsuario($id)
+    {
+        $stmt = $this->db->prepare("DELETE FROM usuarios WHERE id_ = :id");
+        $stmt->execute([':id' => $id]);
     }
 }

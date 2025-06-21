@@ -220,30 +220,30 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
 
         // alta usuarios
-document.getElementById("formUsuario").addEventListener("submit", function(e) {
-    e.preventDefault();
+        document.getElementById("formUsuario").addEventListener("submit", function(e) {
+            e.preventDefault();
 
-    const formData = new FormData(this);
+            const formData = new FormData(this);
 
-    fetch("../../controllers/admin_altaUsuariosController.php", {
-            method: "POST",
-            body: formData,
+            fetch("../../controllers/admin_altaUsuariosController.php", {
+                    method: "POST",
+                    body: formData,
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        alert(data.message);
+                        this.reset(); // limpiar el formulario
+                        cargarUsuarios(); // 🔄 recargar la tabla dinámicamente
+                    } else {
+                        alert("Error: " + data.message);
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Hubo un error al crear el usuario.");
+                });
         })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === "success") {
-                alert(data.message);
-                this.reset(); // limpiar el formulario
-                cargarUsuarios(); // 🔄 recargar la tabla dinámicamente
-            } else {
-                alert("Error: " + data.message);
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            alert("Hubo un error al crear el usuario.");
-        });
-})
 
         // cargamos usuarios
         function cargarUsuarios() {
@@ -258,7 +258,7 @@ document.getElementById("formUsuario").addEventListener("submit", function(e) {
 
                     if (data.status === "success") {
                         data.data.forEach(user => {
-const fila = `
+                            const fila = `
     <tr>
         <td>${user.id}</td>
         <td>${user.nombre}</td>
@@ -286,13 +286,80 @@ const fila = `
                 });
         }
 
+        // abrir modal de eliminar usuario
+        function openModal() {
+            document.getElementById("modal").classList.remove("hidden");
+        }
+
+        function closeModal() {
+            document.getElementById("modal").classList.add("hidden");
+        }
+
         // Cargar al iniciar
         window.addEventListener("DOMContentLoaded", cargarUsuarios);
 
         // Buscar al escribir
         document.getElementById("buscarCuit").addEventListener("input", cargarUsuarios);
         document.getElementById("buscarNombre").addEventListener("input", cargarUsuarios);
+
+        // funcion para eliminar usuario
+        let idUsuarioAEliminar = null;
+
+        // Delegación para botón eliminar
+        document.addEventListener("click", function(e) {
+            if (e.target.closest(".btn-borrar")) {
+                const fila = e.target.closest("tr");
+                idUsuarioAEliminar = fila.querySelector("td").textContent.trim();
+
+                document.getElementById("modal-title").textContent = "¿Eliminar usuario?";
+                document.getElementById("modal-body").textContent = "Esta acción eliminará el registro definitivamente.";
+                openModal();
+            }
+        });
+
+        // Confirmación
+        document.getElementById("confirmarEliminar").addEventListener("click", function() {
+            if (!idUsuarioAEliminar) return;
+
+            fetch("../../controllers/admin_altaUsuariosController.php", {
+                    method: "DELETE",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: idUsuarioAEliminar
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        alert("Usuario eliminado correctamente.");
+                        cargarUsuarios();
+                    } else {
+                        alert("Error al eliminar: " + data.message);
+                    }
+                    closeModal();
+                    idUsuarioAEliminar = null;
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Error de conexión.");
+                    closeModal();
+                });
+        });
     </script>
+
+    <!-- modal para eliminar a un socio -->
+    <div id="modal" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="modal-title">¿Eliminar usuario?</h3>
+            <p id="modal-body">Esta acción no se puede deshacer.</p>
+            <div class="form-buttons">
+                <button class="btn btn-aceptar" id="confirmarEliminar">Eliminar</button>
+                <button class="btn btn-cancelar" onclick="closeModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

@@ -39,3 +39,16 @@ try {
 } catch (Exception $e) {
     echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    $input = json_decode(file_get_contents("php://input"), true);
+    $id = $input['id'] ?? null;
+
+    if (!$id) {
+        throw new Exception("ID no recibido");
+    }
+
+    $model->eliminarUsuario($id);
+    echo json_encode(['status' => 'success', 'message' => 'Usuario eliminado.']);
+    exit;
+}
