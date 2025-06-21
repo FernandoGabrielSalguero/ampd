@@ -29,8 +29,13 @@ class AdminAltaUsuariosModel
         }
 
         if (!empty($filtroNSocio)) {
-            $sql .= " AND n_socio LIKE :n_socio";
-            $params[':n_socio'] = '%' . $filtroNSocio . '%';
+            if (ctype_digit($filtroNSocio)) {
+                $sql .= " AND n_socio = :n_socio";
+                $params[':n_socio'] = (int) $filtroNSocio;
+            } else {
+                $sql .= " AND n_socio LIKE :n_socio";
+                $params[':n_socio'] = '%' . $filtroNSocio . '%';
+            }
         }
 
         $sql .= " ORDER BY id_ DESC LIMIT :limit OFFSET :offset";
@@ -159,8 +164,13 @@ class AdminAltaUsuariosModel
         }
 
         if (!empty($filtroNSocio)) {
-            $sql .= " AND n_socio LIKE :n_socio";
-            $params[':n_socio'] = '%' . $filtroNSocio . '%';
+            if (ctype_digit($filtroNSocio)) {
+                $sql .= " AND n_socio = :n_socio";
+                $params[':n_socio'] = (int) $filtroNSocio;
+            } else {
+                $sql .= " AND n_socio LIKE :n_socio";
+                $params[':n_socio'] = '%' . $filtroNSocio . '%';
+            }
         }
 
         $stmt = $this->db->prepare($sql);
