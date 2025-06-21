@@ -199,7 +199,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 <label for="buscarNSocio">Podes buscar por N° Socio</label>
                                 <div class="input-icon">
                                     <span class="material-icons">tag</span>
-                                    <input type="number" id="buscarNSocio" name="buscarNSocio" placeholder="Ej: 123">
+                                    <input type="text" id="buscarNSocio" name="buscarNSocio" placeholder="Ej: 123">
                                 </div>
                             </div>
 

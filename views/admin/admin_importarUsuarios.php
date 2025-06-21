@@ -227,7 +227,21 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                         })
                     });
 
-                    const result = await res.json();
+                    const text = await res.text();
+                    try {
+                        const result = JSON.parse(text);
+                        if (result.status === "success") {
+                            insertados += result.insertados || 0;
+                            actualizados += result.actualizados || 0;
+                            errores += (result.errores || []).length;
+                        } else {
+                            errores += chunk.length;
+                            console.warn("Error backend:", result.message);
+                        }
+                    } catch (parseErr) {
+                        errores += chunk.length;
+                        console.error("❌ Respuesta no válida JSON:", text);
+                    }
                     if (result.status === "success") {
                         insertados += result.insertados || 0;
                         actualizados += result.actualizados || 0;
@@ -257,10 +271,18 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
     🕒 Tiempo transcurrido: ${tiempoTranscurrido}s <br>
     ⌛ Estimado restante: ${tiempoRestante}s
     `;
+
+                // Mostrar resumen de errores si existen
+                if (errores > 0) {
+                    console.warn("Errores detectados:");
+                    console.warn(result.errores || []);
+                }
             }
 
             info.innerText = "✅ Proceso finalizado.";
             document.getElementById("cerrarModalProgreso").classList.remove("hidden");
+
+
         });
 
         document.getElementById("cerrarModalProgreso").addEventListener("click", () => {
