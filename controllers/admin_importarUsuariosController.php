@@ -61,7 +61,8 @@ try {
 
         echo json_encode([
             'status' => 'success',
-            'message' => "Importación finalizada. Insertados: $insertados. Actualizados: $actualizados.",
+            'insertados' => $insertados,
+            'actualizados' => $actualizados,
             'errores' => $errores
         ]);
         exit;

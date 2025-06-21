@@ -126,6 +126,15 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 <div class="alert-container" id="alertContainer"></div>
             </section>
 
+            <!-- Modal de Progreso -->
+            <div id="modalProgreso" class="modal hidden">
+                <div class="modal-content" style="max-width: 500px;">
+                    <h3>Importando registros...</h3>
+                    <p id="progresoInfo">Iniciando...</p>
+                    <progress id="barraProgreso" value="0" max="100" style="width: 100%;"></progress>
+                    <div id="progresoResumen" style="margin-top: 10px; font-size: 14px;"></div>
+                </div>
+            </div>
         </div>
     </div>
     <!-- Spinner Global -->
@@ -175,28 +184,74 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 });
         });
 
-        document.getElementById("confirmarImport").addEventListener("click", function() {
-            fetch("../../controllers/admin_importarUsuariosController.php", {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        data: csvData
-                    })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === "success") {
-                        showAlert("success", data.message);
+        // Confirmar importación
+        document.getElementById("confirmarImport").addEventListener("click", async function() {
+            const total = csvData.length;
+            if (!total) return;
+
+            // Mostrar modal
+            const modal = document.getElementById("modalProgreso");
+            const barra = document.getElementById("barraProgreso");
+            const info = document.getElementById("progresoInfo");
+            const resumen = document.getElementById("progresoResumen");
+            modal.classList.remove("hidden");
+
+            // Inicializar contadores
+            let insertados = 0;
+            let actualizados = 0;
+            let errores = 0;
+            let procesados = 0;
+            const chunkSize = 10;
+            const inicio = Date.now();
+
+            // Procesar en bloques de 10
+            for (let i = 0; i < total; i += chunkSize) {
+                const chunk = csvData.slice(i, i + chunkSize);
+
+                try {
+                    const res = await fetch("../../controllers/admin_importarUsuariosController.php", {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            data: chunk
+                        })
+                    });
+
+                    const result = await res.json();
+                    if (result.status === "success") {
+                        insertados += result.insertados || 0;
+                        actualizados += result.actualizados || 0;
+                        errores += (result.errores || []).length;
                     } else {
-                        showAlert("error", data.message);
+                        errores += chunk.length;
                     }
-                })
-                .catch(err => {
-                    console.error(err);
-                    showAlert("error", "Error durante la importación.");
-                });
+
+                } catch (err) {
+                    console.error("Error en bloque", err);
+                    errores += chunk.length;
+                }
+
+                // Actualizar progreso
+                procesados = Math.min(i + chunk.length, total);
+                barra.value = Math.round((procesados / total) * 100);
+                const tiempoTranscurrido = Math.round((Date.now() - inicio) / 1000);
+                const tiempoEstimado = Math.round((tiempoTranscurrido / procesados) * total);
+                const tiempoRestante = Math.max(0, tiempoEstimado - tiempoTranscurrido);
+
+                info.innerText = `Procesados: ${procesados} / ${total}`;
+                resumen.innerHTML = `
+    ✅ Insertados: ${insertados} <br>
+    🔁 Actualizados: ${actualizados} <br>
+    ⚠️ Errores: ${errores} <br>
+    ⏱ Tiempo estimado: ${tiempoEstimado}s <br>
+    🕒 Tiempo transcurrido: ${tiempoTranscurrido}s <br>
+    ⌛ Estimado restante: ${tiempoRestante}s
+    `;
+            }
+
+            info.innerText = "✅ Proceso finalizado.";
         });
     </script>
 </body>
