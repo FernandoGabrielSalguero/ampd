@@ -127,7 +127,6 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 <label for="usuario">DNI</label>
                                 <div class="input-icon">
                                     <span class="material-icons">assignment_ind</span>
-                                    <span class="material-icons">badge </span>
                                     <input type="number" id="user_dni" name="user_dni" placeholder="Coloca el DNI del asociado" required>
                                 </div>
                             </div>
