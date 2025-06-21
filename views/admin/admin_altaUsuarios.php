@@ -113,37 +113,48 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     <form class="form-modern" id="formUsuario">
                         <div class="form-grid grid-2">
 
-                            <!-- DNI -->
+                            <!-- Nombre -->
                             <div class="input-group">
-                                <label for="usuario">Usuario</label>
+                                <label for="usuario">Nombre</label>
                                 <div class="input-icon">
                                     <span class="material-icons">person</span>
-                                    <input type="text" id="usuario" name="usuario" placeholder="Coloca el DNI del asociado" required>
+                                    <input type="text" id="user_nombre" name="user_nombre" placeholder="Coloca el Nombre del asociado" required>
                                 </div>
                             </div>
 
-                            <!-- Rol -->
+                            <!-- Apellido -->
                             <div class="input-group">
-                                <label for="rol">Rol</label>
+                                <label for="usuario">Apellido</label>
                                 <div class="input-icon">
-                                    <span class="material-icons">supervisor_account</span>
-                                    <select id="rol" name="rol" required>
-                                        <option value="admin">Administrador</option>
-                                        <option value="asistente">Asistente</option>
-                                        <option value="asociado">Asociado</option>
-                                    </select>
+                                    <span class="material-icons">person</span>
+                                    <input type="text" id="user_apellido" name="user_apellido" placeholder="Coloca el Apellido del asociado" required>
                                 </div>
                             </div>
 
-                            <!-- Permiso -->
+                            <!-- DNI -->
                             <div class="input-group">
-                                <label for="permiso_ingreso">Permiso</label>
+                                <label for="usuario">DNI</label>
                                 <div class="input-icon">
-                                    <span class="material-icons">check_circle</span>
-                                    <select id="permiso_ingreso" name="permiso_ingreso" required>
-                                        <option value="activo">Habilitado</option>
-                                        <option value="inactivo">Deshabilitado</option>
-                                    </select>
+                                    <span class="material-icons">person</span>
+                                    <input type="number" id="user_dni" name="user_dni" placeholder="Coloca el DNI del asociado" required>
+                                </div>
+                            </div>
+
+                            <!-- Correo -->
+                            <div class="input-group">
+                                <label for="usuario">Correo</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">person</span>
+                                    <input type="email" id="user_correo" name="user_correo" placeholder="Coloca el Apellido del asociado" required>
+                                </div>
+                            </div>
+
+                            <!-- Telefono -->
+                            <div class="input-group">
+                                <label for="usuario">Telefono</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">person</span>
+                                    <input type="text" id="user_telefono" name="user_telefono" placeholder="Coloca el Telefono del asociado" required>
                                 </div>
                             </div>
 
