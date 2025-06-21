@@ -318,7 +318,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 <!-- Cuenta A -->
                 <h4>Datos bancarios</h4>
                 <h5>Cuenta A</h5>
-                <div class="form-grid grid-4">
+                <div class="form-grid grid-3">
                     <div class="input-group">
                         <label for="edit_alias_a">Alias A</label>
                         <div class="input-icon">
@@ -362,7 +362,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                 <!-- Cuenta B -->
                 <h5>Cuenta B</h5>
-                <div class="form-grid grid-4">
+                <div class="form-grid grid-3">
                     <div class="input-group">
                         <label for="edit_alias_b">Alias B</label>
                         <div class="input-icon">
@@ -406,7 +406,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                 <!-- Cuenta C -->
                 <h5>Cuenta C</h5>
-                <div class="form-grid grid-4">
+                <div class="form-grid grid-3">
                     <div class="input-group">
                         <label for="edit_alias_c">Alias C</label>
                         <div class="input-icon">
