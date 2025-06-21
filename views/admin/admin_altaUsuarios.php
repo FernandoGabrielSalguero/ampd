@@ -400,7 +400,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                         bancarios
                     } = data.data;
 
-                    document.getElementById('tab-info').innerHTML = `
+                    document.getElementById('info').innerHTML = `
                 <label>Dirección</label>
                 <input type="text" id="edit_direccion" value="${info?.user_direccion || ''}">
 
@@ -411,17 +411,17 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 <input type="date" id="edit_nacimiento" value="${info?.user_fecha_nacimiento || ''}">
             `;
 
-                    document.getElementById('tab-disciplinas').innerHTML = `
+                    document.getElementById('disciplinas').innerHTML = `
                 <label>Disciplinas (IDs separadas por coma)</label>
                 <input type="text" id="edit_disciplinas" value="${disciplinas.join(',')}" placeholder="Ej: 1,2,3">
             `;
 
-                    document.getElementById('tab-disciplinaLibre').innerHTML = `
+                    document.getElementById('disciplinaLibre').innerHTML = `
                 <label>Disciplina libre</label>
                 <input type="text" id="edit_disciplinaLibre" value="${disciplinaLibre?.disciplina || ''}">
             `;
 
-                    document.getElementById('tab-bancarios').innerHTML = `
+                    document.getElementById('bancarios').innerHTML = `
                 <label>Alias A</label>
                 <input type="text" id="edit_alias_a" value="${bancarios?.alias_a || ''}">
                 <label>CBU A</label>
