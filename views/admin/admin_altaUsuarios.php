@@ -513,45 +513,84 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
         })
 
         // cargamos usuarios
-        function cargarUsuarios() {
+        let paginaActual = 1;
+
+        function cargarUsuarios(pagina = 1) {
             const dni = document.getElementById("buscarCuit").value;
             const nombre = document.getElementById("buscarNombre").value;
 
-            fetch(`../../controllers/admin_altaUsuariosController.php?dni=${dni}&nombre=${nombre}`)
+            fetch(`../../controllers/admin_altaUsuariosController.php?dni=${dni}&nombre=${nombre}&page=${pagina}`)
                 .then(res => res.json())
                 .then(data => {
                     const tabla = document.getElementById("tablaUsuarios");
                     tabla.innerHTML = "";
 
                     if (data.status === "success") {
+                        if (data.data.length === 0) {
+                            tabla.innerHTML = `<tr><td colspan="7">No hay resultados.</td></tr>`;
+                            return;
+                        }
+
                         data.data.forEach(user => {
                             const fila = `
-    <tr>
-        <td>${user.id}</td>
-        <td>${user.nombre}</td>
-        <td>${user.correo}</td>
-        <td>${user.telefono}</td>
-        <td>${user.dni ?? '-'}</td>
-        <td>${user.n_socio ?? '-'}</td>
-<td>
-    <button class="btn btn-icon btn-editar" title="Editar" data-tooltip="Editar usuario">
-        <span class="material-icons" style="color: #2563eb;">edit</span>
-    </button>
-    <button class="btn btn-icon btn-borrar" title="Borrar" data-tooltip="Borrar usuario">
-        <span class="material-icons" style="color: #dc2626;">delete</span>
-    </button>
-</td>
-    </tr>`;
+<tr>
+    <td>${user.id}</td>
+    <td>${user.nombre}</td>
+    <td>${user.correo}</td>
+    <td>${user.telefono}</td>
+    <td>${user.dni ?? '-'}</td>
+    <td>${user.n_socio ?? '-'}</td>
+    <td>
+        <button class="btn btn-icon btn-editar" title="Editar"><span class="material-icons" style="color: #2563eb;">edit</span></button>
+        <button class="btn btn-icon btn-borrar" title="Borrar"><span class="material-icons" style="color: #dc2626;">delete</span></button>
+    </td>
+</tr>`;
                             tabla.innerHTML += fila;
                         });
+
+                        renderPaginacion(data.page, data.pages);
                     } else {
-                        tabla.innerHTML = `<tr><td colspan="6">Error al cargar usuarios.</td></tr>`;
+                        tabla.innerHTML = `<tr><td colspan="7">Error al cargar usuarios.</td></tr>`;
                     }
                 })
                 .catch(err => {
                     console.error(err);
                 });
         }
+
+        function renderPaginacion(pagina, totalPaginas) {
+            const container = document.getElementById("paginacionUsuarios");
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            if (totalPaginas <= 1) return;
+
+            const prevBtn = document.createElement("button");
+            prevBtn.textContent = "Anterior";
+            prevBtn.disabled = pagina === 1;
+            prevBtn.onclick = () => {
+                paginaActual--;
+                cargarUsuarios(paginaActual);
+            };
+
+            const nextBtn = document.createElement("button");
+            nextBtn.textContent = "Siguiente";
+            nextBtn.disabled = pagina === totalPaginas;
+            nextBtn.onclick = () => {
+                paginaActual++;
+                cargarUsuarios(paginaActual);
+            };
+
+            container.appendChild(prevBtn);
+
+            const pageInfo = document.createElement("span");
+            pageInfo.textContent = ` Página ${pagina} de ${totalPaginas} `;
+            container.appendChild(pageInfo);
+
+            container.appendChild(nextBtn);
+        }
+
 
         // abrir modal de eliminar usuario
         function openModal() {
