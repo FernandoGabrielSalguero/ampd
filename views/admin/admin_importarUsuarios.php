@@ -142,6 +142,15 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 </div>
             </div>
 
+            <!-- Reporte de errores -->
+            <div id="listaErrores" class="card hidden" style="margin-top: 20px;">
+                <h3>Errores encontrados</h3>
+                <ul id="listaErroresUl" style="font-size: 14px; line-height: 1.5; max-height: 300px; overflow-y: auto;"></ul>
+                <div style="text-align: right; margin-top: 10px;">
+                    <button class="btn btn-cancelar" id="descargarErrores">Descargar errores</button>
+                </div>
+            </div>
+
         </div>
     </div>
     <!-- Spinner Global -->
@@ -265,18 +274,46 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                 info.innerText = `Procesados: ${procesados} / ${total}`;
                 resumen.innerHTML = `
-    ✅ Insertados: ${insertados} <br>
-    🔁 Actualizados: ${actualizados} <br>
-    ⚠️ Errores: ${errores} <br>
-    ⏱ Tiempo estimado: ${tiempoEstimado}s <br>
-    🕒 Tiempo transcurrido: ${tiempoTranscurrido}s <br>
-    ⌛ Estimado restante: ${tiempoRestante}s
-    `;
+                ✅ Insertados: ${insertados} <br>
+                🔁 Actualizados: ${actualizados} <br>
+                ⚠️ Errores: ${errores} <br>
+                ⏱ Tiempo estimado: ${tiempoEstimado}s <br>
+                🕒 Tiempo transcurrido: ${tiempoTranscurrido}s <br>
+                ⌛ Estimado restante: ${tiempoRestante}s
+                `;
 
                 // Mostrar resumen de errores si existen
                 if (errores > 0) {
                     console.warn("Errores detectados:");
                     console.warn(result.errores || []);
+                }
+
+                // Mostrar errores al finalizar todo
+                const lista = document.getElementById("listaErroresUl");
+                const cardErrores = document.getElementById("listaErrores");
+                lista.innerHTML = "";
+
+                let erroresTotales = [];
+
+                try {
+                    csvData.forEach((fila, i) => {
+                        // Este resultado parcial es por bloque
+                        if (fila._error) {
+                            erroresTotales.push(fila._error);
+                        }
+                    });
+                } catch (e) {
+                    console.warn("No se pudieron mapear errores por fila.");
+                }
+
+                if (errores > 0 && result && Array.isArray(result.errores)) {
+                    result.errores.forEach(err => {
+                        const li = document.createElement("li");
+                        li.innerHTML = `🟠 Fila <strong>${err.fila}</strong> — DNI <strong>${err.dni}</strong>: ${err.error}`;
+                        lista.appendChild(li);
+                    });
+
+                    cardErrores.classList.remove("hidden");
                 }
             }
 
