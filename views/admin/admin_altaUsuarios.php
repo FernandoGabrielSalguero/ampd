@@ -237,48 +237,220 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
     </div>
 
     <!-- Modal para editar usuario -->
+    <!-- Modal para editar usuario -->
     <div id="modal-editar" class="modal hidden">
         <div class="modal-content" style="max-height: 80vh; overflow-y: auto;">
             <h3>Editar usuario</h3>
-            <form id="formEditarUsuario">
+            <form class="form-modern" id="formEditarUsuario">
                 <input type="hidden" name="usuario_id" id="edit_usuario_id">
 
+                <!-- Datos básicos -->
                 <h4>Datos básicos</h4>
-                <input type="text" name="nombre" id="edit_nombre" placeholder="Nombre" required>
-                <input type="text" name="correo" id="edit_correo" placeholder="Correo">
-                <input type="text" name="telefono" id="edit_telefono" placeholder="Teléfono">
-                <input type="text" name="dni" id="edit_dni" placeholder="DNI">
+                <div class="form-grid grid-2">
+                    <div class="input-group">
+                        <label for="edit_nombre">Nombre</label>
+                        <div class="input-icon">
+                            <span class="material-icons">person</span>
+                            <input type="text" name="nombre" id="edit_nombre" placeholder="Nombre" required>
+                        </div>
+                    </div>
 
+                    <div class="input-group">
+                        <label for="edit_correo">Correo</label>
+                        <div class="input-icon">
+                            <span class="material-icons">email</span>
+                            <input type="email" name="correo" id="edit_correo" placeholder="Correo">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="edit_telefono">Teléfono</label>
+                        <div class="input-icon">
+                            <span class="material-icons">call</span>
+                            <input type="text" name="telefono" id="edit_telefono" placeholder="Teléfono">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="edit_dni">DNI</label>
+                        <div class="input-icon">
+                            <span class="material-icons">assignment_ind</span>
+                            <input type="text" name="dni" id="edit_dni" placeholder="DNI">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información adicional -->
                 <h4>Información adicional</h4>
-                <input type="text" name="direccion" id="edit_direccion" placeholder="Dirección">
-                <input type="text" name="localidad" id="edit_localidad" placeholder="Localidad">
-                <input type="date" name="fecha_nacimiento" id="edit_fecha_nacimiento" placeholder="Fecha de nacimiento">
+                <div class="form-grid grid-2">
+                    <div class="input-group">
+                        <label for="edit_direccion">Dirección</label>
+                        <div class="input-icon">
+                            <span class="material-icons">home</span>
+                            <input type="text" name="direccion" id="edit_direccion" placeholder="Dirección">
+                        </div>
+                    </div>
 
-                <h4>Datos bancarios</h4>
+                    <div class="input-group">
+                        <label for="edit_localidad">Localidad</label>
+                        <div class="input-icon">
+                            <span class="material-icons">location_city</span>
+                            <input type="text" name="localidad" id="edit_localidad" placeholder="Localidad">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="edit_fecha_nacimiento">Fecha de nacimiento</label>
+                        <div class="input-icon">
+                            <span class="material-icons">calendar_today</span>
+                            <input type="date" name="fecha_nacimiento" id="edit_fecha_nacimiento">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cuenta A -->
                 <h4>Cuenta A</h4>
-                <input type="text" name="alias_a" id="edit_alias_a" placeholder="Alias A">
-                <input type="text" name="cbu_a" id="edit_cbu_a" placeholder="CBU A">
-                <input type="text" name="titular_a" id="edit_titular_a" placeholder="Titular A">
-                <input type="text" name="cuit_a" id="edit_cuit_a" placeholder="CUIT A">
-                <input type="text" name="banco_a" id="edit_banco_a" placeholder="Banco A">
+                <div class="form-grid grid-2">
+                    <div class="input-group">
+                        <label for="edit_alias_a">Alias A</label>
+                        <div class="input-icon">
+                            <span class="material-icons">alternate_email</span>
+                            <input type="text" name="alias_a" id="edit_alias_a" placeholder="Alias A">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="edit_cbu_a">CBU A</label>
+                        <div class="input-icon">
+                            <span class="material-icons">account_balance</span>
+                            <input type="text" name="cbu_a" id="edit_cbu_a" placeholder="CBU A">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="edit_titular_a">Titular A</label>
+                        <div class="input-icon">
+                            <span class="material-icons">person</span>
+                            <input type="text" name="titular_a" id="edit_titular_a" placeholder="Titular A">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="edit_cuit_a">CUIT A</label>
+                        <div class="input-icon">
+                            <span class="material-icons">badge</span>
+                            <input type="text" name="cuit_a" id="edit_cuit_a" placeholder="CUIT A">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="edit_banco_a">Banco A</label>
+                        <div class="input-icon">
+                            <span class="material-icons">account_balance_wallet</span>
+                            <input type="text" name="banco_a" id="edit_banco_a" placeholder="Banco A">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cuenta B -->
                 <h4>Cuenta B</h4>
-                <input type="text" name="alias_b" id="edit_alias_b" placeholder="Alias B">
-                <input type="text" name="cbu_b" id="edit_cbu_b" placeholder="CBU B">
-                <input type="text" name="titular_b" id="edit_titular_b" placeholder="Titular B">
-                <input type="text" name="cuit_b" id="edit_cuit_b" placeholder="CUIT B">
-                <input type="text" name="banco_b" id="edit_banco_b" placeholder="Banco B">
+                <div class="form-grid grid-2">
+                    <div class="input-group">
+                        <label for="edit_alias_b">Alias B</label>
+                        <div class="input-icon">
+                            <span class="material-icons">alternate_email</span>
+                            <input type="text" name="alias_b" id="edit_alias_b" placeholder="Alias B">
+                        </div>
+                    </div>
 
+                    <div class="input-group">
+                        <label for="edit_cbu_b">CBU B</label>
+                        <div class="input-icon">
+                            <span class="material-icons">account_balance</span>
+                            <input type="text" name="cbu_b" id="edit_cbu_b" placeholder="CBU B">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="edit_titular_b">Titular B</label>
+                        <div class="input-icon">
+                            <span class="material-icons">person</span>
+                            <input type="text" name="titular_b" id="edit_titular_b" placeholder="Titular B">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="edit_cuit_b">CUIT B</label>
+                        <div class="input-icon">
+                            <span class="material-icons">badge</span>
+                            <input type="text" name="cuit_b" id="edit_cuit_b" placeholder="CUIT B">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="edit_banco_b">Banco B</label>
+                        <div class="input-icon">
+                            <span class="material-icons">account_balance_wallet</span>
+                            <input type="text" name="banco_b" id="edit_banco_b" placeholder="Banco B">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cuenta C -->
                 <h4>Cuenta C</h4>
-                <input type="text" name="alias_c" id="edit_alias_c" placeholder="Alias C">
-                <input type="text" name="cbu_c" id="edit_cbu_c" placeholder="CBU C">
-                <input type="text" name="titular_c" id="edit_titular_c" placeholder="Titular C">
-                <input type="text" name="cuit_c" id="edit_cuit_c" placeholder="CUIT C">
-                <input type="text" name="banco_c" id="edit_banco_c" placeholder="Banco C">
+                <div class="form-grid grid-2">
+                    <div class="input-group">
+                        <label for="edit_alias_c">Alias C</label>
+                        <div class="input-icon">
+                            <span class="material-icons">alternate_email</span>
+                            <input type="text" name="alias_c" id="edit_alias_c" placeholder="Alias C">
+                        </div>
+                    </div>
 
+                    <div class="input-group">
+                        <label for="edit_cbu_c">CBU C</label>
+                        <div class="input-icon">
+                            <span class="material-icons">account_balance</span>
+                            <input type="text" name="cbu_c" id="edit_cbu_c" placeholder="CBU C">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="edit_titular_c">Titular C</label>
+                        <div class="input-icon">
+                            <span class="material-icons">person</span>
+                            <input type="text" name="titular_c" id="edit_titular_c" placeholder="Titular C">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="edit_cuit_c">CUIT C</label>
+                        <div class="input-icon">
+                            <span class="material-icons">badge</span>
+                            <input type="text" name="cuit_c" id="edit_cuit_c" placeholder="CUIT C">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="edit_banco_c">Banco C</label>
+                        <div class="input-icon">
+                            <span class="material-icons">account_balance_wallet</span>
+                            <input type="text" name="banco_c" id="edit_banco_c" placeholder="Banco C">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Disciplina libre -->
                 <h4>Disciplina libre</h4>
-                <input type="text" name="disciplina_libre" id="edit_disciplina_libre" placeholder="Disciplina libre">
+                <div class="input-group">
+                    <label for="edit_disciplina_libre">Disciplina</label>
+                    <div class="input-icon">
+                        <span class="material-icons">sports</span>
+                        <input type="text" name="disciplina_libre" id="edit_disciplina_libre" placeholder="Disciplina libre">
+                    </div>
+                </div>
 
-                <!-- botón de guardar -->
+                <!-- Botones -->
                 <div class="form-buttons">
                     <button class="btn btn-aceptar" type="submit">Guardar</button>
                     <button class="btn btn-cancelar" type="button" onclick="closeEditModal()">Cancelar</button>
@@ -286,6 +458,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
             </form>
         </div>
     </div>
+
 
 
     <!-- Spinner Global -->
