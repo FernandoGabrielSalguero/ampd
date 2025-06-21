@@ -17,13 +17,13 @@ class AdminImportarUsuariosModel
             return; // Ya existe, salteamos
         }
 
-        // Insertar en usuarios
-        $stmt = $this->db->query("SELECT MAX(n_socio) FROM usuarios");
-        $maxSocio = $stmt->fetchColumn();
-        $n_socio = $maxSocio ? $maxSocio + 1 : 1;
+        // Tomar n_socio directamente del CSV (sin generar nuevo)
+        $n_socio = isset($row['n_socio']) ? (int)$row['n_socio'] : null;
 
+        // Generar hash de contraseña desde el DNI
         $contrasenaHash = password_hash($row['dni'], PASSWORD_BCRYPT);
 
+        // Insertar en usuarios
         $stmt = $this->db->prepare("INSERT INTO usuarios (usuario, contrasena, nombre, correo, telefono, dni, n_socio)
                                     VALUES (:usuario, :contrasena, :nombre, :correo, :telefono, :dni, :n_socio)");
         $stmt->execute([
@@ -44,7 +44,7 @@ class AdminImportarUsuariosModel
             ':uid' => $usuarioId
         ]);
 
-        // Insertar en user_bancarios
+        // Insertar en user_bancarios (solo cuenta A en esta versión)
         $stmt = $this->db->prepare("INSERT INTO user_bancarios (cbu_a, alias_a, titular_a, banco_a, cuit_a, usuario_id)
                                     VALUES (:cbu, :alias, :titular, :banco, :cuit, :uid)");
         $stmt->execute([
@@ -56,7 +56,7 @@ class AdminImportarUsuariosModel
             ':uid' => $usuarioId
         ]);
 
-        // Insertar disciplina libre
+        // Insertar en user_disciplina (disciplina libre)
         $stmt = $this->db->prepare("INSERT INTO user_disciplina (disciplina, usuario_id) VALUES (:disciplina, :uid)");
         $stmt->execute([
             ':disciplina' => $row['user_disciplina'] ?? '',
