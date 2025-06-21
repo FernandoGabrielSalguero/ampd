@@ -258,18 +258,23 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                     if (data.status === "success") {
                         data.data.forEach(user => {
-                            const fila = `
-                            <tr>
-                                <td>${user.nombre}</td>
-                                <td>${user.correo}</td>
-                                <td>${user.telefono}</td>
-                                <td>${user.dni}</td>
-                                <td>${user.n_socio}</td>
-                                <td>
-                                    <button class="btn btn-editar">✏️</button>
-                                    <button class="btn btn-borrar">🗑️</button>
-                                </td>
-                            </tr>`;
+const fila = `
+    <tr>
+        <td>${user.id}</td>
+        <td>${user.nombre}</td>
+        <td>${user.correo}</td>
+        <td>${user.telefono}</td>
+        <td>${user.dni ?? '-'}</td>
+        <td>${user.n_socio ?? '-'}</td>
+        <td>
+            <button class="btn btn-icon btn-editar" title="Editar">
+                <span class="material-icons">edit</span>
+            </button>
+            <button class="btn btn-icon btn-borrar" title="Borrar">
+                <span class="material-icons">delete</span>
+            </button>
+        </td>
+    </tr>`;
                             tabla.innerHTML += fila;
                         });
                     } else {
