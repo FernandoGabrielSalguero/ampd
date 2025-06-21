@@ -138,7 +138,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
         </div>
     </div>
     <!-- Spinner Global -->
-    <script src="../../views/partials/spinner-global.js"></script>
+    <!-- <script src="../../views/partials/spinner-global.js"></script> -->
 
     <script>
         console.log(<?php echo json_encode($_SESSION); ?>);
