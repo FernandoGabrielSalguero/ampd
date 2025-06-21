@@ -118,7 +118,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 <label for="usuario">Nombre</label>
                                 <div class="input-icon">
                                     <span class="material-icons">person</span>
-                                    <input type="text" id="user_nombre" name="user_nombre" placeholder="Coloca el Nombre del asociado" required>
+                                    <input type="text" id="user_nombre" name="user_nombre" placeholder="Nombre del asociado" required>
                                 </div>
                             </div>
 
@@ -127,7 +127,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 <label for="usuario">DNI</label>
                                 <div class="input-icon">
                                     <span class="material-icons">assignment_ind</span>
-                                    <input type="number" id="user_dni" name="user_dni" placeholder="Coloca el DNI del asociado" required>
+                                    <input type="number" id="user_dni" name="user_dni" placeholder="DNI del asociado" required>
                                 </div>
                             </div>
 
@@ -136,7 +136,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 <label for="usuario">Correo</label>
                                 <div class="input-icon">
                                     <span class="material-icons">email</span>
-                                    <input type="email" id="user_correo" name="user_correo" placeholder="Coloca el Apellido del asociado" required>
+                                    <input type="email" id="user_correo" name="user_correo" placeholder="Correo del asociado" required>
                                 </div>
                             </div>
 
@@ -145,7 +145,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 <label for="usuario">Telefono</label>
                                 <div class="input-icon">
                                     <span class="material-icons">call</span>
-                                    <input type="text" id="user_telefono" name="user_telefono" placeholder="Coloca el Telefono del asociado" required>
+                                    <input type="text" id="user_telefono" name="user_telefono" placeholder="Telefono del asociado" required>
                                 </div>
                             </div>
 
