@@ -142,9 +142,9 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                             <!-- Telefono -->
                             <div class="input-group">
-                                <label for="usuario">call</label>
+                                <label for="usuario">Telefono</label>
                                 <div class="input-icon">
-                                    <span class="material-icons">person</span>
+                                    <span class="material-icons">call</span>
                                     <input type="text" id="user_telefono" name="user_telefono" placeholder="Coloca el Telefono del asociado" required>
                                 </div>
                             </div>
