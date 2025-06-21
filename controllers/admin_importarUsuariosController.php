@@ -7,7 +7,7 @@ require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../models/admin_importarUsuariosModel.php';
 
 header('Content-Type: application/json');
-
+ob_start();
 try {
     $model = new AdminImportarUsuariosModel($pdo);
 
@@ -70,10 +70,14 @@ try {
 
     http_response_code(405);
     echo json_encode(['status' => 'error', 'message' => 'Método no permitido']);
-} catch (Throwable $e) {
+} catch (Exception $e) {
     http_response_code(500);
+
+    $buffer = ob_get_clean();
     echo json_encode([
         'status' => 'error',
-        'message' => $e->getMessage()
+        'message' => $e->getMessage(),
+        'trace' => $e->getTraceAsString(),
+        'output' => $buffer,
     ]);
 }

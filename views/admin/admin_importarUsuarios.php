@@ -71,6 +71,9 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     <li onclick="location.href='admin_altaUsuarios.php'">
                         <span class="material-icons" style="color: #5b21b6;">person</span><span class="link-text">Alta usuarios</span>
                     </li>
+                    <li onclick="location.href='admin_importarUsuarios.php'">
+                        <span class="material-icons" style="color: #5b21b6;">upload_file</span><span class="link-text">Carga Masiva</span>
+                    </li>
                     <li onclick="location.href='admin_pagoFacturas.php'">
                         <span class="material-icons" style="color: #5b21b6;">upload_file</span><span class="link-text">Pago Facturas</span>
                     </li>
@@ -133,8 +136,12 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     <p id="progresoInfo">Iniciando...</p>
                     <progress id="barraProgreso" value="0" max="100" style="width: 100%;"></progress>
                     <div id="progresoResumen" style="margin-top: 10px; font-size: 14px;"></div>
+                    <div style="text-align: right; margin-top: 15px;">
+                        <button id="cerrarModalProgreso" class="btn btn-cancelar hidden">Cerrar</button>
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
     <!-- Spinner Global -->
@@ -178,9 +185,10 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                         showAlert('error', data.message);
                     }
                 })
-                .catch(err => {
-                    console.error(err);
-                    showAlert('error', 'Error al procesar el archivo.');
+                .catch(async err => {
+                    const errorText = await err.text?.(); // Si fetch lanza un error y hay respuesta
+                    console.error("Error en fetch:", errorText);
+                    showAlert("error", "Error inesperado: " + errorText.slice(0, 300));
                 });
         });
 
@@ -252,6 +260,11 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
             }
 
             info.innerText = "✅ Proceso finalizado.";
+            document.getElementById("cerrarModalProgreso").classList.remove("hidden");
+        });
+
+        document.getElementById("cerrarModalProgreso").addEventListener("click", () => {
+            document.getElementById("modalProgreso").classList.add("hidden");
         });
     </script>
 </body>
