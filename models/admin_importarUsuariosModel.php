@@ -31,10 +31,10 @@ class AdminImportarUsuariosModel
                 n_socio = :n_socio
                 WHERE id_ = :id");
             $stmt->execute([
-                ':usuario' => $row['usuario'],
-                ':nombre' => $row['nombre'],
-                ':correo' => $row['correo'],
-                ':telefono' => $row['telefono'],
+                ':usuario' => $row['usuario'] ?? null,
+                ':nombre' => $row['nombre'] ?? null,
+                ':correo' => $row['correo'] ?? null,
+                ':telefono' => $row['telefono'] ?? null,
                 ':n_socio' => isset($row['n_socio']) ? trim($row['n_socio']) : null,
                 ':id' => $usuarioId
             ]);

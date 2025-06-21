@@ -228,8 +228,9 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     });
 
                     const text = await res.text();
+                    let result;
                     try {
-                        const result = JSON.parse(text);
+                        result = JSON.parse(text);
                         if (result.status === "success") {
                             insertados += result.insertados || 0;
                             actualizados += result.actualizados || 0;
@@ -241,14 +242,14 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     } catch (parseErr) {
                         errores += chunk.length;
                         console.error("❌ Respuesta no válida JSON:", text);
+                        result = null; // prevenir uso posterior
                     }
-                    if (result.status === "success") {
-                        insertados += result.insertados || 0;
-                        actualizados += result.actualizados || 0;
-                        errores += (result.errores || []).length;
-                    } else {
-                        errores += chunk.length;
+
+                    if (result && result.errores && result.errores.length > 0) {
+                        console.warn("Errores detectados:");
+                        console.warn(result.errores);
                     }
+
 
                 } catch (err) {
                     console.error("Error en bloque", err);
