@@ -377,10 +377,10 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
             window.usuarioEditandoId = id;
 
             // Limpiar los contenidos antes de cargar nuevos
-            document.getElementById('tab-info').innerHTML = '<p>Cargando...</p>';
-            document.getElementById('tab-disciplinas').innerHTML = '<p>Cargando...</p>';
-            document.getElementById('tab-disciplinaLibre').innerHTML = '<p>Cargando...</p>';
-            document.getElementById('tab-bancarios').innerHTML = '<p>Cargando...</p>';
+            document.getElementById('info').innerHTML = '<p>Cargando...</p>';
+            document.getElementById('disciplinas').innerHTML = '<p>Cargando...</p>';
+            document.getElementById('disciplinaLibre').innerHTML = '<p>Cargando...</p>';
+            document.getElementById('bancarios').innerHTML = '<p>Cargando...</p>';
 
             // Mostrar el modal antes del fetch
             document.getElementById("modalEditar").classList.remove("hidden");
