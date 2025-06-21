@@ -520,10 +520,10 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
             const nombre = document.getElementById("buscarNombre").value;
 
             fetch(`../../controllers/admin_altaUsuariosController.php?dni=${dni}&nombre=${nombre}&page=${pagina}`)
-    .then(res => res.text()) // ⬅️ en lugar de .json()
-    .then(text => {
-        console.log("🪵 Respuesta cruda:", text); // ⬅️ Esto te mostrará el texto exacto
-        const data = JSON.parse(text); // Luego lo parseamos manualmente
+                .then(res => res.json())
+                .then(data => {
+                    const tabla = document.getElementById("tablaUsuarios");
+                    tabla.innerHTML = "";
 
                     if (data.status === "success") {
                         if (data.data.length === 0) {
