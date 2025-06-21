@@ -111,7 +111,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 <div class="card">
                     <h2>Crear nuevo usuario</h2>
                     <form class="form-modern" id="formUsuario">
-                        <div class="form-grid grid-2">
+                        <div class="form-grid grid-4">
 
                             <!-- Nombre -->
                             <div class="input-group">
