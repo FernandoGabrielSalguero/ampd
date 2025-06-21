@@ -236,6 +236,43 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
         </div>
     </div>
 
+    <!-- Modal para editar usuario -->
+<div id="modal-editar" class="modal hidden">
+    <div class="modal-content" style="max-height: 80vh; overflow-y: auto;">
+        <h3>Editar usuario</h3>
+        <form id="formEditarUsuario">
+            <input type="hidden" name="usuario_id" id="edit_usuario_id">
+            
+            <h4>Datos básicos</h4>
+            <input type="text" name="nombre" id="edit_nombre" placeholder="Nombre" required>
+            <input type="text" name="correo" id="edit_correo" placeholder="Correo">
+            <input type="text" name="telefono" id="edit_telefono" placeholder="Teléfono">
+            <input type="text" name="dni" id="edit_dni" placeholder="DNI">
+
+            <h4>Información adicional</h4>
+            <input type="text" name="direccion" id="edit_direccion" placeholder="Dirección">
+            <input type="text" name="localidad" id="edit_localidad" placeholder="Localidad">
+            <input type="date" name="fecha_nacimiento" id="edit_fecha_nacimiento" placeholder="Fecha de nacimiento">
+
+            <h4>Datos bancarios</h4>
+            <input type="text" name="alias_a" id="edit_alias_a" placeholder="Alias A">
+            <input type="text" name="cbu_a" id="edit_cbu_a" placeholder="CBU A">
+            <input type="text" name="titular_a" id="edit_titular_a" placeholder="Titular A">
+            <input type="text" name="cuit_a" id="edit_cuit_a" placeholder="CUIT A">
+            <input type="text" name="banco_a" id="edit_banco_a" placeholder="Banco A">
+
+            <h4>Disciplina libre</h4>
+            <input type="text" name="disciplina_libre" id="edit_disciplina_libre" placeholder="Disciplina libre">
+
+            <!-- botón de guardar -->
+            <div class="form-buttons">
+                <button class="btn btn-aceptar" type="submit">Guardar</button>
+                <button class="btn btn-cancelar" type="button" onclick="closeEditModal()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 
     <!-- Spinner Global -->
     <script src="../../views/partials/spinner-global.js"></script>
@@ -372,6 +409,87 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     closeModal();
                 });
         });
+
+        // logica modal editar usuario
+        function openEditModal() {
+    document.getElementById("modal-editar").classList.remove("hidden");
+}
+
+function closeEditModal() {
+    document.getElementById("modal-editar").classList.add("hidden");
+}
+
+document.addEventListener("click", function (e) {
+    if (e.target.closest(".btn-editar")) {
+        const fila = e.target.closest("tr");
+        const id = fila.querySelector("td").textContent.trim();
+
+        fetch(`../../controllers/admin_altaUsuariosController.php?detalle=1&id=${id}`)
+            .then(res => res.json())
+            .then(data => {
+                console.log("📦 Datos recibidos para edición:", data); // Debug
+                if (data.status === "success") {
+                    const u = data.data;
+
+                    document.getElementById("edit_usuario_id").value = id;
+                    document.getElementById("edit_nombre").value = u.info.nombre ?? '';
+                    document.getElementById("edit_correo").value = u.info.correo ?? '';
+                    document.getElementById("edit_telefono").value = u.info.telefono ?? '';
+                    document.getElementById("edit_dni").value = u.info.dni ?? '';
+
+                    document.getElementById("edit_direccion").value = u.info.user_direccion ?? '';
+                    document.getElementById("edit_localidad").value = u.info.user_localidad ?? '';
+                    document.getElementById("edit_fecha_nacimiento").value = u.info.user_fecha_nacimiento ?? '';
+
+                    document.getElementById("edit_alias_a").value = u.bancarios.alias_a ?? '';
+                    document.getElementById("edit_cbu_a").value = u.bancarios.cbu_a ?? '';
+                    document.getElementById("edit_titular_a").value = u.bancarios.titular_a ?? '';
+                    document.getElementById("edit_cuit_a").value = u.bancarios.cuit_a ?? '';
+                    document.getElementById("edit_banco_a").value = u.bancarios.banco_a ?? '';
+
+                    document.getElementById("edit_disciplina_libre").value = u.disciplinaLibre.disciplina ?? '';
+
+                    openEditModal();
+                } else {
+                    showAlert('error', 'No se pudo cargar la información del usuario.');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                showAlert('error', 'Error al obtener datos del usuario.');
+            });
+    }
+});
+
+// Enviar los cambios al backend
+document.getElementById("formEditarUsuario").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+    fetch("../../controllers/admin_altaUsuariosController.php", {
+        method: "PUT",
+        body: JSON.stringify(Object.fromEntries(formData)),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "success") {
+                showAlert('success', 'Usuario actualizado correctamente.');
+                closeEditModal();
+                cargarUsuarios();
+            } else {
+                showAlert('error', data.message);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            showAlert('error', 'Error de conexión al actualizar.');
+        });
+});
+
     </script>
 
     </div>

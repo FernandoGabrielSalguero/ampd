@@ -77,6 +77,17 @@ try {
         exit;
     }
 
+    if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+    $input = json_decode(file_get_contents("php://input"), true);
+    if (!$input || !isset($input['usuario_id'])) {
+        throw new Exception("Faltan datos obligatorios para editar.");
+    }
+
+    $model->actualizarUsuario($input['usuario_id'], $input);
+    echo json_encode(['status' => 'success', 'message' => 'Usuario actualizado correctamente.']);
+    exit;
+}
+
     if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         $input = json_decode(file_get_contents("php://input"), true);
         $id = $input['id'] ?? null;
