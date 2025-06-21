@@ -245,7 +245,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                 <!-- Datos básicos -->
                 <h4>Datos básicos</h4>
-                <div class="form-grid grid-2">
+                <div class="form-grid grid-3">
                     <div class="input-group">
                         <label for="edit_nombre">Nombre</label>
                         <div class="input-icon">
