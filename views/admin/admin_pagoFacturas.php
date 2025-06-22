@@ -466,7 +466,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                         grupo.style.display = 'none';
                         document.getElementById('descuento_cuota').value = 0;
                     } else {
-                        showAlert('error', `El socio ${data.nombre} NO tiene la cuota ${new Date().getFullYear()} pagada. Podés descontarla en esta operación.`);
+                        showAlert('error', `El socio ${data.nombre}, NO tiene la cuota ${new Date().getFullYear()} pagada. Podés descontarla en esta operación.`);
                         grupo.style.display = 'block';
                         document.getElementById('descuento_cuota').value = '';
                     }
