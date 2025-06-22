@@ -315,6 +315,8 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     </div>
                 </div>
 
+                <!-- Alert -->
+                <div class="alert-container" id="alertContainer"></div>
 
             </section>
 
@@ -459,12 +461,14 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                     // 👉 Verificación de cuota anual
                     const grupo = document.getElementById('grupo_descuento_cuota');
-                    if (!data.cuota_pagada) {
-                        grupo.style.display = 'block';
-                        document.getElementById('descuento_cuota').value = ''; // para ingresar manualmente
-                    } else {
+                    if (data.cuota_pagada) {
+                        showAlert('success', `El socio ${data.nombre} tiene la cuota ${new Date().getFullYear()} pagada.`);
                         grupo.style.display = 'none';
                         document.getElementById('descuento_cuota').value = 0;
+                    } else {
+                        showAlert('error', `El socio ${data.nombre} NO tiene la cuota ${new Date().getFullYear()} pagada. Podés descontarla en esta operación.`);
+                        grupo.style.display = 'block';
+                        document.getElementById('descuento_cuota').value = '';
                     }
 
                     calcularTotal(); // recalcular total si aplica cuota
