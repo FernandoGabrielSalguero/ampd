@@ -417,12 +417,12 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 .then(res => res.text())
                 .then(text => {
                     if (text.trim() === 'ok') {
-                        alert('✅ Pago guardado correctamente');
+                        showAlert('success', 'Pago guardado correctamente');
                         form.reset();
                         document.getElementById('total_despues_impuestos').value = '';
                         cargarTablaPagos();
                     } else {
-                        alert('❌ Hubo un problema al guardar:\n' + text);
+                        showAlert('error', 'Hubo un problema al guardar:\n' + text);
                         console.error('Respuesta:', text);
                     }
                 });
@@ -439,7 +439,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 .then(res => res.json())
                 .then(data => {
                     if (data.error) {
-                        alert('❌ ' + data.error + '\nVerificá que el DNI esté registrado y tenga cuentas bancarias.');
+                        showAlert('error', 'Verificá que el DNI esté registrado y tenga cuentas bancarias.');
                         document.getElementById('nombre_completo_beneficiario').value = '';
                         document.getElementById('usuario_id').value = '';
                         return;
@@ -487,7 +487,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                 })
                 .catch(err => {
                     console.error('Error consultando el DNI:', err);
-                    alert('⚠️ Error al buscar el beneficiario.');
+                    showAlert('error', 'Error al buscar el beneficiario.');
                 });
         });
 
