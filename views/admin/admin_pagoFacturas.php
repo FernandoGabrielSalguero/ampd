@@ -116,19 +116,42 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     <form class="form-modern" action="../../controllers/admin_pagoFacturasController.php" method="POST" enctype="multipart/form-data" id="formPagoEvento">
                         <div class="form-grid grid-4">
 
+                            <!-- DNI para buscar beneficiario -->
+                            <div class="input-group">
+                                <label for="dni_beneficiario">DNI del Beneficiario</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">badge</span>
+                                    <input type="text" name="dni_beneficiario" id="dni_beneficiario" required>
+                                </div>
+                            </div>
+
+                            <!-- Nombre completo (autocompletado si el DNI coincide) -->
                             <div class="input-group">
                                 <label for="nombre_completo_beneficiario">Nombre completo</label>
                                 <div class="input-icon">
                                     <span class="material-icons">person</span>
-                                    <input type="text" name="nombre_completo_beneficiario" id="nombre_completo_beneficiario" required>
+                                    <input type="text" name="nombre_completo_beneficiario" id="nombre_completo_beneficiario" required readonly>
                                 </div>
                             </div>
 
+
+                            <!-- Campo oculto para guardar usuario_id -->
+                            <input type="hidden" name="usuario_id" id="usuario_id">
+
+                            <!-- Selector para elegir cuenta bancaria (si hay más de una) -->
+                            <div class="input-group" id="selectorCuentaContainer" style="display: none;">
+                                <label for="selectorCuenta">Seleccionar cuenta bancaria</label>
+                                <select id="selectorCuenta" class="input" style="width: 100%;">
+                                    <!-- Opciones generadas por JS -->
+                                </select>
+                            </div>
+
+                            <!-- Datos bancarios autocompletados -->
                             <div class="input-group">
                                 <label for="cuit_beneficiario">CUIT Beneficiario</label>
                                 <div class="input-icon">
                                     <span class="material-icons">badge</span>
-                                    <input type="text" name="cuit_beneficiario" id="cuit_beneficiario" required>
+                                    <input type="text" name="cuit_beneficiario" id="cuit_beneficiario" required readonly>
                                 </div>
                             </div>
 
@@ -136,7 +159,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 <label for="cbu_beneficiario">CBU Beneficiario</label>
                                 <div class="input-icon">
                                     <span class="material-icons">credit_card</span>
-                                    <input type="text" name="cbu_beneficiario" id="cbu_beneficiario" required>
+                                    <input type="text" name="cbu_beneficiario" id="cbu_beneficiario" required readonly>
                                 </div>
                             </div>
 
@@ -144,28 +167,30 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 <label for="alias_beneficiario">Alias Beneficiario</label>
                                 <div class="input-icon">
                                     <span class="material-icons">alternate_email</span>
-                                    <input type="text" name="alias_beneficiario" id="alias_beneficiario">
+                                    <input type="text" name="alias_beneficiario" id="alias_beneficiario" readonly>
                                 </div>
                             </div>
 
-
-
+                            <!-- Fecha del evento -->
                             <div class="input-group">
-                                <label for="telefono_beneficiario">Teléfono</label>
-                                <div class="input-icon">
-                                    <span class="material-icons">call</span>
-                                    <input type="text" name="telefono_beneficiario" id="telefono_beneficiario">
-                                </div>
-                            </div>
-
-                            <div class="input-group">
-                                <label for="evento">Evento</label>
+                                <label for="fecha_evento">Fecha del Evento</label>
                                 <div class="input-icon">
                                     <span class="material-icons">event</span>
-                                    <input type="text" name="evento" id="evento" required>
+                                    <input type="date" name="fecha_evento" id="fecha_evento" required>
                                 </div>
                             </div>
 
+                            <!-- Número de orden -->
+                            <div class="input-group">
+                                <label for="numero_orden">Número de orden</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">confirmation_number</span>
+                                    <input type="text" name="numero_orden" id="numero_orden" required>
+                                </div>
+                            </div>
+
+
+                            <!-- Monto -->
                             <div class="input-group">
                                 <label for="monto">Monto</label>
                                 <div class="input-icon">
@@ -174,69 +199,102 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 </div>
                             </div>
 
-                            <div class="input-group">
-                                <label for="monto">Número de orden</label>
+                            <!-- Descuento por cuota (visible solo si aplica) -->
+                            <div class="input-group" id="grupo_descuento_cuota" style="display: none;">
+                                <label for="descuento_cuota">Descuento por Cuota Anual</label>
                                 <div class="input-icon">
-                                    <span class="material-icons">percent</span>
-                                    <input type="number" step="0.01" name="monto" id="monto" required>
+                                    <span class="material-icons">remove_circle</span>
+                                    <input type="number" step="0.01" name="descuento_cuota" id="descuento_cuota" value="0.00">
+                                </div>
+
+
+                                <!-- Telefono -->
+                                <div class="input-group">
+                                    <label for="telefono_beneficiario">Teléfono</label>
+                                    <div class="input-icon">
+                                        <span class="material-icons">call</span>
+                                        <input type="text" name="telefono_beneficiario" id="telefono_beneficiario">
+                                    </div>
+                                </div>
+
+                                <!-- evento -->
+                                <div class="input-group">
+                                    <label for="evento">Evento</label>
+                                    <div class="input-icon">
+                                        <span class="material-icons">event</span>
+                                        <input type="text" name="evento" id="evento" required>
+                                    </div>
+                                </div>
+
+                                <!-- Numero de orden -->
+                                <div class="input-group">
+                                    <label for="monto">Número de orden</label>
+                                    <div class="input-icon">
+                                        <span class="material-icons">percent</span>
+                                        <input type="number" step="0.01" name="numero_orden" id="numero_orden" required>
+                                    </div>
+                                </div>
+
+                                <!-- Sellado -->
+                                <div class="input-group">
+                                    <label for="sellado">Sellado (%)</label>
+                                    <div class="input-icon">
+                                        <span class="material-icons">percent</span>
+                                        <input type="number" step="0.01" name="sellado" id="sellado" required>
+                                    </div>
+                                </div>
+
+                                <!-- impuesto al cheque -->
+                                <div class="input-group">
+                                    <label for="impuesto_cheque">Impuesto al Cheque (%)</label>
+                                    <div class="input-icon">
+                                        <span class="material-icons">percent</span>
+                                        <input type="number" step="0.01" name="impuesto_cheque" id="impuesto_cheque" required>
+                                    </div>
+                                </div>
+
+                                <!-- retencino -->
+                                <div class="input-group">
+                                    <label for="retencion">Retención (%)</label>
+                                    <div class="input-icon">
+                                        <span class="material-icons">percent</span>
+                                        <input type="number" step="0.01" name="retencion" id="retencion" required>
+                                    </div>
+                                </div>
+
+                                <!-- total final -->
+                                <div class="input-group">
+                                    <label for="total_despues_impuestos">Total Final</label>
+                                    <div class="input-icon">
+                                        <span class="material-icons">calculate</span>
+                                        <input type="text" name="total_despues_impuestos" id="total_despues_impuestos" readonly required>
+                                    </div>
+                                </div>
+
+                                <!-- archivo del pedido -->
+                                <div class="input-group">
+                                    <label for="pedido">Archivo Pedido</label>
+                                    <div class="input-icon">
+                                        <span class="material-icons">upload_file</span>
+                                        <input type="file" name="pedido" id="pedido" accept="application/pdf">
+                                    </div>
+                                </div>
+
+                                <!-- archivo de la factura -->
+                                <div class="input-group">
+                                    <label for="factura">Archivo Factura</label>
+                                    <div class="input-icon">
+                                        <span class="material-icons">upload_file</span>
+                                        <input type="file" name="factura" id="factura" accept="application/pdf">
+                                    </div>
                                 </div>
                             </div>
 
-
-                            <div class="input-group">
-                                <label for="sellado">Sellado (%)</label>
-                                <div class="input-icon">
-                                    <span class="material-icons">percent</span>
-                                    <input type="number" step="0.01" name="sellado" id="sellado" required>
-                                </div>
+                            <div class="form-buttons">
+                                <button type="submit" class="btn btn-aceptar">
+                                    <span class="material-icons">save</span> Guardar pago
+                                </button>
                             </div>
-
-                            <div class="input-group">
-                                <label for="impuesto_cheque">Impuesto al Cheque (%)</label>
-                                <div class="input-icon">
-                                    <span class="material-icons">percent</span>
-                                    <input type="number" step="0.01" name="impuesto_cheque" id="impuesto_cheque" required>
-                                </div>
-                            </div>
-
-                            <div class="input-group">
-                                <label for="retencion">Retención (%)</label>
-                                <div class="input-icon">
-                                    <span class="material-icons">percent</span>
-                                    <input type="number" step="0.01" name="retencion" id="retencion" required>
-                                </div>
-                            </div>
-
-                            <div class="input-group">
-                                <label for="total_despues_impuestos">Total Final</label>
-                                <div class="input-icon">
-                                    <span class="material-icons">calculate</span>
-                                    <input type="text" name="total_despues_impuestos" id="total_despues_impuestos" readonly required>
-                                </div>
-                            </div>
-
-                            <div class="input-group">
-                                <label for="pedido">Archivo Pedido</label>
-                                <div class="input-icon">
-                                    <span class="material-icons">upload_file</span>
-                                    <input type="file" name="pedido" id="pedido" accept="application/pdf">
-                                </div>
-                            </div>
-
-                            <div class="input-group">
-                                <label for="factura">Archivo Factura</label>
-                                <div class="input-icon">
-                                    <span class="material-icons">upload_file</span>
-                                    <input type="file" name="factura" id="factura" accept="application/pdf">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-buttons">
-                            <button type="submit" class="btn btn-aceptar">
-                                <span class="material-icons">save</span> Guardar pago
-                            </button>
-                        </div>
 
                     </form>
                 </div>
