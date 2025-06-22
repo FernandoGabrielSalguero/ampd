@@ -324,86 +324,74 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
     <script src="../../views/partials/spinner-global.js"></script>
 
     <script>
+        // ================================
+        // 🔄 Cargar tabla de pagos al iniciar
+        // ================================
         document.addEventListener("DOMContentLoaded", function() {
+            cargarTablaPagos();
+        });
+
+        // ================================
+        // 📊 Función: cargar tabla de pagos
+        // ================================
+        function cargarTablaPagos() {
             fetch('../../controllers/admin_pagoFacturasController.php?ajax=1')
                 .then(res => res.json())
                 .then(data => {
                     const tbody = document.getElementById('tablaPagoFacturas');
                     tbody.innerHTML = '';
-
                     data.forEach(pago => {
                         const fila = document.createElement('tr');
-
                         fila.innerHTML = `
-                    <td>${pago.id}</td>
-                    <td>${pago.beneficiario}</td>
-                    <td>${pago.contrato}</td>
-                    <td>$${parseFloat(pago.monto).toFixed(2)}</td>
-                    <td>${pago.retencion ?? '-'}</td>
-                    <td>${pago.fecha_solicitud}</td>
-                    <td>${pago.estado}</td>
-                    <td>
-                        <a href="${pago.pedido}" target="_blank">Pedido</a> | 
-                        <a href="${pago.factura}" target="_blank">Factura</a>
-                    </td>
-                `;
-
+                        <td>${pago.id_}</td>
+                        <td>${pago.fecha}</td>
+                        <td>${pago.nombre_completo_beneficiario}</td>
+                        <td>${pago.evento}</td>
+                        <td>$${parseFloat(pago.monto).toFixed(2)}</td>
+                        <td>${pago.sellado}%</td>
+                        <td>${pago.impuesto_cheque}%</td>
+                        <td>${pago.retencion}%</td>
+                        <td><strong>$${parseFloat(pago.total_despues_impuestos).toFixed(2)}</strong></td>
+                        <td>
+                            <a href="${pago.pedido}" target="_blank">📄 Pedido</a> |
+                            <a href="${pago.factura}" target="_blank">📄 Factura</a>
+                        </td>
+                    `;
                         tbody.appendChild(fila);
                     });
                 })
                 .catch(error => {
                     console.error('Error al cargar pagos:', error);
                 });
-        });
+        }
 
-
+        // ================================
+        // 🧮 Función: calcular total final
+        // ================================
         function calcularTotal() {
             const monto = parseFloat(document.getElementById('monto').value) || 0;
             const sellado = parseFloat(document.getElementById('sellado').value) || 0;
             const cheque = parseFloat(document.getElementById('impuesto_cheque').value) || 0;
             const ret = parseFloat(document.getElementById('retencion').value) || 0;
+            const cuota = parseFloat(document.getElementById('descuento_cuota')?.value) || 0;
 
-            const total = monto - (monto * sellado / 100) - (monto * cheque / 100) - (monto * ret / 100);
+            const total = monto -
+                (monto * sellado / 100) -
+                (monto * cheque / 100) -
+                (monto * ret / 100) -
+                cuota;
+
             document.getElementById('total_despues_impuestos').value = total.toFixed(2);
         }
 
-        ['monto', 'sellado', 'impuesto_cheque', 'retencion'].forEach(id => {
+        // Escuchar cambios en campos relacionados con el cálculo
+        ['monto', 'sellado', 'impuesto_cheque', 'retencion', 'descuento_cuota'].forEach(id => {
             document.getElementById(id).addEventListener('input', calcularTotal);
         });
 
-        document.addEventListener("DOMContentLoaded", function() {
-            fetch('../../controllers/admin_pagoFacturasController.php?ajax=1')
-                .then(res => res.json())
-                .then(data => {
-                    const tbody = document.getElementById('tablaPagoFacturas');
-                    tbody.innerHTML = '';
-
-                    data.forEach(pago => {
-                        const fila = document.createElement('tr');
-                        fila.innerHTML = `
-                    <td>${pago.id_}</td>
-                    <td>${pago.fecha}</td>
-                    <td>${pago.nombre_completo_beneficiario}</td>
-                    <td>${pago.evento}</td>
-                    <td>$${parseFloat(pago.monto).toFixed(2)}</td>
-                    <td>${pago.sellado}%</td>
-                    <td>${pago.impuesto_cheque}%</td>
-                    <td>${pago.retencion}%</td>
-                    <td><strong>$${parseFloat(pago.total_despues_impuestos).toFixed(2)}</strong></td>
-                    <td>
-                        <a href="${pago.pedido}" target="_blank">📄 Pedido</a> |
-                        <a href="${pago.factura}" target="_blank">📄 Factura</a>
-                    </td>
-                `;
-                        tbody.appendChild(fila);
-                    });
-                })
-                .catch(err => {
-                    console.error('Error al cargar pagos:', err);
-                });
-        });
-
-
+        // ================================
+        // 📤 Envío del formulario (guardar pago)
+        // ================================
         document.getElementById('formPagoEvento').addEventListener('submit', function(e) {
             e.preventDefault();
             const form = e.target;
@@ -424,38 +412,80 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                         alert('❌ Hubo un problema al guardar:\n' + text);
                         console.error('Respuesta:', text);
                     }
-                })
+                });
         });
 
-        // Función separada para reutilizar
-        function cargarTablaPagos() {
-            fetch('../../controllers/admin_pagoFacturasController.php?ajax=1')
+        // ================================
+        // 🔍 Buscar beneficiario por DNI
+        // ================================
+        document.getElementById('dni_beneficiario').addEventListener('blur', function() {
+            const dni = this.value.trim();
+            if (!dni) return;
+
+            fetch(`../../controllers/admin_pagoFacturasController.php?buscarDni=${dni}`)
                 .then(res => res.json())
                 .then(data => {
-                    const tbody = document.getElementById('tablaPagoFacturas');
-                    tbody.innerHTML = '';
-                    data.forEach(pago => {
-                        const fila = document.createElement('tr');
-                        fila.innerHTML = `
-                    <td>${pago.id_}</td>
-                    <td>${pago.fecha}</td>
-                    <td>${pago.nombre_completo_beneficiario}</td>
-                    <td>${pago.evento}</td>
-                    <td>$${parseFloat(pago.monto).toFixed(2)}</td>
-                    <td>${pago.sellado}%</td>
-                    <td>${pago.impuesto_cheque}%</td>
-                    <td>${pago.retencion}%</td>
-                    <td><strong>$${parseFloat(pago.total_despues_impuestos).toFixed(2)}</strong></td>
-                    <td>
-                        <a href="${pago.pedido}" target="_blank">📄 Pedido</a> |
-                        <a href="${pago.factura}" target="_blank">📄 Factura</a>
-                    </td>
-                `;
-                        tbody.appendChild(fila);
-                    });
+                    if (data.error) {
+                        alert('❌ ' + data.error + '\nVerificá que el DNI esté registrado y tenga cuentas bancarias.');
+                        document.getElementById('nombre_completo_beneficiario').value = '';
+                        document.getElementById('usuario_id').value = '';
+                        return;
+                    }
+
+                    // 👉 Nombre y usuario_id
+                    document.getElementById('nombre_completo_beneficiario').value = data.nombre;
+                    document.getElementById('usuario_id').value = data.usuario_id;
+
+                    // 👉 Cuentas bancarias
+                    const cuentas = data.cuentas;
+                    const selector = document.getElementById('selectorCuenta');
+                    const container = document.getElementById('selectorCuentaContainer');
+
+                    selector.innerHTML = '';
+                    if (cuentas.length > 1) {
+                        container.style.display = 'block';
+                        cuentas.forEach((cuenta, i) => {
+                            const option = document.createElement('option');
+                            option.value = i;
+                            option.textContent = `${cuenta.banco} - ${cuenta.alias}`;
+                            selector.appendChild(option);
+                        });
+                        selector.onchange = () => autocompletarCuenta(cuentas[selector.value]);
+                        autocompletarCuenta(cuentas[0]);
+                    } else if (cuentas.length === 1) {
+                        container.style.display = 'none';
+                        autocompletarCuenta(cuentas[0]);
+                    }
+
+                    // 👉 Verificación de cuota anual
+                    const grupo = document.getElementById('grupo_descuento_cuota');
+                    if (!data.cuota_pagada) {
+                        grupo.style.display = 'block';
+                        document.getElementById('descuento_cuota').value = ''; // para ingresar manualmente
+                    } else {
+                        grupo.style.display = 'none';
+                        document.getElementById('descuento_cuota').value = 0;
+                    }
+
+                    calcularTotal(); // recalcular total si aplica cuota
+                })
+                .catch(err => {
+                    console.error('Error consultando el DNI:', err);
+                    alert('⚠️ Error al buscar el beneficiario.');
                 });
+        });
+
+        // ================================
+        // 🧩 Función: autocompletar campos bancarios
+        // ================================
+        function autocompletarCuenta(cuenta) {
+            if (!cuenta) return;
+            document.getElementById('cbu_beneficiario').value = cuenta.cbu;
+            document.getElementById('alias_beneficiario').value = cuenta.alias;
+            document.getElementById('cuit_beneficiario').value = cuenta.cuit;
         }
     </script>
+
 
     <script>
         console.log(<?php echo json_encode($_SESSION); ?>);
