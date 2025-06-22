@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once '../../config.php';
+require_once __DIR__ . '/../config.php';
 require_once '../../models/admin_pagoFacturasModel.php';
 
 // ================================
@@ -28,6 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['buscarDni'])) {
             echo json_encode(['error' => 'No se encontró un usuario con ese DNI.']);
             exit;
         }
+
+        if (headers_sent()) {
+    echo json_encode(['error' => '⚠️ Encabezados ya enviados, posible error en otro lado.']);
+    exit;
+}
 
         // Buscar cuentas bancarias
         $stmt = $pdo->prepare("SELECT * FROM user_bancarios WHERE usuario_id = ?");
@@ -63,6 +68,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['buscarDni'])) {
             'cuentas' => $cuentas,
             'cuota_pagada' => $cuotaPagada
         ]);
+        if (headers_sent()) {
+    echo json_encode(['error' => '⚠️ Encabezados ya enviados, posible error en otro lado.']);
+    exit;
+}
+
         exit;
     } catch (PDOException $e) {
         echo json_encode(['error' => 'Error interno: ' . $e->getMessage()]);
