@@ -40,13 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['nombre'] = $user['nombre'] ?? '';
         $_SESSION['estado'] = $user['estado'];
         $_SESSION['fecha_creacion'] = $user['fecha_creacion'];
-        $_SESSION['apellido'] = $user['apellido'] ?? '';
         $_SESSION['dni'] = $user['dni'];
         $_SESSION['correo'] = $user['correo'];
         $_SESSION['telefono'] = $user['telefono'];
-        $_SESSION['fecha_nacimiento'] = $user['fecha_nacimiento'];
-        $_SESSION['direccion'] = $user['direccion'];
-        $_SESSION['user_info_id'] = $user['user_info_id'];
         $_SESSION['LAST_ACTIVITY'] = time();
 
         // Redirección obligatoria si falta contraseña y es asociado
