@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['buscarDni'])) {
 
     try {
         // Buscar usuario por DNI
-        $stmt = $pdo->prepare("SELECT id_, nombre FROM usuarios WHERE dni = ?");
+        $stmt = $pdo->prepare("SELECT id_, nombre, telefono FROM usuarios WHERE dni = ?");
         $stmt->execute([$dni]);
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -65,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['buscarDni'])) {
         echo json_encode([
             'usuario_id' => $usuario['id_'],
             'nombre' => $usuario['nombre'],
+            'telefono' => $usuario['telefono'],
             'cuentas' => $cuentas,
             'cuota_pagada' => $cuotaPagada
         ]);
@@ -160,6 +161,7 @@ $data = [
     'impuesto_cheque' => floatval($_POST['impuesto_cheque']),
     'retencion' => floatval($_POST['retencion']),
     'descuento_cuota' => floatval($_POST['descuento_cuota'] ?? 0),
+    'cargado_por_nombre' => $_POST['cargado_por_nombre'] ?? null,
 ];
 
 // ================================

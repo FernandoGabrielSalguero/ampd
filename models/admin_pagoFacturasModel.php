@@ -27,6 +27,7 @@ class PagoEventoModel
                 cbu_beneficiario,
                 alias_beneficiario,
                 evento,
+                cargado_por_nombre,
                 fecha_evento,
                 numero_orden,
                 monto,
@@ -47,6 +48,7 @@ class PagoEventoModel
                 :cuit_beneficiario,
                 :cbu_beneficiario,
                 :alias_beneficiario,
+                :cargado_por_nombre,
                 :evento,
                 :fecha_evento,
                 :numero_orden,
@@ -73,6 +75,7 @@ class PagoEventoModel
             ':cbu_beneficiario' => $data['cbu_beneficiario'],
             ':alias_beneficiario' => $data['alias_beneficiario'],
             ':evento' => $data['evento'],
+            ':cargado_por_nombre' => $data['cargado_por_nombre'],
             ':fecha_evento' => $data['fecha_evento'],
             ':numero_orden' => $data['numero_orden'],
             ':monto' => $data['monto'],
@@ -83,7 +86,7 @@ class PagoEventoModel
             ':total_despues_impuestos' => $data['total_despues_impuestos'],
             ':factura' => $data['factura'],
             ':pedido' => $data['pedido'],
-            ':cuota_pagada' => $data['cuota_pagada']
+            ':cuota_pagada' => $data['cuota_pagada'],
         ]);
 
         if (!$exito) {

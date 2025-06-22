@@ -215,6 +215,15 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 </div>
                             </div>
 
+                            <!-- cargado por -->
+                            <div class="input-group">
+                                <label for="cargado_por_nombre">Cargado por</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">person</span>
+                                    <input type="text" name="cargado_por_nombre" id="cargado_por_nombre" readonly>
+                                </div>
+                            </div>
+
                             <!-- Evento (nombre) -->
                             <div class="input-group">
                                 <label for="evento">Evento</label>
@@ -331,6 +340,8 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
         // ================================
         document.addEventListener("DOMContentLoaded", function() {
             cargarTablaPagos();
+            document.getElementById('cargado_por_nombre').value = <?= json_encode($_SESSION['nombre']) ?>;
+
         });
 
         // ================================
@@ -437,6 +448,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     // 👉 Nombre y usuario_id
                     document.getElementById('nombre_completo_beneficiario').value = data.nombre;
                     document.getElementById('usuario_id').value = data.usuario_id;
+                    document.getElementById('telefono_beneficiario').value = data.telefono || '';
 
                     // 👉 Cuentas bancarias
                     const cuentas = data.cuentas;
