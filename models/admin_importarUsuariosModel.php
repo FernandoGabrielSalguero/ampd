@@ -95,7 +95,7 @@ class AdminImportarUsuariosModel
                 ':usuario' => $row['usuario'],
                 ':contrasena' => $contrasenaHash,
                 ':nombre' => $row['nombre'],
-                ':correo' => $row['correo'],
+                ':correo' => $row['correo'] ?? null,
                 ':telefono' => $row['telefono'],
                 ':dni' => $row['dni'],
                 ':n_socio' => $n_socio

@@ -75,13 +75,14 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                         <span class="material-icons" style="color: #5b21b6;">upload_file</span><span class="link-text">Carga Masiva</span>
                     </li>
                     <li onclick="location.href='admin_pagoFacturas.php'">
-                        <span class="material-icons" style="color: #5b21b6;">upload_file</span><span class="link-text">Pago Facturas</span>
+                        <span class="material-icons" style="color: #5b21b6;">AttachMoney</span><span class="link-text">Pago Facturas</span>
                     </li>
                     <li onclick="location.href='../../../logout.php'">
                         <span class="material-icons" style="color: red;">logout</span><span class="link-text">Salir</span>
                     </li>
                 </ul>
             </nav>
+
 
             <div class="sidebar-footer">
                 <button class="btn-icon" onclick="toggleSidebar()">
