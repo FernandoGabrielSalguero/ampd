@@ -119,17 +119,42 @@ class AdminAltaUsuariosModel
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM user_bancarios WHERE usuario_id = ?");
         $stmt->execute([$id]);
         if ($stmt->fetchColumn() > 0) {
-            $stmt = $this->db->prepare("UPDATE user_bancarios SET alias_a = :alias, cbu_a = :cbu, titular_a = :titular, cuit_a = :cuit, banco_a = :banco WHERE usuario_id = :id");
+            $stmt = $this->db->prepare("UPDATE user_bancarios SET 
+    alias_a = :alias_a, cbu_a = :cbu_a, titular_a = :titular_a, cuit_a = :cuit_a, banco_a = :banco_a,
+    alias_b = :alias_b, cbu_b = :cbu_b, titular_b = :titular_b, cuit_b = :cuit_b, banco_b = :banco_b,
+    alias_c = :alias_c, cbu_c = :cbu_c, titular_c = :titular_c, cuit_c = :cuit_c, banco_c = :banco_c
+    WHERE usuario_id = :id");
         } else {
-            $stmt = $this->db->prepare("INSERT INTO user_bancarios (alias_a, cbu_a, titular_a, cuit_a, banco_a, usuario_id)
-                                    VALUES (:alias, :cbu, :titular, :cuit, :banco, :id)");
+            $stmt = $this->db->prepare("INSERT INTO user_bancarios (
+    alias_a, cbu_a, titular_a, cuit_a, banco_a,
+    alias_b, cbu_b, titular_b, cuit_b, banco_b,
+    alias_c, cbu_c, titular_c, cuit_c, banco_c,
+    usuario_id)
+    VALUES (
+    :alias_a, :cbu_a, :titular_a, :cuit_a, :banco_a,
+    :alias_b, :cbu_b, :titular_b, :cuit_b, :banco_b,
+    :alias_c, :cbu_c, :titular_c, :cuit_c, :banco_c,
+    :id)");
         }
         $stmt->execute([
-            ':alias' => $data['alias_a'] ?? '',
-            ':cbu' => $data['cbu_a'] ?? '',
-            ':titular' => $data['titular_a'] ?? '',
-            ':cuit' => $data['cuit_a'] ?? '',
-            ':banco' => $data['banco_a'] ?? '',
+            ':alias_a' => $data['alias_a'] ?? '',
+            ':cbu_a' => $data['cbu_a'] ?? '',
+            ':titular_a' => $data['titular_a'] ?? '',
+            ':cuit_a' => $data['cuit_a'] ?? '',
+            ':banco_a' => $data['banco_a'] ?? '',
+
+            ':alias_b' => $data['alias_b'] ?? '',
+            ':cbu_b' => $data['cbu_b'] ?? '',
+            ':titular_b' => $data['titular_b'] ?? '',
+            ':cuit_b' => $data['cuit_b'] ?? '',
+            ':banco_b' => $data['banco_b'] ?? '',
+
+            ':alias_c' => $data['alias_c'] ?? '',
+            ':cbu_c' => $data['cbu_c'] ?? '',
+            ':titular_c' => $data['titular_c'] ?? '',
+            ':cuit_c' => $data['cuit_c'] ?? '',
+            ':banco_c' => $data['banco_c'] ?? '',
+
             ':id' => $id
         ]);
 
