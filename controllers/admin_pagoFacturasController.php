@@ -88,22 +88,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['ajax']) && $_GET['ajax'
     header('Content-Type: application/json');
 
     try {
-        $stmt = $pdo->query("
-            SELECT 
-                id_ AS id_,
-                fecha,
-                nombre_completo_beneficiario,
-                evento,
-                monto,
-                sellado,
-                impuesto_cheque,
-                retencion,
-                total_despues_impuestos,
-                factura,
-                pedido
-            FROM pagos_evento
-            ORDER BY fecha DESC
-        ");
+$stmt = $pdo->query("
+    SELECT 
+        id_ AS id_,
+        DATE(fecha) AS fecha,  -- ✅ solo la fecha
+        nombre_completo_beneficiario,
+        CONCAT(evento, ' (cargado por ', cargado_por_nombre, ')') AS evento,  -- ✅ evento + cargador
+        monto,
+        sellado,
+        impuesto_cheque,
+        retencion,
+        total_despues_impuestos,
+        factura,
+        pedido
+    FROM pagos_evento
+    ORDER BY fecha DESC
+");
         echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
     } catch (PDOException $e) {
         http_response_code(500);
