@@ -453,6 +453,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     // 👉 Cuentas bancarias
                     const cuentas = data.cuentas;
                     const selector = document.getElementById('selectorCuenta');
+                    selector.classList.add('input');
                     const container = document.getElementById('selectorCuentaContainer');
 
                     selector.innerHTML = '';
