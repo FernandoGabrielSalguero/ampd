@@ -211,11 +211,6 @@ if (!preg_match('/^\d{22}$/', $data['cbu_beneficiario'])) {
     die('❌ El CBU debe contener exactamente 22 dígitos numéricos.');
 }
 
-// Validar que el alias, si existe, tenga entre 6 y 20 caracteres alfanuméricos o guiones bajos
-if (!empty($data['alias_beneficiario']) && !preg_match('/^[a-zA-Z0-9_.-]{6,20}$/', $data['alias_beneficiario'])) {
-    die('❌ El alias debe tener entre 6 y 20 caracteres válidos (letras, números, guiones, puntos).');
-}
-
 // Validar número de orden (evitar duplicados)
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM pagos_evento WHERE numero_orden = ?");
 $stmt->execute([$data['numero_orden']]);
