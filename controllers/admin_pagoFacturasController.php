@@ -91,9 +91,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['ajax']) && $_GET['ajax'
 $stmt = $pdo->query("
     SELECT 
         id_ AS id_,
-        DATE(fecha) AS fecha,  -- ✅ solo la fecha
+        DATE(fecha) AS fecha,
         nombre_completo_beneficiario,
-        CONCAT(evento, ' (cargado por ', cargado_por_nombre, ')') AS evento,  -- ✅ evento + cargador
+        evento,
+        cargado_por_nombre,
         monto,
         sellado,
         impuesto_cheque,

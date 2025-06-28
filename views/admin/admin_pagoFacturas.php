@@ -309,6 +309,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                     <th>Fecha</th>
                                     <th>Beneficiario</th>
                                     <th>Evento</th>
+                                    <th>Cargado por</th>
                                     <th>Monto</th>
                                     <th>Sellado</th>
                                     <th>Impuesto Cheque</th>
@@ -360,6 +361,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                         <td>${pago.fecha}</td>
                         <td>${pago.nombre_completo_beneficiario}</td>
                         <td>${pago.evento}</td>
+                        <td>${pago.cargado_por_nombre}</td>
                         <td>$${parseFloat(pago.monto).toFixed(2)}</td>
                         <td>${pago.sellado}%</td>
                         <td>${pago.impuesto_cheque}%</td>
