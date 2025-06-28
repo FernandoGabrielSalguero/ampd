@@ -705,6 +705,18 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                             document.getElementById("edit_cuit_a").value = u.bancarios.cuit_a ?? '';
                             document.getElementById("edit_banco_a").value = u.bancarios.banco_a ?? '';
 
+                            document.getElementById("edit_alias_b").value = u.bancarios.alias_b ?? '';
+                            document.getElementById("edit_cbu_b").value = u.bancarios.cbu_b ?? '';
+                            document.getElementById("edit_titular_b").value = u.bancarios.titular_b ?? '';
+                            document.getElementById("edit_cuit_b").value = u.bancarios.cuit_b ?? '';
+                            document.getElementById("edit_banco_b").value = u.bancarios.banco_b ?? '';
+
+                            document.getElementById("edit_alias_c").value = u.bancarios.alias_c ?? '';
+                            document.getElementById("edit_cbu_c").value = u.bancarios.cbu_c ?? '';
+                            document.getElementById("edit_titular_c").value = u.bancarios.titular_c ?? '';
+                            document.getElementById("edit_cuit_c").value = u.bancarios.cuit_c ?? '';
+                            document.getElementById("edit_banco_c").value = u.bancarios.banco_c ?? '';
+
                             document.getElementById("edit_disciplina_libre").value = u.disciplinaLibre.disciplina ?? '';
 
                             openEditModal();
