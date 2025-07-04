@@ -311,34 +311,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                         </div>
                     </div>
 
-                                            <!-- DNI para buscar beneficiario -->
-                        <div class="input-group">
-                            <label for="dni_beneficiario">N° Factura</label>
-                            <div class="input-icon">
-                                <span class="material-icons">badge</span>
-                                <input type="text" name="dni_beneficiario" id="dni_beneficiario" required>
-                            </div>
-                        </div>
-                    </div>
-
-                                                                <!-- DNI para buscar beneficiario -->
-                        <div class="input-group">
-                            <label for="dni_beneficiario">Evento</label>
-                            <div class="input-icon">
-                                <span class="material-icons">badge</span>
-                                <input type="text" name="dni_beneficiario" id="dni_beneficiario" required>
-                            </div>
-                        </div>
-
-                                                                                      <!-- DNI para buscar beneficiario -->
-                        <div class="input-group">
-                            <label for="dni_beneficiario">Evento</label>
-                            <div class="input-icon">
-                                <span class="material-icons">badge</span>
-                                <input type="text" name="dni_beneficiario" id="dni_beneficiario" required>
-                            </div>
-                        </div>
-                    </div>en de p
+                    
                 </div>
 
 
