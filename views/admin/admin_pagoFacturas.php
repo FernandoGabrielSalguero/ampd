@@ -299,7 +299,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                 <!-- Bienvenida -->
                 <div class="card">
-                    <div class="form-grid grid-4">
+                    <div class="form-grid grid-2">
 
                         <!-- cargado por -->
                         <div class="input-group">
