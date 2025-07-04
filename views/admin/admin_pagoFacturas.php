@@ -303,11 +303,11 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     <div class="form-grid grid-2">
 
                         <!-- cargado por -->
-                        <div class="input-group">
+                        <div class="input-gro>
                             <label for="cargado_por_nombre">DNI del socio</label>
                             <div class="input-icon">
                                 <span class="material-icons">person</span>
-                                <input type="text" name="DNI del socio" id="DNI del socio" readonly>
+                                <input type="text" name="DNI del socio" id="DNI del socio">
                             </div>
                         </div>
 
@@ -316,7 +316,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                             <label for="cargado_por_nombre">N° Factura</label>
                             <div class="input-icon">
                                 <span class="material-icons">person</span>
-                                <input type="text" name="N° Factura" id="N° Factura" readonly>
+                                <input type="text" name="N° Factura" id="N° Factura">
                             </div>
                         </div>
 
