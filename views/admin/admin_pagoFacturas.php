@@ -242,6 +242,15 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 </div>
                             </div>
 
+                            <!-- Cuit destinatario -->
+                            <div class="input-group">
+                                <label for="evento">Razón social destinatario</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">event</span>
+                                    <input type="text" name="evento" id="evento" required>
+                                </div>
+                            </div>
+
                             <!-- Sellado -->
                             <div class="input-group">
                                 <label for="sellado">Sellado (%)</label>
