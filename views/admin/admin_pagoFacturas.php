@@ -190,7 +190,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                             <!-- Monto -->
                             <div class="input-group">
-                                <label for="monto">Monto final contrato</label>
+                                <label for="monto">Monto real contrato</label>
                                 <div class="input-icon">
                                     <span class="material-icons">attach_money</span>
                                     <input type="number" step="0.01" name="monto" id="monto" required>
