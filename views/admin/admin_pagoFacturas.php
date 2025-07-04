@@ -299,11 +299,11 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                 <!-- Bienvenida -->
                 <div class="card">
-                                       <h2>Buscar pagos</h2>
+                <h2>Buscar pagos</h2>
                     <div class="form-grid grid-2">
 
                         <!-- cargado por -->
-                        <div class="input-gro>
+                        <div class="input-group">
                             <label for="cargado_por_nombre">DNI del socio</label>
                             <div class="input-icon">
                                 <span class="material-icons">person</span>
