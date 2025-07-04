@@ -297,22 +297,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     </form>
                 </div>
 
-                <!-- Filtro -->
-                <div class="card">
-                    <div class="form-grid grid-4">
-
-                        <!-- DNI para buscar beneficiario -->
-                        <div class="input-group">
-                            <label for="dni_beneficiario">Nombre</label>
-                            <div class="input-icon">
-                                <span class="material-icons">badge</span>
-                                <input type="text" name="dni_beneficiario" id="dni_beneficiario" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    
-                </div>
+ 
 
 
                 <!-- Tabla -->
