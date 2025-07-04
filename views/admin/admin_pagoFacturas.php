@@ -233,6 +233,15 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 </div>
                             </div>
 
+                            <!-- Cuit destinatario -->
+                            <div class="input-group">
+                                <label for="evento">Cuit Destinatario</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">event</span>
+                                    <input type="text" name="evento" id="evento" required>
+                                </div>
+                            </div>
+
                             <!-- Sellado -->
                             <div class="input-group">
                                 <label for="sellado">Sellado (%)</label>
@@ -299,7 +308,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                 <!-- Bienvenida -->
                 <div class="card">
-                <h2>Buscar pagos</h2>
+                    <h2>Buscar pagos</h2>
                     <div class="form-grid grid-2">
 
                         <!-- cargado por -->
