@@ -181,7 +181,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                             <!-- Número de orden -->
                             <div class="input-group">
-                                <label for="numero_orden">Número de orden</label>
+                                <label for="numero_orden">Número de orden de pago</label>
                                 <div class="input-icon">
                                     <span class="material-icons">confirmation_number</span>
                                     <input type="text" name="numero_orden" id="numero_orden" required>
@@ -190,7 +190,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                             <!-- Monto -->
                             <div class="input-group">
-                                <label for="monto">Monto</label>
+                                <label for="monto">Monto final contrato</label>
                                 <div class="input-icon">
                                     <span class="material-icons">attach_money</span>
                                     <input type="number" step="0.01" name="monto" id="monto" required>
