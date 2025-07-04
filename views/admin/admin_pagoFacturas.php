@@ -297,20 +297,29 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     </form>
                 </div>
 
-                 <!-- Bienvenida -->
+                <!-- Bienvenida -->
                 <div class="card">
-<div class="form-grid grid-4">
+                    <div class="form-grid grid-4">
 
-                            <!-- Factura PDF -->
-                            <div class="input-group">
-                                <label for="factura">Archivo Factura</label>
-                                <div class="input-icon">
-                                    <span class="material-icons">upload_file</span>
-                                    <input type="file" name="factura" id="factura" accept="application/pdf">
-                                </div>
+                        <!-- cargado por -->
+                        <div class="input-group">
+                            <label for="cargado_por_nombre">Cargado por</label>
+                            <div class="input-icon">
+                                <span class="material-icons">person</span>
+                                <input type="text" name="cargado_por_nombre" id="cargado_por_nombre" readonly>
                             </div>
+                        </div>
 
-</div>
+                        <!-- cargado por -->
+                        <div class="input-group">
+                            <label for="cargado_por_nombre">Cargado por</label>
+                            <div class="input-icon">
+                                <span class="material-icons">person</span>
+                                <input type="text" name="cargado_por_nombre" id="cargado_por_nombre" readonly>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
 
