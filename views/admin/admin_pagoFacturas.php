@@ -303,7 +303,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                         <!-- cargado por -->
                         <div class="input-group">
-                            <label for="cargado_por_nombre">Cargado por</label>
+                            <label for="cargado_por_nombre">DNI del socio</label>
                             <div class="input-icon">
                                 <span class="material-icons">person</span>
                                 <input type="text" name="cargado_por_nombre" id="cargado_por_nombre" readonly>
@@ -312,7 +312,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
 
                         <!-- cargado por -->
                         <div class="input-group">
-                            <label for="cargado_por_nombre">Cargado por</label>
+                            <label for="cargado_por_nombre">N° Factura</label>
                             <div class="input-icon">
                                 <span class="material-icons">person</span>
                                 <input type="text" name="cargado_por_nombre" id="cargado_por_nombre" readonly>
