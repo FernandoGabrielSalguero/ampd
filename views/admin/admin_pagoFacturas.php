@@ -297,7 +297,21 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                     </form>
                 </div>
 
- 
+                 <!-- Bienvenida -->
+                <div class="card">
+<div class="form-grid grid-4">
+
+                            <!-- Factura PDF -->
+                            <div class="input-group">
+                                <label for="factura">Archivo Factura</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">upload_file</span>
+                                    <input type="file" name="factura" id="factura" accept="application/pdf">
+                                </div>
+                            </div>
+
+</div>
+                </div>
 
 
                 <!-- Tabla -->
