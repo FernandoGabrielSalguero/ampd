@@ -1,9 +1,11 @@
 <?php
-// inspector.php - herramienta de inspección PHP con soporte MVC + búsqueda
+// inspector.php
 if (isset($_GET['action'])) {
     header('Content-Type: application/json');
-    
-    function listDir($dir) {
+    $base = realpath(__DIR__);
+
+    function listDir($dir)
+    {
         $items = array_diff(scandir($dir), ['.', '..']);
         $result = [];
         foreach ($items as $item) {
@@ -17,16 +19,37 @@ if (isset($_GET['action'])) {
         return $result;
     }
 
-    function analyzeFile($filePath) {
+    function detectMVC($filePath)
+    {
+        $type = 'otro';
+        if (strpos($filePath, 'views') !== false) $type = 'vista';
+        elseif (strpos($filePath, 'controllers') !== false) $type = 'controlador';
+        elseif (strpos($filePath, 'models') !== false) $type = 'modelo';
+
+        $base = basename($filePath, '.php');
+        $base = preg_replace('/(Controller|Model)$/', '', $base);
+
+        return [
+            'type' => $type,
+            'suggested_model' => "models/{$base}Model.php",
+            'suggested_controller' => "controllers/{$base}Controller.php"
+        ];
+    }
+
+    function analyzeFile($filePath)
+    {
         $absPath = realpath(__DIR__ . '/' . $filePath);
         if (!file_exists($absPath)) return ['error' => 'File not found'];
 
         $content = file_get_contents($absPath);
-        
+
         preg_match_all('/\bclass\s+(\w+)/', $content, $classes);
         preg_match_all('/\bfunction\s+(\w+)/', $content, $functions);
-        preg_match_all('/(?:include|require)(_once)?\s*\(?[\'\"](.+?)[\'\"]\)?\s*;/', $content, $matches);
+        preg_match_all('/(?:include|require)(_once)?\s*\(?[\'"](.+?)[\'"]\)?\s*;/', $content, $matches);
         preg_match_all('/(SELECT|INSERT|UPDATE|DELETE)\s.+?;/is', $content, $queries);
+
+        $includes = $matches[2];
+        $sql = array_map('trim', $queries[0]);
 
         $refers = [];
         $allFiles = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__));
@@ -39,150 +62,253 @@ if (isset($_GET['action'])) {
             }
         }
 
-        // Detect related controller and model
-        $mvc = ["controller" => null, "model" => null];
-        if (strpos($filePath, 'views') !== false) {
-            $name = pathinfo($filePath, PATHINFO_FILENAME);
-            $mvc["controller"] = findSimilar("controllers", $name . "Controller.php");
-            $mvc["model"] = findSimilar("models", $name . "Model.php");
-        }
+        $mvc = detectMVC($filePath);
 
         return [
+            'file' => $filePath,
             'content' => htmlspecialchars($content),
             'classes' => $classes[1],
             'functions' => $functions[1],
-            'includes' => $matches[2],
-            'sql_queries' => array_map('trim', $queries[0]),
+            'includes' => $includes,
+            'sql_queries' => $sql,
             'referenced_by' => $refers,
             'mvc' => $mvc
         ];
     }
 
-    function findSimilar($dir, $filename) {
-        $path = __DIR__ . "/$dir";
-        if (!is_dir($path)) return null;
-        $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
-        foreach ($rii as $file) {
-            if ($file->isFile() && stripos($file->getFilename(), $filename) !== false) {
-                return str_replace(__DIR__ . '/', '', $file->getRealPath());
-            }
-        }
-        return null;
-    }
-
     if ($_GET['action'] === 'list') {
         $dir = isset($_GET['dir']) ? realpath(__DIR__ . '/' . $_GET['dir']) : __DIR__;
-        echo json_encode(listDir($dir));
-
+        if (strpos($dir, __DIR__) !== 0) {
+            echo json_encode(['error' => 'Invalid path']);
+        } else {
+            echo json_encode(listDir($dir));
+        }
     } elseif ($_GET['action'] === 'analyze' && isset($_GET['file'])) {
         echo json_encode(analyzeFile($_GET['file']));
-
-    } elseif ($_GET['action'] === 'search' && isset($_GET['term'])) {
-        $term = strtolower($_GET['term']);
-        $matches = [];
-        $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__));
-        foreach ($rii as $file) {
-            if ($file->isFile() && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
-                $path = str_replace(__DIR__ . '/', '', $file->getRealPath());
-                $content = file_get_contents($file);
-                if (stripos($path, $term) !== false || stripos($content, $term) !== false) {
-                    $matches[] = $path;
-                }
-            }
-        }
-        echo json_encode($matches);
     }
     exit;
 }
 ?>
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="UTF-8">
-<title>Inspector PHP MVC</title>
-<style>
-body { display: flex; height: 100vh; margin: 0; font-family: sans-serif; }
-#tree, #fileContent, #context { padding: 10px; overflow: auto; }
-#tree { width: 25%; background: #f1f1f1; border-right: 1px solid #ccc; }
-#fileContent { width: 45%; white-space: pre-wrap; font-family: monospace; border-right: 1px solid #ccc; }
-#context { width: 30%; background: #fafafa; }
-ul { list-style: none; padding-left: 15px; }
-.folder { font-weight: bold; cursor: pointer; }
-.sql { background: #eef; padding: 3px; margin-bottom: 3px; display: block; }
-</style>
+    <meta charset="UTF-8">
+    <title>Inspector MVC</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            display: flex;
+            height: 100vh;
+        }
+
+        #tree,
+        #fileContent,
+        #context {
+            padding: 10px;
+            overflow: auto;
+        }
+
+        #tree {
+            width: 25%;
+            background: #f5f5f5;
+            border-right: 1px solid #ccc;
+        }
+
+        #fileContent {
+            width: 45%;
+            border-right: 1px solid #ccc;
+            background: #fff;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+
+        #context {
+            width: 30%;
+            background: #f9f9f9;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 20px;
+        }
+
+        li {
+            cursor: pointer;
+        }
+
+        .folder {
+            font-weight: bold;
+        }
+
+        h3 {
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        .highlight {
+            background: yellow;
+        }
+
+        .sql {
+            background: #eef;
+            padding: 4px;
+            margin: 4px 0;
+            border-left: 3px solid #88f;
+            display: block;
+        }
+
+        #search {
+            margin: 10px;
+            width: 90%;
+            padding: 5px;
+        }
+    </style>
 </head>
+
 <body>
-<div id="tree">
-    <input type="text" id="search" placeholder="Buscar archivo o función..." style="width: 95%;"><div id="results"></div>
-</div>
-<div id="fileContent"><em>Seleccione un archivo</em></div>
-<div id="context"><em>Contexto</em></div>
-<script>
-const tree = document.getElementById('tree');
-const fileContent = document.getElementById('fileContent');
-const context = document.getElementById('context');
-const search = document.getElementById('search');
-const results = document.getElementById('results');
+    <div id="tree">
+        <input id="search" placeholder="Buscar archivo, clase o función...">
+        <div id="treeContainer"><strong>Cargando...</strong></div>
+    </div>
+    <div id="fileContent"><em>Seleccione un archivo...</em></div>
+    <div id="context"><em>Contexto del archivo...</em></div>
 
-function buildTree(base = '', parent = null) {
-    fetch(`?action=list&dir=${encodeURIComponent(base)}`)
-    .then(r => r.json())
-    .then(data => {
-        const ul = document.createElement('ul');
-        data.forEach(item => {
-            const li = document.createElement('li');
-            li.textContent = item.name;
-            li.className = item.type === 'dir' ? 'folder' : '';
-            li.onclick = e => {
-                e.stopPropagation();
-                if (item.type === 'dir') {
-                    if (li.querySelector('ul')) li.removeChild(li.querySelector('ul'));
-                    else buildTree(item.path, li);
-                } else viewFile(item.path);
-            };
-            ul.appendChild(li);
+    <script>
+        const treeContainer = document.getElementById('treeContainer');
+        const fileContent = document.getElementById('fileContent');
+        const context = document.getElementById('context');
+        const searchBox = document.getElementById('search');
+        let lastAnalysis = null;
+
+        function buildTree(base = '', parentElement = null) {
+            return fetch(`?action=list&dir=${encodeURIComponent(base)}`)
+                .then(res => res.json())
+                .then(data => {
+                    const ul = document.createElement('ul');
+                    data.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item.name;
+                        li.dataset.path = item.path;
+                        li.className = item.type === 'dir' ? 'folder' : '';
+                        li.onclick = function(e) {
+                            e.stopPropagation();
+                            if (item.type === 'dir') {
+                                if (li.querySelector('ul')) {
+                                    li.removeChild(li.querySelector('ul'));
+                                } else {
+                                    buildTree(item.path, li);
+                                }
+                            } else {
+                                viewFile(item.path);
+                            }
+                        };
+                        ul.appendChild(li);
+                    });
+                    if (parentElement) parentElement.appendChild(ul);
+                    else {
+                        treeContainer.innerHTML = '';
+                        treeContainer.appendChild(ul);
+                    }
+                });
+        }
+
+        function highlightSyntax(code) {
+            return code
+                .replace(/(&lt;\?php|&lt;\?)/g, '<span class="php">$1</span>')
+                .replace(/\b(function|class|if|else|elseif|return|foreach|while|try|catch|throw|new|echo|public|private|protected)\b/g, '<span class="keyword">$1</span>')
+                .replace(/\/\/.*/g, '<span class="comment">$&</span>')
+                .replace(/(&quot;.*?&quot;|'.*?')/g, '<span class="string">$1</span>');
+        }
+
+        function viewFile(filePath, highlight = '') {
+            fetch(`?action=analyze&file=${encodeURIComponent(filePath)}`)
+                .then(res => res.json())
+                .then(data => {
+                    lastAnalysis = data;
+
+                    let code = highlightSyntax(data.content);
+                    if (highlight) {
+                        const regex = new RegExp(`\\b(${highlight})\\b`, 'g');
+                        code = code.replace(regex, `<span class="highlight">$1</span>`);
+                    }
+
+                    fileContent.innerHTML = `<h3>${data.file}</h3><pre>${code}</pre>`;
+
+                    let ctx = `<h2>Contexto</h2>`;
+                    ctx += `<p><strong>Tipo:</strong> ${data.mvc.type}</p>`;
+
+                    ctx += `<h3>Clases</h3><ul>${(data.classes.length ? data.classes.map(c => `<li>${c}</li>`).join('') : '<li>Ninguna</li>')}</ul>`;
+                    ctx += `<h3>Funciones</h3><ul>${(data.functions.length ? data.functions.map(f => `<li>${f}()</li>`).join('') : '<li>Ninguna</li>')}</ul>`;
+                    ctx += `<h3>Includes</h3><ul>${(data.includes.length ? data.includes.map(i => `<li>${i}</li>`).join('') : '<li>Ninguno</li>')}</ul>`;
+                    ctx += `<h3>SQL</h3>${(data.sql_queries.length ? data.sql_queries.map(q => `<code class="sql">${q}</code>`).join('') : '<p>No detectadas</p>')}`;
+                    ctx += `<h3>Llamado por</h3><ul>${(data.referenced_by.length ? data.referenced_by.map(f => `<li><a href="#" onclick="viewFile('${f}'); return false;">${f}</a></li>`).join('') : '<li>Nadie</li>')}</ul>`;
+
+                    if (data.mvc.type === 'vista') {
+                        ctx += `<h3>Relacionados (MVC)</h3><ul>`;
+                        ctx += `<li><a href="#" onclick="viewFile('${data.mvc.suggested_controller}'); return false;">${data.mvc.suggested_controller}</a></li>`;
+                        ctx += `<li><a href="#" onclick="viewFile('${data.mvc.suggested_model}'); return false;">${data.mvc.suggested_model}</a></li>`;
+                        ctx += `</ul>`;
+                    }
+
+                    ctx += `<button onclick="generateReport()">📝 Ver informe completo</button>`;
+                    context.innerHTML = ctx;
+                });
+        }
+
+        function generateReport() {
+            if (!lastAnalysis) return;
+            const data = lastAnalysis;
+            const html = `
+        <html><head><title>Informe de ${data.file}</title><meta charset="utf-8">
+        <style>body { font-family: sans-serif; padding: 20px; } h2 { border-bottom: 1px solid #ccc; }</style>
+        </head><body>
+        <h1>Informe del archivo: ${data.file}</h1>
+        <h2>Tipo: ${data.mvc.type}</h2>
+        <h2>Clases</h2><ul>${(data.classes.length ? data.classes.map(c => `<li>${c}</li>`).join('') : '<li>Ninguna</li>')}</ul>
+        <h2>Funciones</h2><ul>${(data.functions.length ? data.functions.map(f => `<li>${f}()</li>`).join('') : '<li>Ninguna</li>')}</ul>
+        <h2>Includes</h2><ul>${(data.includes.length ? data.includes.map(i => `<li>${i}</li>`).join('') : '<li>Ninguno</li>')}</ul>
+        <h2>SQL</h2>${(data.sql_queries.length ? data.sql_queries.map(q => `<pre>${q}</pre>`).join('') : '<p>No detectadas</p>')}
+        <h2>Llamado por</h2><ul>${(data.referenced_by.length ? data.referenced_by.map(f => `<li>${f}</li>`).join('') : '<li>Nadie</li>')}</ul>
+        ${data.mvc.type === 'vista' ? `<h2>Relacionado (MVC)</h2><ul>
+            <li>${data.mvc.suggested_controller}</li>
+            <li>${data.mvc.suggested_model}</li></ul>` : ''}
+        <h2>Código fuente</h2><pre>${highlightSyntax(data.content)}</pre>
+        </body></html>`;
+
+            const blob = new Blob([html], {
+                type: 'text/html'
+            });
+            const url = URL.createObjectURL(blob);
+            window.open(url, '_blank');
+        }
+
+        searchBox.addEventListener('input', () => {
+            const query = searchBox.value.trim().toLowerCase();
+            if (!query) return;
+
+            const results = [];
+
+            const allFiles = document.querySelectorAll('#treeContainer li');
+            allFiles.forEach(li => {
+                const name = li.textContent.toLowerCase();
+                if (name.includes(query)) {
+                    results.push({
+                        name: li.textContent,
+                        path: li.dataset.path
+                    });
+                }
+            });
+
+            if (results.length === 1) {
+                viewFile(results[0].path, query);
+            }
         });
-        if (parent) parent.appendChild(ul);
-        else tree.appendChild(ul);
-    });
-}
 
-function viewFile(path, highlight = '') {
-    fetch(`?action=analyze&file=${encodeURIComponent(path)}`)
-    .then(r => r.json())
-    .then(data => {
-        let lines = data.content.split('\n');
-        if (highlight) {
-            lines = lines.map((l, i) => l.includes(highlight) ? `<mark>${l}</mark>` : l);
-        }
-        fileContent.innerHTML = `<h3>${path}</h3><pre>${lines.join('\n')}</pre>`;
-        let ctx = `<h3>Contexto</h3>`;
-        if (data.classes.length) ctx += `<strong>Clases:</strong><ul>` + data.classes.map(c => `<li>${c}</li>`).join('') + `</ul>`;
-        if (data.functions.length) ctx += `<strong>Funciones:</strong><ul>` + data.functions.map(f => `<li>${f}</li>`).join('') + `</ul>`;
-        if (data.includes.length) ctx += `<strong>Includes:</strong><ul>` + data.includes.map(i => `<li>${i}</li>`).join('') + `</ul>`;
-        if (data.sql_queries.length) ctx += `<strong>SQL:</strong>` + data.sql_queries.map(q => `<code class='sql'>${q}</code>`).join('');
-        if (data.referenced_by.length) ctx += `<strong>Llamado por:</strong><ul>` + data.referenced_by.map(f => `<li><a href='#' onclick="viewFile('${f}')">${f}</a></li>`).join('') + `</ul>`;
-        if (data.mvc.controller || data.mvc.model) {
-            ctx += `<strong>MVC Detectado:</strong><ul>`;
-            if (data.mvc.controller) ctx += `<li>Controlador: <a href='#' onclick="viewFile('${data.mvc.controller}')">${data.mvc.controller}</a></li>`;
-            if (data.mvc.model) ctx += `<li>Modelo: <a href='#' onclick="viewFile('${data.mvc.model}')">${data.mvc.model}</a></li>`;
-            ctx += `</ul>`;
-        }
-        context.innerHTML = ctx;
-    });
-}
+        buildTree();
+    </script>
 
-search.oninput = function() {
-    const q = this.value.trim();
-    if (!q) return results.innerHTML = '';
-    fetch(`?action=search&term=${encodeURIComponent(q)}`)
-    .then(r => r.json())
-    .then(list => {
-        results.innerHTML = '<ul>' + list.map(f => `<li><a href='#' onclick="viewFile('${f}', '${q}')">${f}</a></li>`).join('') + '</ul>';
-    });
-};
-
-buildTree();
-</script>
 </body>
+
 </html>
