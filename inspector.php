@@ -92,37 +92,39 @@ if (isset($_GET['action'])) {
         const fileContent = document.getElementById('fileContent');
         const contextPanel = document.getElementById('context');
 
-        function buildTree(base = '') {
-            fetch(`?action=list&dir=${base}`)
-                .then(res => res.json())
-                .then(data => {
-                    const ul = document.createElement('ul');
-                    data.forEach(item => {
-                        const li = document.createElement('li');
-                        li.textContent = item.name;
-                        li.dataset.path = item.path;
-                        li.className = item.type === 'dir' ? 'folder' : '';
-                        li.onclick = e => {
-                            e.stopPropagation();
-                            if (item.type === 'dir') {
-                                if (li.querySelector('ul')) {
-                                    li.removeChild(li.querySelector('ul'));
-                                } else {
-                                    buildTree(item.path).then(child => li.appendChild(child));
-                                }
-                            } else {
-                                viewFile(item.path);
-                            }
-                        };
-                        ul.appendChild(li);
-                    });
-                    if (base === '') tree.innerHTML = '';
-                    return ul;
-                }).then(ul => {
-                    if (base === '') tree.appendChild(ul);
-                    else return ul;
-                });
-        }
+function buildTree(base = '', parentElement = null) {
+    return fetch(`?action=list&dir=${encodeURIComponent(base)}`)
+        .then(res => res.json())
+        .then(data => {
+            const ul = document.createElement('ul');
+            data.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item.name;
+                li.dataset.path = item.path;
+                li.className = item.type === 'dir' ? 'folder' : '';
+                li.onclick = function(e) {
+                    e.stopPropagation();
+                    if (item.type === 'dir') {
+                        if (li.querySelector('ul')) {
+                            li.removeChild(li.querySelector('ul')); // toggle off
+                        } else {
+                            buildTree(item.path, li); // load subdir
+                        }
+                    } else {
+                        viewFile(item.path);
+                    }
+                };
+                ul.appendChild(li);
+            });
+
+            if (parentElement) {
+                parentElement.appendChild(ul); // append to folder <li>
+            } else {
+                tree.innerHTML = ''; // root
+                tree.appendChild(ul);
+            }
+        });
+}
 
         function viewFile(filePath) {
             fetch(`?action=analyze&file=${filePath}`)
