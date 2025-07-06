@@ -229,7 +229,7 @@ $telefono = $_SESSION['telefono'] ?? 'Sin teléfono';
                                 <label for="evento">Evento</label>
                                 <div class="input-icon">
                                     <span class="material-icons">event</span>
-                                    <input type="text" name="evento" id="evento" required>
+                                    <input type="text" name="evento" id="evento">
                                 </div>
                             </div>
 
