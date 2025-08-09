@@ -170,268 +170,296 @@ $email   = $user['email'] ?? 'Sin email';
 
     <script src="../../views/partials/spinner-global.js"></script>
 
-<script>
-    const ctrlUrl = '../../controllers/AdminVariablesController.php';
+    <script>
+        const ctrlUrl = '../../controllers/AdminVariablesController.php';
 
-    function flash(msg, ok = true) {
-        const el = document.getElementById('flash');
-        if (!el) return;
-        el.textContent = msg;
-        el.classList.remove('ok', 'err');
-        el.classList.add(ok ? 'ok' : 'err');
-        setTimeout(() => { el.textContent = ''; }, 5000);
-    }
-
-    function showAlert(msg) {
-        alert(msg);
-    }
-
-    async function api(action, payload = {}, method = 'POST') {
-        const opts = {
-            method,
-            headers: { 'Content-Type': 'application/json' },
-            body: method === 'POST' ? JSON.stringify({ action, ...payload }) : null
-        };
-        const res = await fetch(`${ctrlUrl}?t=${Date.now()}`, opts);
-        if (!res.ok) throw new Error('Error HTTP ' + res.status);
-        const data = await res.json();
-        if (!data || data.error) throw new Error(data?.error || 'Error desconocido');
-        return data;
-    }
-
-    // Carga inicial (solo al abrir la página)
-    async function cargarValoresIniciales() {
-        try {
-            const data = await api('get_values', {}, 'POST');
-            if (data.debit_credit?.value != null) {
-                document.getElementById('dc_value').value = data.debit_credit.value;
-            }
-            if (data.retention?.value != null) {
-                document.getElementById('ret_value').value = data.retention.value;
-            }
-            if (data.billing_entity) {
-                document.getElementById('be_name').value = data.billing_entity.name || '';
-                document.getElementById('be_cuit').value = data.billing_entity.cuit || '';
-            }
-        } catch (e) {
-            console.error(e);
-            flash('No se pudieron cargar los valores actuales.', false);
+        function flash(msg, ok = true) {
+            const el = document.getElementById('flash');
+            if (!el) return;
+            el.textContent = msg;
+            el.classList.remove('ok', 'err');
+            el.classList.add(ok ? 'ok' : 'err');
+            setTimeout(() => {
+                el.textContent = '';
+            }, 5000);
         }
-    }
 
-    /* ---------- Helpers UI ---------- */
-    function iconBtn({ title, icon, onclick, active = false, colorActive = '#f59e0b' }) {
-        const style = active ? `style="color:${colorActive}"` : '';
-        return `
-            <button class="btn-icon" title="${title}" onclick="${onclick}">
-                <span class="material-icons" ${style}>${icon}</span>
-            </button>
+        function showAlert(msg) {
+            alert(msg);
+        }
+
+        async function api(action, payload = {}, method = 'POST') {
+            const opts = {
+                method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: method === 'POST' ? JSON.stringify({
+                    action,
+                    ...payload
+                }) : null
+            };
+            const res = await fetch(`${ctrlUrl}?t=${Date.now()}`, opts);
+            if (!res.ok) throw new Error('Error HTTP ' + res.status);
+            const data = await res.json();
+            if (!data || data.error) throw new Error(data?.error || 'Error desconocido');
+            return data;
+        }
+
+        // Carga inicial (solo una vez)
+        async function cargarValoresIniciales() {
+            try {
+                const data = await api('get_values', {}, 'POST');
+                if (data.debit_credit?.value != null) {
+                    document.getElementById('dc_value').value = data.debit_credit.value;
+                }
+                if (data.retention?.value != null) {
+                    document.getElementById('ret_value').value = data.retention.value;
+                }
+                if (data.billing_entity) {
+                    document.getElementById('be_name').value = data.billing_entity.name || '';
+                    document.getElementById('be_cuit').value = data.billing_entity.cuit || '';
+                }
+            } catch (e) {
+                console.error(e);
+                flash('No se pudieron cargar los valores actuales.', false);
+            }
+        }
+
+        /* ---------- Helpers UI ---------- */
+        function iconBtn({
+            title,
+            icon,
+            onclick,
+            active = false,
+            colorActive = '#f59e0b'
+        }) {
+            const style = active ? `style="color:${colorActive}"` : '';
+            return `
+    <button class="btn-icon" title="${title}" onclick="${onclick}" style="margin-left:.25rem">
+        <span class="material-icons" ${style}>${icon}</span>
+    </button>
+    `;
+        }
+
+        // Formateo: hasta 3 decimales, coma como separador, sin ceros de más.
+        // Si hay decimales, garantiza al menos 2 (2,20). Si es entero, muestra "3".
+        function fmtPct(n) {
+            const v = Number(n);
+            if (!isFinite(v)) return n;
+            let s = v.toFixed(3); // 3 decimales para redondeo
+            if (s.endsWith('.000')) { // entero puro
+                return s.split('.')[0];
+            }
+            // recorta ceros a la derecha dejando al menos 1 dígito significativo
+            s = s.replace(/(\.\d*?[1-9])0+$/, '$1');
+            // asegura al menos 2 decimales si hay parte decimal
+            if (/\.(\d)$/.test(s)) s = s + '0';
+            return s.replace('.', ',');
+        }
+
+        function resetForm(formId) {
+            const form = document.getElementById(formId);
+            if (form) form.reset();
+        }
+
+        /* ---------- Render de listas ---------- */
+        async function renderLists() {
+            await Promise.all([renderDebitCredit(), renderRetention(), renderBilling()]);
+        }
+
+        // Aplica estilos base a los UL para legibilidad
+        function styleList(ul) {
+            if (!ul) return;
+            ul.style.listStyle = 'none';
+            ul.style.padding = '0';
+            ul.style.marginTop = '.75rem';
+        }
+
+        function rowTemplate({
+            leftHtml,
+            actionsHtml
+        }) {
+            return `
+    <li style="display:flex; align-items:center; justify-content:space-between; padding:.35rem 0; border-bottom:1px solid #e9ecef;">
+        <div style="display:flex; align-items:center; gap:.35rem;">${leftHtml}</div>
+        <div style="display:flex; align-items:center;">${actionsHtml}</div>
+    </li>
+    `;
+        }
+
+        async function renderDebitCredit() {
+            try {
+                const items = await api('list_debit_credit', {}, 'POST');
+                const ul = document.getElementById('list-debit-credit');
+                if (!ul) return;
+                styleList(ul);
+                ul.innerHTML = items.map(row => {
+                    const left = `<strong>${fmtPct(row.value)}%</strong><span class="hint">· id ${row.id}</span>`;
+                    const actions = `
+        ${iconBtn({ title: 'Favorito', icon: row.is_favorite == 1 ? 'star' : 'star_border', onclick: `setFav('debit', ${row.id})`, active: row.is_favorite == 1 })}
+        ${iconBtn({ title: 'Eliminar', icon: 'delete', onclick: `delItem('debit', ${row.id})` })}
         `;
-    }
-
-    function fmt4(n) {
-        const v = Number(n);
-        return isFinite(v) ? v.toFixed(4) : n;
-    }
-
-    function resetForm(formId) {
-        const form = document.getElementById(formId);
-        if (form) form.reset();
-    }
-
-    /* ---------- Render de listas ---------- */
-    async function renderLists() {
-        await Promise.all([renderDebitCredit(), renderRetention(), renderBilling()]);
-    }
-
-    async function renderDebitCredit() {
-        try {
-            const items = await api('list_debit_credit', {}, 'POST');
-            const ul = document.getElementById('list-debit-credit');
-            if (!ul) return;
-            ul.innerHTML = items.map(row => `
-                <li class="list-item flex-row space-between">
-                    <div>
-                        <strong>${fmt4(row.value)}%</strong>
-                        <span class="hint"> · id ${row.id} · ${row.created_at ?? ''}</span>
-                    </div>
-                    <div class="actions">
-                        ${iconBtn({
-                            title: 'Favorito',
-                            icon: row.is_favorite == 1 ? 'star' : 'star_border',
-                            onclick: `setFav('debit', ${row.id})`,
-                            active: row.is_favorite == 1
-                        })}
-                        ${iconBtn({
-                            title: 'Eliminar',
-                            icon: 'delete',
-                            onclick: `delItem('debit', ${row.id})`
-                        })}
-                    </div>
-                </li>
-            `).join('');
-        } catch (e) {
-            console.error(e);
-            flash('No se pudo cargar el historial de Débito/Crédito.', false);
+                    return rowTemplate({
+                        leftHtml: left,
+                        actionsHtml: actions
+                    });
+                }).join('');
+            } catch (e) {
+                console.error(e);
+                flash('No se pudo cargar el historial de Débito/Crédito.', false);
+            }
         }
-    }
 
-    async function renderRetention() {
-        try {
-            const items = await api('list_retention', {}, 'POST');
-            const ul = document.getElementById('list-retention');
-            if (!ul) return;
-            ul.innerHTML = items.map(row => `
-                <li class="list-item flex-row space-between">
-                    <div>
-                        <strong>${fmt4(row.value)}%</strong>
-                        <span class="hint"> · id ${row.id} · ${row.created_at ?? ''}</span>
-                    </div>
-                    <div class="actions">
-                        ${iconBtn({
-                            title: 'Favorito',
-                            icon: row.is_favorite == 1 ? 'star' : 'star_border',
-                            onclick: `setFav('ret', ${row.id})`,
-                            active: row.is_favorite == 1
-                        })}
-                        ${iconBtn({
-                            title: 'Eliminar',
-                            icon: 'delete',
-                            onclick: `delItem('ret', ${row.id})`
-                        })}
-                    </div>
-                </li>
-            `).join('');
-        } catch (e) {
-            console.error(e);
-            flash('No se pudo cargar el historial de Retención.', false);
+        async function renderRetention() {
+            try {
+                const items = await api('list_retention', {}, 'POST');
+                const ul = document.getElementById('list-retention');
+                if (!ul) return;
+                styleList(ul);
+                ul.innerHTML = items.map(row => {
+                    const left = `<strong>${fmtPct(row.value)}%</strong><span class="hint">· id ${row.id}</span>`;
+                    const actions = `
+        ${iconBtn({ title: 'Favorito', icon: row.is_favorite == 1 ? 'star' : 'star_border', onclick: `setFav('ret', ${row.id})`, active: row.is_favorite == 1 })}
+        ${iconBtn({ title: 'Eliminar', icon: 'delete', onclick: `delItem('ret', ${row.id})` })}
+        `;
+                    return rowTemplate({
+                        leftHtml: left,
+                        actionsHtml: actions
+                    });
+                }).join('');
+            } catch (e) {
+                console.error(e);
+                flash('No se pudo cargar el historial de Retención.', false);
+            }
         }
-    }
 
-    async function renderBilling() {
-        try {
-            const items = await api('list_billing_entities', {}, 'POST');
-            const ul = document.getElementById('list-billing');
-            if (!ul) return;
-            ul.innerHTML = items.map(row => `
-                <li class="list-item flex-row space-between">
-                    <div>
-                        <strong>${row.name}</strong> — CUIT ${row.cuit}
-                        <span class="hint"> · id ${row.id} · ${row.created_at ?? ''}</span>
-                    </div>
-                    <div class="actions">
-                        ${iconBtn({
-                            title: 'Favorito',
-                            icon: row.is_favorite == 1 ? 'star' : 'star_border',
-                            onclick: `setFav('bill', ${row.id})`,
-                            active: row.is_favorite == 1
-                        })}
-                        ${iconBtn({
-                            title: 'Eliminar',
-                            icon: 'delete',
-                            onclick: `delItem('bill', ${row.id})`
-                        })}
-                    </div>
-                </li>
-            `).join('');
-        } catch (e) {
-            console.error(e);
-            flash('No se pudo cargar el historial de Entidades.', false);
+        async function renderBilling() {
+            try {
+                const items = await api('list_billing_entities', {}, 'POST');
+                const ul = document.getElementById('list-billing');
+                if (!ul) return;
+                styleList(ul);
+                ul.innerHTML = items.map(row => {
+                    const left = `<strong>${row.name}</strong><span class="hint">— CUIT ${row.cuit} · id ${row.id}</span>`;
+                    const actions = `
+        ${iconBtn({ title: 'Favorito', icon: row.is_favorite == 1 ? 'star' : 'star_border', onclick: `setFav('bill', ${row.id})`, active: row.is_favorite == 1 })}
+        ${iconBtn({ title: 'Eliminar', icon: 'delete', onclick: `delItem('bill', ${row.id})` })}
+        `;
+                    return rowTemplate({
+                        leftHtml: left,
+                        actionsHtml: actions
+                    });
+                }).join('');
+            } catch (e) {
+                console.error(e);
+                flash('No se pudo cargar el historial de Entidades.', false);
+            }
         }
-    }
 
-    /* ---------- Acciones: favorito / eliminar ---------- */
-    async function setFav(kind, id) {
-        const map = {
-            debit: 'favorite_debit_credit',
-            ret: 'favorite_retention',
-            bill: 'favorite_billing'
-        };
-        try {
-            await api(map[kind], { id });
-            flash('Favorito actualizado.');
-            showAlert('success', 'Favorito actualizado correctamente.');
-            await renderLists();
-        } catch (e) {
-            console.error(e);
-            flash(e.message, false);
+        /* ---------- Acciones: favorito / eliminar ---------- */
+        async function setFav(kind, id) {
+            const map = {
+                debit: 'favorite_debit_credit',
+                ret: 'favorite_retention',
+                bill: 'favorite_billing'
+            };
+            try {
+                await api(map[kind], {
+                    id
+                });
+                flash('Favorito actualizado.');
+                showAlert('success', 'Favorito actualizado correctamente.');
+                await renderLists();
+            } catch (e) {
+                console.error(e);
+                flash(e.message, false);
+            }
         }
-    }
 
-    async function delItem(kind, id) {
-        if (!confirm('¿Eliminar este registro? Esta acción no se puede deshacer.')) return;
-        const map = {
-            debit: 'delete_debit_credit',
-            ret: 'delete_retention',
-            bill: 'delete_billing'
-        };
-        try {
-            await api(map[kind], { id });
-            flash('Registro eliminado.');
-            showAlert('success', 'Registro eliminado correctamente.');
-            await renderLists();
-        } catch (e) {
-            console.error(e);
-            flash(e.message, false);
+        async function delItem(kind, id) {
+            if (!confirm('¿Eliminar este registro? Esta acción no se puede deshacer.')) return;
+            const map = {
+                debit: 'delete_debit_credit',
+                ret: 'delete_retention',
+                bill: 'delete_billing'
+            };
+            try {
+                await api(map[kind], {
+                    id
+                });
+                flash('Registro eliminado.');
+                showAlert('success', 'Registro eliminado correctamente.');
+                await renderLists();
+            } catch (e) {
+                console.error(e);
+                flash(e.message, false);
+            }
         }
-    }
 
-    /* ---------- Submits (guardan + limpian el formulario + refrescan lista) ---------- */
-    document.getElementById('form-debit-credit').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const value = parseFloat(document.getElementById('dc_value').value);
-        if (isNaN(value) || value < 0) return flash('Ingrese un porcentaje válido para Débito/Crédito.', false);
-        try {
-            await api('save_debit_credit_tax', { value });
-            flash('Impuesto guardado.');
-            showAlert('success', 'Nueva variable de Débito/Crédito creada correctamente.');
-            resetForm('form-debit-credit');                 // limpiar formulario
-            await renderDebitCredit();                      // actualizar historial
-            // Nota: NO recargamos valores en el input para evitar confusión
-        } catch (err) {
-            console.error(err);
-            flash(err.message, false);
-        }
-    });
+        /* ---------- Submits (guardan + limpian + refrescan) ---------- */
+        document.getElementById('form-debit-credit').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const value = parseFloat(document.getElementById('dc_value').value);
+            if (isNaN(value) || value < 0) return flash('Ingrese un porcentaje válido para Débito/Crédito.', false);
+            try {
+                await api('save_debit_credit_tax', {
+                    value
+                });
+                flash('Impuesto guardado.');
+                showAlert('success', 'Nueva variable de Débito/Crédito creada correctamente.');
+                resetForm('form-debit-credit');
+                await renderDebitCredit();
+            } catch (err) {
+                console.error(err);
+                flash(err.message, false);
+            }
+        });
 
-    document.getElementById('form-retention').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const value = parseFloat(document.getElementById('ret_value').value);
-        if (isNaN(value) || value < 0) return flash('Ingrese un porcentaje válido para Retención.', false);
-        try {
-            await api('save_retention', { value });
-            flash('Retención guardada.');
-            showAlert('success', 'Nueva variable de Retención creada correctamente.');
-            resetForm('form-retention');                    // limpiar formulario
-            await renderRetention();                        // actualizar historial
-        } catch (err) {
-            console.error(err);
-            flash(err.message, false);
-        }
-    });
+        document.getElementById('form-retention').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const value = parseFloat(document.getElementById('ret_value').value);
+            if (isNaN(value) || value < 0) return flash('Ingrese un porcentaje válido para Retención.', false);
+            try {
+                await api('save_retention', {
+                    value
+                });
+                flash('Retención guardada.');
+                showAlert('success', 'Nueva variable de Retención creada correctamente.');
+                resetForm('form-retention');
+                await renderRetention();
+            } catch (err) {
+                console.error(err);
+                flash(err.message, false);
+            }
+        });
 
-    document.getElementById('form-billing').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const name = document.getElementById('be_name').value.trim();
-        const cuit = document.getElementById('be_cuit').value.trim();
-        if (!name) return flash('El nombre es obligatorio.', false);
-        if (!/^\d{7,20}$/.test(cuit)) return flash('CUIT inválido. Solo dígitos (7 a 20).', false);
-        try {
-            await api('save_billing_entity', { name, cuit });
-            flash('Entidad de facturación guardada.');
-            showAlert('success', 'Nueva entidad de facturación creada correctamente.');
-            resetForm('form-billing');                      // limpiar formulario
-            await renderBilling();                          // actualizar historial
-        } catch (err) {
-            console.error(err);
-            flash(err.message, false);
-        }
-    });
+        document.getElementById('form-billing').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('be_name').value.trim();
+            const cuit = document.getElementById('be_cuit').value.trim();
+            if (!name) return flash('El nombre es obligatorio.', false);
+            if (!/^\d{7,20}$/.test(cuit)) return flash('CUIT inválido. Solo dígitos (7 a 20).', false);
+            try {
+                await api('save_billing_entity', {
+                    name,
+                    cuit
+                });
+                flash('Entidad de facturación guardada.');
+                showAlert('success', 'Nueva entidad de facturación creada correctamente.');
+                resetForm('form-billing');
+                await renderBilling();
+            } catch (err) {
+                console.error(err);
+                flash(err.message, false);
+            }
+        });
 
-    /* ---------- Init ---------- */
-    cargarValoresIniciales();  // solo al entrar en la pantalla
-    renderLists();
-</script>
+        /* ---------- Init ---------- */
+        cargarValoresIniciales();
+        renderLists();
+    </script>
+
 
 
 
