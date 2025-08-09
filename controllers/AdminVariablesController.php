@@ -19,7 +19,7 @@ if (!$user || !isset($user['role']) || $user['role'] !== 'Super_admin') {
 
 $model = new VariablesModel();
 
-// Acepto JSON en body
+// JSON body
 $raw    = file_get_contents('php://input');
 $body   = json_decode($raw, true) ?: [];
 $action = $_GET['action'] ?? $body['action'] ?? $_POST['action'] ?? null;
@@ -50,7 +50,7 @@ try {
             echo json_encode($model->listBillingEntities($limit));
             break;
 
-        /* ===== Escrituras (INSERT-only) ===== */
+        /* ===== Escrituras ===== */
         case 'save_debit_credit_tax':
             $value = $body['value'] ?? $_POST['value'] ?? null;
             if ($value === null || !is_numeric($value) || $value < 0) {
@@ -82,6 +82,50 @@ try {
             }
             $saved = $model->saveBillingEntity($name, $cuit);
             echo json_encode(['ok' => true, 'data' => $saved]);
+            break;
+
+        /* ===== Favoritos ===== */
+        case 'favorite_debit_credit':
+            $id = (int)($body['id'] ?? $_POST['id'] ?? 0);
+            if ($id <= 0) throw new InvalidArgumentException('ID inválido.');
+            $model->setFavoriteDebitCredit($id);
+            echo json_encode(['ok'=>true]);
+            break;
+
+        case 'favorite_retention':
+            $id = (int)($body['id'] ?? $_POST['id'] ?? 0);
+            if ($id <= 0) throw new InvalidArgumentException('ID inválido.');
+            $model->setFavoriteRetention($id);
+            echo json_encode(['ok'=>true]);
+            break;
+
+        case 'favorite_billing':
+            $id = (int)($body['id'] ?? $_POST['id'] ?? 0);
+            if ($id <= 0) throw new InvalidArgumentException('ID inválido.');
+            $model->setFavoriteBillingEntity($id);
+            echo json_encode(['ok'=>true]);
+            break;
+
+        /* ===== Eliminar ===== */
+        case 'delete_debit_credit':
+            $id = (int)($body['id'] ?? $_POST['id'] ?? 0);
+            if ($id <= 0) throw new InvalidArgumentException('ID inválido.');
+            $ok = $model->deleteDebitCredit($id);
+            echo json_encode(['ok'=>$ok]);
+            break;
+
+        case 'delete_retention':
+            $id = (int)($body['id'] ?? $_POST['id'] ?? 0);
+            if ($id <= 0) throw new InvalidArgumentException('ID inválido.');
+            $ok = $model->deleteRetention($id);
+            echo json_encode(['ok'=>$ok]);
+            break;
+
+        case 'delete_billing':
+            $id = (int)($body['id'] ?? $_POST['id'] ?? 0);
+            if ($id <= 0) throw new InvalidArgumentException('ID inválido.');
+            $ok = $model->deleteBillingEntity($id);
+            echo json_encode(['ok'=>$ok]);
             break;
 
         default:
