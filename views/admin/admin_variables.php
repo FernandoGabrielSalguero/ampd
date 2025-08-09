@@ -87,7 +87,7 @@ $email = $user['email'] ?? 'Sin email';
                         <h3>Variable de entorno Impuesto al débito y crédito</h3>
                         <form id="form-dc" class="form-inline gap-2 mt-2">
                             <input type="text" class="input" name="value" placeholder="Valor (ej. 1,2000)" required>
-                            <button class="btn">Crear</button>
+                            <button class="btn btn-primary">Crear</button>
                         </form>
                         <div id="list-dc" class="mt-3"></div>
                     </div>
@@ -97,7 +97,7 @@ $email = $user['email'] ?? 'Sin email';
                         <h3>Variable de entorno Retención</h3>
                         <form id="form-ret" class="form-inline gap-2 mt-2">
                             <input type="text" class="input" name="value" placeholder="Valor (ej. 3,5000)" required>
-                            <button class="btn">Crear</button>
+                            <button class="btn btn-primary">Crear</button>
                         </form>
                         <div id="list-ret" class="mt-3"></div>
                     </div>
@@ -110,15 +110,254 @@ $email = $user['email'] ?? 'Sin email';
                                 <input type="text" class="input" name="name" placeholder="Nombre" required>
                                 <input type="text" class="input" name="cuit" placeholder="CUIT" required>
                             </div>
-                            <button class="btn mt-2">Crear</button>
+                            <button class="btn btn-primary mt-2">Crear</button>
                         </form>
                         <div id="list-bill" class="mt-3"></div>
                     </div>
                 </div>
 
+
             </section>
         </div>
     </div>
+
+
+
+    <!-- script de funcionalidades -->
+    <script>
+        const API = 'AdminVariablesController.php';
+
+        // ==== Funciones comunes ====
+        const fmt = n => Number(n).toLocaleString('es-AR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 4
+        });
+
+        function renderTable(container, rows, cols, editHandler, deleteHandler) {
+            if (!rows.length) {
+                container.innerHTML = '<p class="text-gray-500">No hay registros</p>';
+                return;
+            }
+            const table = document.createElement('table');
+            table.className = 'table';
+            table.innerHTML = `
+    <thead>
+      <tr>
+        ${cols.map(c => `<th>${c.label}</th>`).join('')}
+        <th style="width:120px">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rows.map(r => `
+        <tr>
+          ${cols.map(c => `<td>${c.format ? c.format(r[c.key]) : r[c.key]}</td>`).join('')}
+          <td>
+            <button class="btn btn-sm" data-edit="${r.id}">Editar</button>
+            <button class="btn btn-sm btn-danger" data-del="${r.id}">Borrar</button>
+          </td>
+        </tr>
+      `).join('')}
+    </tbody>
+  `;
+            container.replaceChildren(table);
+
+            table.querySelectorAll('[data-edit]').forEach(btn => {
+                btn.onclick = () => editHandler(btn.getAttribute('data-edit'));
+            });
+            table.querySelectorAll('[data-del]').forEach(btn => {
+                btn.onclick = () => deleteHandler(btn.getAttribute('data-del'));
+            });
+        }
+
+        async function apiList(type) {
+            const r = await fetch(`${API}?type=${type}&action=list`, {
+                credentials: 'same-origin'
+            });
+            return r.json();
+        }
+        async function apiPost(type, action, payload) {
+            const r = await fetch(`${API}?type=${type}&action=${action}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams(payload),
+                credentials: 'same-origin'
+            });
+            return r.json();
+        }
+
+        // ==== Tarjeta 1: Débito/Crédito ====
+        const formDC = document.getElementById('form-dc');
+        const listDC = document.getElementById('list-dc');
+        async function loadDC() {
+            const res = await apiList('debit_credit_tax');
+            if (!res.ok) {
+                listDC.textContent = res.error || 'Error';
+                return;
+            }
+            renderTable(listDC, res.data, [{
+                    key: 'id',
+                    label: 'ID'
+                },
+                {
+                    key: 'value',
+                    label: 'Valor',
+                    format: fmt
+                }
+            ], async (id) => {
+                const row = res.data.find(r => String(r.id) === String(id));
+                const nuevo = prompt('Nuevo valor:', fmt(row.value));
+                if (nuevo !== null) {
+                    const r = await apiPost('debit_credit_tax', 'update', {
+                        id,
+                        value: nuevo
+                    });
+                    if (r.ok) loadDC();
+                    else alert(r.error || 'Error');
+                }
+            }, async (id) => {
+                if (confirm('¿Borrar registro?')) {
+                    const r = await apiPost('debit_credit_tax', 'delete', {
+                        id
+                    });
+                    if (r.ok) loadDC();
+                    else alert(r.error || 'Error');
+                }
+            });
+        }
+        formDC.onsubmit = async e => {
+            e.preventDefault();
+            const v = formDC.value.value.trim();
+            if (!v) return;
+            const res = await apiPost('debit_credit_tax', 'create', {
+                value: v
+            });
+            if (res.ok) {
+                formDC.reset();
+                loadDC();
+            } else alert(res.error || 'Error');
+        };
+
+        // ==== Tarjeta 2: Retención ====
+        const formRet = document.getElementById('form-ret');
+        const listRet = document.getElementById('list-ret');
+        async function loadRet() {
+            const res = await apiList('retention');
+            if (!res.ok) {
+                listRet.textContent = res.error || 'Error';
+                return;
+            }
+            renderTable(listRet, res.data, [{
+                    key: 'id',
+                    label: 'ID'
+                },
+                {
+                    key: 'value',
+                    label: 'Valor',
+                    format: fmt
+                }
+            ], async (id) => {
+                const row = res.data.find(r => String(r.id) === String(id));
+                const nuevo = prompt('Nuevo valor:', fmt(row.value));
+                if (nuevo !== null) {
+                    const r = await apiPost('retention', 'update', {
+                        id,
+                        value: nuevo
+                    });
+                    if (r.ok) loadRet();
+                    else alert(r.error || 'Error');
+                }
+            }, async (id) => {
+                if (confirm('¿Borrar registro?')) {
+                    const r = await apiPost('retention', 'delete', {
+                        id
+                    });
+                    if (r.ok) loadRet();
+                    else alert(r.error || 'Error');
+                }
+            });
+        }
+        formRet.onsubmit = async e => {
+            e.preventDefault();
+            const v = formRet.value.value.trim();
+            if (!v) return;
+            const res = await apiPost('retention', 'create', {
+                value: v
+            });
+            if (res.ok) {
+                formRet.reset();
+                loadRet();
+            } else alert(res.error || 'Error');
+        };
+
+        // ==== Tarjeta 3: Entidades de facturación ====
+        const formBill = document.getElementById('form-bill');
+        const listBill = document.getElementById('list-bill');
+        async function loadBill() {
+            const res = await apiList('billing_entity');
+            if (!res.ok) {
+                listBill.textContent = res.error || 'Error';
+                return;
+            }
+            renderTable(listBill, res.data, [{
+                    key: 'id',
+                    label: 'ID'
+                },
+                {
+                    key: 'name',
+                    label: 'Nombre'
+                },
+                {
+                    key: 'cuit',
+                    label: 'CUIT'
+                }
+            ], async (id) => {
+                const row = res.data.find(r => String(r.id) === String(id));
+                const nuevoNombre = prompt('Nuevo nombre:', row.name);
+                if (nuevoNombre === null) return;
+                const nuevoCuit = prompt('Nuevo CUIT:', row.cuit);
+                if (nuevoCuit === null) return;
+                const r = await apiPost('billing_entity', 'update', {
+                    id,
+                    name: nuevoNombre,
+                    cuit: nuevoCuit
+                });
+                if (r.ok) loadBill();
+                else alert(r.error || 'Error');
+            }, async (id) => {
+                if (confirm('¿Borrar registro?')) {
+                    const r = await apiPost('billing_entity', 'delete', {
+                        id
+                    });
+                    if (r.ok) loadBill();
+                    else alert(r.error || 'Error');
+                }
+            });
+        }
+        formBill.onsubmit = async e => {
+            e.preventDefault();
+            const name = formBill.name.value.trim();
+            const cuit = formBill.cuit.value.trim();
+            if (!name || !cuit) return;
+            const res = await apiPost('billing_entity', 'create', {
+                name,
+                cuit
+            });
+            if (res.ok) {
+                formBill.reset();
+                loadBill();
+            } else alert(res.error || 'Error');
+        };
+
+        // ==== Carga inicial ====
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDC();
+            loadRet();
+            loadBill();
+        });
+    </script>
+
 
     <script src="../../views/partials/spinner-global.js"></script>
 
