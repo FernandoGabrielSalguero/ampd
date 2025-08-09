@@ -14,7 +14,7 @@ $user = SessionManager::getUser();
 // Esta pantalla suele ser para Super_admin; mantener así. (Los usuarios creados tendrán rol 'socio')
 if (!$user || !isset($user['role']) || $user['role'] !== 'Super_admin') {
     http_response_code(403);
-    echo json_encode(['error'=>'Acceso denegado']);
+    echo json_encode(['error' => 'Acceso denegado']);
     exit;
 }
 
@@ -32,21 +32,68 @@ try {
             $fh = fopen($_FILES['file']['tmp_name'], 'r');
             if (!$fh) throw new RuntimeException('No se pudo leer el archivo.');
 
-            // Headers
-            $headers = fgetcsv($fh, 0, ',', '"');
-            if (!$headers) throw new RuntimeException('CSV sin cabecera.');
-            $headers = array_map(function($h){
+            // ---------- Cabeceras con autodetección de BOM y delimitador ----------
+            $delimiter = ','; // por defecto
+            $headers = fgetcsv($fh, 0, $delimiter, '"');
+            if ($headers === false) {
+                throw new RuntimeException('CSV sin cabecera.');
+            }
+
+            // Quitar BOM si viene en el primer header
+            if (isset($headers[0])) {
+                $headers[0] = preg_replace('/^\xEF\xBB\xBF/u', '', $headers[0]);
+            }
+
+            // Si solo vino 1 columna, probablemente es por delimitador diferente.
+            // Reintento con ; y con TAB.
+            if (count($headers) === 1) {
+                $line = $headers[0];
+
+                if (strpos($line, ';') !== false) {
+                    $delimiter = ';';
+                    // Volvemos al inicio del archivo y releemos cabeceras con ;
+                    rewind($fh);
+                    $headers = fgetcsv($fh, 0, $delimiter, '"');
+                    if (isset($headers[0])) {
+                        $headers[0] = preg_replace('/^\xEF\xBB\xBF/u', '', $headers[0]);
+                    }
+                } elseif (strpos($line, "\t") !== false) {
+                    $delimiter = "\t";
+                    rewind($fh);
+                    $headers = fgetcsv($fh, 0, $delimiter, '"');
+                    if (isset($headers[0])) {
+                        $headers[0] = preg_replace('/^\xEF\xBB\xBF/u', '', $headers[0]);
+                    }
+                }
+            }
+
+            $headers = array_map(function ($h) {
                 $h = trim($h);
                 $h = preg_replace('/\s+/', '_', $h);
                 return strtolower($h);
             }, $headers);
 
             $required = [
-                'email','first_name','dni','n_socio','contact_phone',
-                'cbu_a','alias_a','titular_a','banco_a',
-                'user_name','pass','cuit_a',
-                'cbu_b','alias_b','titular_b','banco_b',
-                'cbu_c','alias_c','titular_c','banco_c'
+                'email',
+                'first_name',
+                'dni',
+                'n_socio',
+                'contact_phone',
+                'cbu_a',
+                'alias_a',
+                'titular_a',
+                'banco_a',
+                'user_name',
+                'pass',
+                'cuit_a',
+                'cbu_b',
+                'alias_b',
+                'titular_b',
+                'banco_b',
+                'cbu_c',
+                'alias_c',
+                'titular_c',
+                'banco_c'
             ];
             foreach ($required as $r) {
                 if (!in_array($r, $headers, true)) {
@@ -55,7 +102,8 @@ try {
             }
             $idx = array_flip($headers);
 
-            $norm = function($v){
+            // ---------- Helpers ----------
+            $norm = function ($v) {
                 $v = trim((string)$v);
                 if ($v === '' || preg_match('/^sin\s+/i', $v)) return null;
                 return $v;
@@ -65,20 +113,29 @@ try {
             $errors = [];
             $line = 1;
 
-            while (($row = fgetcsv($fh, 0, ',', '"')) !== false) {
+            // ---------- Lectura de filas con el mismo delimitador detectado ----------
+            while (($row = fgetcsv($fh, 0, $delimiter, '"')) !== false) {
                 $line++;
 
-                // Datos base
                 $dni    = $norm($row[$idx['dni']] ?? '');
                 $nSocio = $norm($row[$idx['n_socio']] ?? '');
                 $email  = $norm($row[$idx['email']] ?? '');
                 $pass   = (string)($row[$idx['pass']] ?? '');
 
-                if (!$dni || !preg_match('/^\d+$/', $dni)) { $errors[] = "Línea {$line}: DNI inválido."; continue; }
-                if (!$nSocio || !preg_match('/^\d+$/', $nSocio)) { $errors[] = "Línea {$line}: n_socio inválido."; continue; }
-                if ($pass === '') { $errors[] = "Línea {$line}: pass vacío."; continue; }
+                if (!$dni || !preg_match('/^\d+$/', $dni)) {
+                    $errors[] = "Línea {$line}: DNI inválido.";
+                    continue;
+                }
+                if (!$nSocio || !preg_match('/^\d+$/', $nSocio)) {
+                    $errors[] = "Línea {$line}: n_socio inválido.";
+                    continue;
+                }
+                if ($pass === '') {
+                    $errors[] = "Línea {$line}: pass vacío.";
+                    continue;
+                }
 
-                // Crear usuario si no existe y asegurar rol 'socio'
+                // Crear usuario (si no existe) y asegurar rol 'socio'
                 $userId = $model->createUserIfMissing($dni, $email, $pass);
                 $model->ensureUserHasSocioRole($userId);
 
@@ -123,6 +180,7 @@ try {
                 }
             }
             fclose($fh);
+
 
             $result = $model->upsertBatch($rows, $replace);
 

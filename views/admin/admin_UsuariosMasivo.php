@@ -140,8 +140,12 @@ $email = $user['email'] ?? 'Sin email';
                     method: 'POST',
                     body: fd
                 });
-                if (!resp.ok) throw new Error('HTTP ' + resp.status);
-                const data = await resp.json();
+                const isJson = (resp.headers.get('content-type') || '').includes('application/json');
+                if (!resp.ok) {
+                    const errMsg = isJson ? (await resp.json()).error : await resp.text();
+                    throw new Error(errMsg || ('HTTP ' + resp.status));
+                }
+                const data = isJson ? await resp.json() : {};
                 if (!data.ok) throw new Error(data.error || 'Error desconocido');
 
                 const s = data.summary;
@@ -158,7 +162,7 @@ $email = $user['email'] ?? 'Sin email';
             } catch (err) {
                 console.error(err);
                 resEl.innerHTML = `<span style="color:#dc2626">Error: ${err.message}</span>`;
-                alert('Ocurrió un error al procesar el CSV.');
+                alert('Ocurrió un error al procesar el CSV:\n' + err.message);
             }
         });
     </script>
