@@ -67,6 +67,9 @@ $email   = $user['email'] ?? 'Sin email';
                     <li class="active" onclick="location.href='admin_variables.php'">
                         <span class="material-icons" style="color: #5b21b6;">tune</span><span class="link-text">Variables de entorno</span>
                     </li>
+                    <li onclick="location.href='admin_UsuariosMasivo.php'">
+                        <span class="material-icons" style="color: #5b21b6;">user</span><span class="link-text">Usuarios Masivos</span>
+                    </li>
                     <li onclick="location.href='../../../logout.php'">
                         <span class="material-icons" style="color: red;">logout</span><span class="link-text">Salir</span>
                     </li>
