@@ -80,31 +80,65 @@ $email = $user['email'] ?? 'Sin email';
                     <h2>Hola 👋 <?= htmlspecialchars($usuario) ?></h2>
                     <p>En esta página, vamos a manejar las variables de entorno de toda la plataforma AMPD</p>
                 </div>
-                
+
                 <div class="card-grid grid-2">
+
+                    <!-- tarjeta de impuesto al débito y crédito -->
                     <div class="card">
                         <strong>Variable de entorno Impuesto al débito y crédito</strong>
                         <form class="form-modern">
                             <div class="input-group">
-                                <label>Correo</label>
+                                <label>Nuevo impuesto al débito y al crédito</label>
                                 <div class="input-icon">
-                                    <span class="material-icons">mail</span>
-                                    <input type="email" placeholder="ejemplo@correo.com">
+                                    <span class="material-icons">Impuesto en %</span>
+                                    <input type="number" placeholder="1.2">
                                 </div>
                             </div>
 
                             <div class="form-buttons">
-                                <button class="btn btn-aceptar" type="submit">Enviar</button>
+                                <button class="btn btn-aceptar" type="submit">Crear impuesto</button>
                             </div>
                         </form>
                     </div>
+
+                    <!-- tarjeta de retención -->
                     <div class="card">
-                        <h3>Variable de entorno Retención</h3>
-                        <p>Contenido 2</p>
+                        <strong>Variable de entorno de retenciones</strong>
+                        <form class="form-modern">
+                            <div class="input-group">
+                                <label>Nuevo iretención</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">Impuesto en %</span>
+                                    <input type="number" placeholder="1.2">
+                                </div>
+                            </div>
+
+                            <div class="form-buttons">
+                                <button class="btn btn-aceptar" type="submit">Crear retención</button>
+                            </div>
+                        </form>
                     </div>
+
+                    <!-- variable de entidad de facturación -->
                     <div class="card">
-                        <h3>Variable de entorno Entidad facturación</h3>
-                        <p>Contenido 3</p>
+                        <strong>Variable de entorno entidades facturacion</strong>
+                        <form class="form-modern">
+                            <div class="input-group">
+                                <label>Nueva entidad de facturación</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">Nombre</span>
+                                    <input type="text" placeholder="Asociación mendocina de la daza">
+                                </div>
+                                <div class="input-icon">
+                                    <span class="material-icons">CUIT</span>
+                                    <input type="number" placeholder="20255899657">
+                                </div>
+                            </div>
+
+                            <div class="form-buttons">
+                                <button class="btn btn-aceptar" type="submit">Crear entidad</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </section>
