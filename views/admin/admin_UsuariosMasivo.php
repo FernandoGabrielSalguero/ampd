@@ -131,7 +131,6 @@ $email = $user['email'] ?? 'Sin email';
             fd.append('action', 'upload_csv');
             fd.append('file', fileInput.files[0]);
             fd.append('replace', document.getElementById('replace').checked ? '1' : '0');
-            fd.append('debug_headers', '1');
 
             const resEl = document.getElementById('upload-result');
             resEl.textContent = 'Procesando...';
