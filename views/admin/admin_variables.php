@@ -82,91 +82,230 @@ $email = $user['email'] ?? 'Sin email';
                 </div>
 
                 <div class="card-grid grid-3">
-                    <!-- Tarjeta 1: Débito/Crédito -->
+                    <!-- ============== TARJETA 1: Débito/Crédito ============== -->
                     <div class="card">
-                        <h3>Variable de entorno Impuesto al débito y crédito</h3>
+                        <h3>Impuesto al débito y crédito</h3>
 
-                        <form id="form-dc" class="form-grid mt-2">
+                        <form id="form-dc" class="form-grid" style="margin-top: 12px;">
                             <div class="form-group" style="max-width:320px;">
                                 <label>Valor</label>
                                 <div class="input-icon">
                                     <span class="material-icons">percent</span>
                                     <input type="text" name="value" placeholder="Ej: 1,2000" required>
                                 </div>
-                                <div class="input-error-text" id="err-dc"></div>
                             </div>
-
                             <div class="form-buttons">
-                                <button class="btn btn-info" type="submit">Crear</button>
+                                <button type="submit" class="btn btn-aceptar">Crear</button>
                             </div>
                         </form>
 
-                        <div class="tabla-wrapper mt-3" id="list-dc">
-                            <!-- tabla se inyecta por JS -->
+                        <div class="tabla-wrapper" style="margin-top: 16px;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Valor</th>
+                                        <th>Creado</th>
+                                        <th>Actualizado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-dc"></tbody>
+                            </table>
                         </div>
                     </div>
 
-                    <!-- Tarjeta 2: Retención -->
+                    <!-- ============== TARJETA 2: Retención ============== -->
                     <div class="card">
-                        <h3>Variable de entorno Retención</h3>
+                        <h3>Retención</h3>
 
-                        <form id="form-ret" class="form-grid mt-2">
+                        <form id="form-ret" class="form-grid" style="margin-top: 12px;">
                             <div class="form-group" style="max-width:320px;">
                                 <label>Valor</label>
                                 <div class="input-icon">
                                     <span class="material-icons">payments</span>
                                     <input type="text" name="value" placeholder="Ej: 3,5000" required>
                                 </div>
-                                <div class="input-error-text" id="err-ret"></div>
                             </div>
-
                             <div class="form-buttons">
-                                <button class="btn btn-info" type="submit">Crear</button>
+                                <button type="submit" class="btn btn-aceptar">Crear</button>
                             </div>
                         </form>
 
-                        <div class="tabla-wrapper mt-3" id="list-ret">
-                            <!-- tabla se inyecta por JS -->
+                        <div class="tabla-wrapper" style="margin-top: 16px;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Valor</th>
+                                        <th>Creado</th>
+                                        <th>Actualizado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-ret"></tbody>
+                            </table>
                         </div>
                     </div>
 
-                    <!-- Tarjeta 3: Entidad de facturación -->
+                    <!-- ============== TARJETA 3: Entidades de facturación ============== -->
                     <div class="card">
-                        <h3>Variable de entorno Entidad facturación</h3>
+                        <h3>Entidades de facturación</h3>
 
-                        <form id="form-bill" class="form-grid mt-2">
-                            <div class="form-grid grid-2" style="width:100%;max-width:700px;">
+                        <form id="form-bill" class="form-grid" style="margin-top: 12px;">
+                            <div class="form-grid grid-2" style="width:100%;max-width:720px;">
                                 <div class="form-group">
                                     <label>Nombre</label>
                                     <div class="input-icon">
                                         <span class="material-icons">apartment</span>
                                         <input type="text" name="name" placeholder="Razón social" required>
                                     </div>
-                                    <div class="input-error-text" id="err-bill-name"></div>
                                 </div>
-
                                 <div class="form-group">
                                     <label>CUIT</label>
                                     <div class="input-icon">
                                         <span class="material-icons">badge</span>
-                                        <input type="text" name="cuit" placeholder="CUIT (solo números o con guiones)" required>
+                                        <input type="text" name="cuit" placeholder="CUIT (números o con guiones)" required>
                                     </div>
-                                    <div class="input-error-text" id="err-bill-cuit"></div>
                                 </div>
                             </div>
-
                             <div class="form-buttons">
-                                <button class="btn btn-info" type="submit">Crear</button>
+                                <button type="submit" class="btn btn-aceptar">Crear</button>
                             </div>
                         </form>
 
-                        <div class="tabla-wrapper mt-3" id="list-bill">
-                            <!-- tabla se inyecta por JS -->
+                        <div class="tabla-wrapper" style="margin-top: 16px;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nombre</th>
+                                        <th>CUIT</th>
+                                        <th>Creado</th>
+                                        <th>Actualizado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-bill"></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
 
+                <!-- ====== MODALES ====== -->
+                <!-- Editar valor: Débito/Crédito -->
+                <div id="modalEditDC" class="modal hidden">
+                    <div class="modal-content">
+                        <h3>Editar valor (Débito/Crédito)</h3>
+                        <form id="formEditDC">
+                            <input type="hidden" name="id" id="edit_dc_id">
+                            <div class="form-group" style="margin-top: 10px;">
+                                <label>Valor</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">percent</span>
+                                    <input type="text" name="value" id="edit_dc_value" required>
+                                </div>
+                            </div>
+                            <div class="form-buttons" style="margin-top: 18px;">
+                                <button type="submit" class="btn btn-aceptar">Guardar</button>
+                                <button type="button" class="btn btn-cancelar" onclick="closeModal('modalEditDC')">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
+                <!-- Eliminar Débito/Crédito -->
+                <div id="modalDelDC" class="modal hidden">
+                    <div class="modal-content">
+                        <h3>¿Eliminar valor?</h3>
+                        <p>Esta acción no se puede deshacer.</p>
+                        <input type="hidden" id="del_dc_id">
+                        <div class="form-buttons" style="margin-top: 18px;">
+                            <button class="btn btn-aceptar" onclick="confirmDelDC()">Eliminar</button>
+                            <button class="btn btn-cancelar" onclick="closeModal('modalDelDC')">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Editar valor: Retención -->
+                <div id="modalEditRet" class="modal hidden">
+                    <div class="modal-content">
+                        <h3>Editar valor (Retención)</h3>
+                        <form id="formEditRet">
+                            <input type="hidden" name="id" id="edit_ret_id">
+                            <div class="form-group" style="margin-top: 10px;">
+                                <label>Valor</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">payments</span>
+                                    <input type="text" name="value" id="edit_ret_value" required>
+                                </div>
+                            </div>
+                            <div class="form-buttons" style="margin-top: 18px;">
+                                <button type="submit" class="btn btn-aceptar">Guardar</button>
+                                <button type="button" class="btn btn-cancelar" onclick="closeModal('modalEditRet')">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Eliminar Retención -->
+                <div id="modalDelRet" class="modal hidden">
+                    <div class="modal-content">
+                        <h3>¿Eliminar valor?</h3>
+                        <p>Esta acción no se puede deshacer.</p>
+                        <input type="hidden" id="del_ret_id">
+                        <div class="form-buttons" style="margin-top: 18px;">
+                            <button class="btn btn-aceptar" onclick="confirmDelRet()">Eliminar</button>
+                            <button class="btn btn-cancelar" onclick="closeModal('modalDelRet')">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Editar Entidad -->
+                <div id="modalEditBill" class="modal hidden">
+                    <div class="modal-content">
+                        <h3>Editar entidad de facturación</h3>
+                        <form id="formEditBill">
+                            <input type="hidden" name="id" id="edit_bill_id">
+                            <div class="form-grid grid-2" style="margin-top: 10px;">
+                                <div class="form-group">
+                                    <label>Nombre</label>
+                                    <div class="input-icon">
+                                        <span class="material-icons">apartment</span>
+                                        <input type="text" name="name" id="edit_bill_name" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>CUIT</label>
+                                    <div class="input-icon">
+                                        <span class="material-icons">badge</span>
+                                        <input type="text" name="cuit" id="edit_bill_cuit" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-buttons" style="margin-top: 18px;">
+                                <button type="submit" class="btn btn-aceptar">Guardar</button>
+                                <button type="button" class="btn btn-cancelar" onclick="closeModal('modalEditBill')">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Eliminar Entidad -->
+                <div id="modalDelBill" class="modal hidden">
+                    <div class="modal-content">
+                        <h3>¿Eliminar entidad?</h3>
+                        <p>Esta acción no se puede deshacer.</p>
+                        <input type="hidden" id="del_bill_id">
+                        <div class="form-buttons" style="margin-top: 18px;">
+                            <button class="btn btn-aceptar" onclick="confirmDelBill()">Eliminar</button>
+                            <button class="btn btn-cancelar" onclick="closeModal('modalDelBill')">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contenedor de alertas (mismo patrón SVE) -->
+                <div class="alert-container" id="alertContainer"></div>
 
             </section>
         </div>
@@ -178,48 +317,36 @@ $email = $user['email'] ?? 'Sin email';
     <script>
         const API = 'AdminVariablesController.php';
 
-        // ==== Funciones comunes ====
+        // ===== Utilidades SVE =====
+        function showAlert(tipo, mensaje) {
+            const contenedor = document.getElementById('alertContainer');
+            const alerta = document.createElement('div');
+            alerta.className = `toast ${tipo === 'success' ? 'success' : tipo === 'error' ? 'error' : 'info'}`;
+            alerta.textContent = mensaje;
+            // Fallback si tu página no trae el contenedor de toastify:
+            if (!document.getElementById('toast-container')) {
+                const tc = document.createElement('div');
+                tc.id = 'toast-container';
+                document.body.appendChild(tc);
+            }
+            document.getElementById('toast-container').appendChild(alerta);
+            setTimeout(() => alerta.remove(), 4800);
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
         const fmt = n => Number(n).toLocaleString('es-AR', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 4
         });
 
-        function renderTable(container, rows, cols, editHandler, deleteHandler) {
-            if (!rows.length) {
-                container.innerHTML = '<p class="text-gray-500">No hay registros</p>';
-                return;
-            }
-            const table = document.createElement('table');
-            table.className = 'table';
-            table.innerHTML = `
-    <thead>
-      <tr>
-        ${cols.map(c => `<th>${c.label}</th>`).join('')}
-        <th style="width:120px">Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${rows.map(r => `
-        <tr>
-          ${cols.map(c => `<td>${c.format ? c.format(r[c.key]) : r[c.key]}</td>`).join('')}
-          <td>
-            <button class="btn btn-sm" data-edit="${r.id}">Editar</button>
-            <button class="btn btn-sm btn-danger" data-del="${r.id}">Borrar</button>
-          </td>
-        </tr>
-      `).join('')}
-    </tbody>
-  `;
-            container.replaceChildren(table);
-
-            table.querySelectorAll('[data-edit]').forEach(btn => {
-                btn.onclick = () => editHandler(btn.getAttribute('data-edit'));
-            });
-            table.querySelectorAll('[data-del]').forEach(btn => {
-                btn.onclick = () => deleteHandler(btn.getAttribute('data-del'));
-            });
-        }
-
+        // ====== API helpers ======
         async function apiList(type) {
             const r = await fetch(`${API}?type=${type}&action=list`, {
                 credentials: 'same-origin'
@@ -238,176 +365,294 @@ $email = $user['email'] ?? 'Sin email';
             return r.json();
         }
 
-        // ==== Tarjeta 1: Débito/Crédito ====
-        const formDC = document.getElementById('form-dc');
-        const listDC = document.getElementById('list-dc');
-        async function loadDC() {
-            const res = await apiList('debit_credit_tax');
-            if (!res.ok) {
-                listDC.textContent = res.error || 'Error';
-                return;
-            }
-            renderTable(listDC, res.data, [{
-                    key: 'id',
-                    label: 'ID'
-                },
-                {
-                    key: 'value',
-                    label: 'Valor',
-                    format: fmt
-                }
-            ], async (id) => {
-                const row = res.data.find(r => String(r.id) === String(id));
-                const nuevo = prompt('Nuevo valor:', fmt(row.value));
-                if (nuevo !== null) {
-                    const r = await apiPost('debit_credit_tax', 'update', {
-                        id,
-                        value: nuevo
-                    });
-                    if (r.ok) loadDC();
-                    else alert(r.error || 'Error');
-                }
-            }, async (id) => {
-                if (confirm('¿Borrar registro?')) {
-                    const r = await apiPost('debit_credit_tax', 'delete', {
-                        id
-                    });
-                    if (r.ok) loadDC();
-                    else alert(r.error || 'Error');
-                }
-            });
-        }
-        formDC.onsubmit = async e => {
-            e.preventDefault();
-            const v = formDC.value.value.trim();
-            if (!v) return;
-            const res = await apiPost('debit_credit_tax', 'create', {
-                value: v
-            });
-            if (res.ok) {
-                formDC.reset();
-                loadDC();
-            } else alert(res.error || 'Error');
-        };
-
-        // ==== Tarjeta 2: Retención ====
-        const formRet = document.getElementById('form-ret');
-        const listRet = document.getElementById('list-ret');
-        async function loadRet() {
-            const res = await apiList('retention');
-            if (!res.ok) {
-                listRet.textContent = res.error || 'Error';
-                return;
-            }
-            renderTable(listRet, res.data, [{
-                    key: 'id',
-                    label: 'ID'
-                },
-                {
-                    key: 'value',
-                    label: 'Valor',
-                    format: fmt
-                }
-            ], async (id) => {
-                const row = res.data.find(r => String(r.id) === String(id));
-                const nuevo = prompt('Nuevo valor:', fmt(row.value));
-                if (nuevo !== null) {
-                    const r = await apiPost('retention', 'update', {
-                        id,
-                        value: nuevo
-                    });
-                    if (r.ok) loadRet();
-                    else alert(r.error || 'Error');
-                }
-            }, async (id) => {
-                if (confirm('¿Borrar registro?')) {
-                    const r = await apiPost('retention', 'delete', {
-                        id
-                    });
-                    if (r.ok) loadRet();
-                    else alert(r.error || 'Error');
-                }
-            });
-        }
-        formRet.onsubmit = async e => {
-            e.preventDefault();
-            const v = formRet.value.value.trim();
-            if (!v) return;
-            const res = await apiPost('retention', 'create', {
-                value: v
-            });
-            if (res.ok) {
-                formRet.reset();
-                loadRet();
-            } else alert(res.error || 'Error');
-        };
-
-        // ==== Tarjeta 3: Entidades de facturación ====
-        const formBill = document.getElementById('form-bill');
-        const listBill = document.getElementById('list-bill');
-        async function loadBill() {
-            const res = await apiList('billing_entity');
-            if (!res.ok) {
-                listBill.textContent = res.error || 'Error';
-                return;
-            }
-            renderTable(listBill, res.data, [{
-                    key: 'id',
-                    label: 'ID'
-                },
-                {
-                    key: 'name',
-                    label: 'Nombre'
-                },
-                {
-                    key: 'cuit',
-                    label: 'CUIT'
-                }
-            ], async (id) => {
-                const row = res.data.find(r => String(r.id) === String(id));
-                const nuevoNombre = prompt('Nuevo nombre:', row.name);
-                if (nuevoNombre === null) return;
-                const nuevoCuit = prompt('Nuevo CUIT:', row.cuit);
-                if (nuevoCuit === null) return;
-                const r = await apiPost('billing_entity', 'update', {
-                    id,
-                    name: nuevoNombre,
-                    cuit: nuevoCuit
+        // ====== Cargar tablas ======
+        async function cargarDC() {
+            const tbody = document.getElementById('tabla-dc');
+            tbody.innerHTML = '<tr><td colspan="5">Cargando...</td></tr>';
+            try {
+                const res = await apiList('debit_credit_tax');
+                if (!res.ok) throw new Error(res.error || 'Error al listar');
+                tbody.innerHTML = '';
+                (res.data || []).forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+        <td>${row.id}</td>
+        <td>${fmt(row.value)}</td>
+        <td>${row.created_at ?? ''}</td>
+        <td>${row.updated_at ?? ''}</td>
+        <td>
+          <button class="btn-icon" data-tooltip="Editar" onclick="editarDC(${row.id}, '${row.value}')">
+            <i class="material-icons">edit</i>
+          </button>
+          <button class="btn-icon" data-tooltip="Eliminar" onclick="eliminarDC(${row.id})">
+            <i class="material-icons" style="color:red;">delete</i>
+          </button>
+        </td>
+      `;
+                    tbody.appendChild(tr);
                 });
-                if (r.ok) loadBill();
-                else alert(r.error || 'Error');
-            }, async (id) => {
-                if (confirm('¿Borrar registro?')) {
-                    const r = await apiPost('billing_entity', 'delete', {
-                        id
-                    });
-                    if (r.ok) loadBill();
-                    else alert(r.error || 'Error');
-                }
-            });
+            } catch (e) {
+                tbody.innerHTML = `<tr><td colspan="5" style="color:red;">${e.message}</td></tr>`;
+            }
         }
-        formBill.onsubmit = async e => {
-            e.preventDefault();
-            const name = formBill.name.value.trim();
-            const cuit = formBill.cuit.value.trim();
-            if (!name || !cuit) return;
-            const res = await apiPost('billing_entity', 'create', {
-                name,
-                cuit
-            });
-            if (res.ok) {
-                formBill.reset();
-                loadBill();
-            } else alert(res.error || 'Error');
-        };
 
-        // ==== Carga inicial ====
+        async function cargarRet() {
+            const tbody = document.getElementById('tabla-ret');
+            tbody.innerHTML = '<tr><td colspan="5">Cargando...</td></tr>';
+            try {
+                const res = await apiList('retention');
+                if (!res.ok) throw new Error(res.error || 'Error al listar');
+                tbody.innerHTML = '';
+                (res.data || []).forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+        <td>${row.id}</td>
+        <td>${fmt(row.value)}</td>
+        <td>${row.created_at ?? ''}</td>
+        <td>${row.updated_at ?? ''}</td>
+        <td>
+          <button class="btn-icon" data-tooltip="Editar" onclick="editarRet(${row.id}, '${row.value}')">
+            <i class="material-icons">edit</i>
+          </button>
+          <button class="btn-icon" data-tooltip="Eliminar" onclick="eliminarRet(${row.id})">
+            <i class="material-icons" style="color:red;">delete</i>
+          </button>
+        </td>
+      `;
+                    tbody.appendChild(tr);
+                });
+            } catch (e) {
+                tbody.innerHTML = `<tr><td colspan="5" style="color:red;">${e.message}</td></tr>`;
+            }
+        }
+
+        async function cargarBill() {
+            const tbody = document.getElementById('tabla-bill');
+            tbody.innerHTML = '<tr><td colspan="6">Cargando...</td></tr>';
+            try {
+                const res = await apiList('billing_entity');
+                if (!res.ok) throw new Error(res.error || 'Error al listar');
+                tbody.innerHTML = '';
+                (res.data || []).forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+        <td>${row.id}</td>
+        <td>${row.name}</td>
+        <td>${row.cuit}</td>
+        <td>${row.created_at ?? ''}</td>
+        <td>${row.updated_at ?? ''}</td>
+        <td>
+          <button class="btn-icon" data-tooltip="Editar" onclick="editarBill(${row.id}, ${JSON.stringify(row.name)}, ${JSON.stringify(row.cuit)})">
+            <i class="material-icons">edit</i>
+          </button>
+          <button class="btn-icon" data-tooltip="Eliminar" onclick="eliminarBill(${row.id})">
+            <i class="material-icons" style="color:red;">delete</i>
+          </button>
+        </td>
+      `;
+                    tbody.appendChild(tr);
+                });
+            } catch (e) {
+                tbody.innerHTML = `<tr><td colspan="6" style="color:red;">${e.message}</td></tr>`;
+            }
+        }
+
+        // ====== Crear (submit formularios) ======
+        document.getElementById('form-dc').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const value = e.target.value.value.trim();
+            try {
+                const res = await apiPost('debit_credit_tax', 'create', {
+                    value
+                });
+                if (!res.ok) throw new Error(res.error || 'Error al crear');
+                e.target.reset();
+                showAlert('success', 'Valor creado correctamente');
+                cargarDC();
+            } catch (err) {
+                showAlert('error', err.message);
+            }
+        });
+
+        document.getElementById('form-ret').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const value = e.target.value.value.trim();
+            try {
+                const res = await apiPost('retention', 'create', {
+                    value
+                });
+                if (!res.ok) throw new Error(res.error || 'Error al crear');
+                e.target.reset();
+                showAlert('success', 'Valor creado correctamente');
+                cargarRet();
+            } catch (err) {
+                showAlert('error', err.message);
+            }
+        });
+
+        document.getElementById('form-bill').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = e.target.name.value.trim();
+            const cuit = e.target.cuit.value.trim();
+            try {
+                const res = await apiPost('billing_entity', 'create', {
+                    name,
+                    cuit
+                });
+                if (!res.ok) throw new Error(res.error || 'Error al crear');
+                e.target.reset();
+                showAlert('success', 'Entidad creada correctamente');
+                cargarBill();
+            } catch (err) {
+                showAlert('error', err.message);
+            }
+        });
+
+        // ====== Editar (abrir modales) ======
+        function editarDC(id, value) {
+            document.getElementById('edit_dc_id').value = id;
+            document.getElementById('edit_dc_value').value = value;
+            openModal('modalEditDC');
+        }
+
+        function editarRet(id, value) {
+            document.getElementById('edit_ret_id').value = id;
+            document.getElementById('edit_ret_value').value = value;
+            openModal('modalEditRet');
+        }
+
+        function editarBill(id, name, cuit) {
+            document.getElementById('edit_bill_id').value = id;
+            document.getElementById('edit_bill_name').value = name;
+            document.getElementById('edit_bill_cuit').value = cuit;
+            openModal('modalEditBill');
+        }
+
+        // ====== Guardar edición ======
+        document.getElementById('formEditDC').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('edit_dc_id').value;
+            const value = document.getElementById('edit_dc_value').value.trim();
+            try {
+                const res = await apiPost('debit_credit_tax', 'update', {
+                    id,
+                    value
+                });
+                if (!res.ok) throw new Error(res.error || 'Error al actualizar');
+                closeModal('modalEditDC');
+                showAlert('success', 'Valor actualizado');
+                cargarDC();
+            } catch (err) {
+                showAlert('error', err.message);
+            }
+        });
+
+        document.getElementById('formEditRet').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('edit_ret_id').value;
+            const value = document.getElementById('edit_ret_value').value.trim();
+            try {
+                const res = await apiPost('retention', 'update', {
+                    id,
+                    value
+                });
+                if (!res.ok) throw new Error(res.error || 'Error al actualizar');
+                closeModal('modalEditRet');
+                showAlert('success', 'Valor actualizado');
+                cargarRet();
+            } catch (err) {
+                showAlert('error', err.message);
+            }
+        });
+
+        document.getElementById('formEditBill').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('edit_bill_id').value;
+            const name = document.getElementById('edit_bill_name').value.trim();
+            const cuit = document.getElementById('edit_bill_cuit').value.trim();
+            try {
+                const res = await apiPost('billing_entity', 'update', {
+                    id,
+                    name,
+                    cuit
+                });
+                if (!res.ok) throw new Error(res.error || 'Error al actualizar');
+                closeModal('modalEditBill');
+                showAlert('success', 'Entidad actualizada');
+                cargarBill();
+            } catch (err) {
+                showAlert('error', err.message);
+            }
+        });
+
+        // ====== Eliminar (abrir modales) ======
+        function eliminarDC(id) {
+            document.getElementById('del_dc_id').value = id;
+            openModal('modalDelDC');
+        }
+
+        function eliminarRet(id) {
+            document.getElementById('del_ret_id').value = id;
+            openModal('modalDelRet');
+        }
+
+        function eliminarBill(id) {
+            document.getElementById('del_bill_id').value = id;
+            openModal('modalDelBill');
+        }
+
+        // ====== Confirmar eliminar ======
+        async function confirmDelDC() {
+            const id = document.getElementById('del_dc_id').value;
+            try {
+                const res = await apiPost('debit_credit_tax', 'delete', {
+                    id
+                });
+                if (!res.ok) throw new Error(res.error || 'Error al eliminar');
+                closeModal('modalDelDC');
+                showAlert('success', 'Eliminado correctamente');
+                cargarDC();
+            } catch (err) {
+                showAlert('error', err.message);
+            }
+        }
+        async function confirmDelRet() {
+            const id = document.getElementById('del_ret_id').value;
+            try {
+                const res = await apiPost('retention', 'delete', {
+                    id
+                });
+                if (!res.ok) throw new Error(res.error || 'Error al eliminar');
+                closeModal('modalDelRet');
+                showAlert('success', 'Eliminado correctamente');
+                cargarRet();
+            } catch (err) {
+                showAlert('error', err.message);
+            }
+        }
+        async function confirmDelBill() {
+            const id = document.getElementById('del_bill_id').value;
+            try {
+                const res = await apiPost('billing_entity', 'delete', {
+                    id
+                });
+                if (!res.ok) throw new Error(res.error || 'Error al eliminar');
+                closeModal('modalDelBill');
+                showAlert('success', 'Entidad eliminada');
+                cargarBill();
+            } catch (err) {
+                showAlert('error', err.message);
+            }
+        }
+
+        // ====== Inicial ======
         document.addEventListener('DOMContentLoaded', () => {
-            loadDC();
-            loadRet();
-            loadBill();
+            cargarDC();
+            cargarRet();
+            cargarBill();
         });
     </script>
+
 
 
     <script src="../../views/partials/spinner-global.js"></script>
