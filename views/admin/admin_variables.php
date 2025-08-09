@@ -83,8 +83,11 @@ $email = $user['email'] ?? 'Sin email';
 
                 <div class="card-grid grid-2">
                     <div class="card">
-                        <h3>Variable de entorno Impuesto al débito y crédito</h3>
-                        <p>Contenido 1</p>
+                            <strong>Variable de entorno Impuesto al débito y crédito</strong>
+                            <div class="subcat-form">
+                                <input type="text" id="nueva-categoria" class="input" placeholder="Nombre categoría" />
+                                <button class="btn-aceptar full-width" onclick="crearImpuestoAlDebito()">Agregar</button>
+                            </div>
                     </div>
                     <div class="card">
                         <h3>Variable de entorno Retención</h3>
