@@ -121,7 +121,7 @@ $email = $user['email'] ?? 'Sin email';
                     <div class="card">
                         <form class="form-modern">
                             <div class="input-group">
-                                <label>Variables entidad de facturación</label>
+                                <h4>Variables entidad de facturación</h4>
                                 <label>Nombre</label>
                                 <div class="input-icon">
                                     <span class="material-icons">mail</span>
