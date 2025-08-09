@@ -78,42 +78,22 @@ $email = $user['email'] ?? 'Sin email';
             <section class="content">
                 <div class="card">
                     <h2>Hola 👋 <?= htmlspecialchars($usuario) ?></h2>
-                    <p>En esta página, vamos a tener KPI.</p>
+                    <p>En esta página, vamos a manejar las variables de entorno de toda la plataforma AMPD</p>
                 </div>
 
-                <div class="card-grid grid-4">
+                <div class="card-grid grid-3">
                     <div class="card">
-                        <h3>KPI 1</h3>
+                        <h3>Variable de entorno Impuesto al débito y crédito</h3>
                         <p>Contenido 1</p>
                     </div>
                     <div class="card">
-                        <h3>KPI 2</h3>
+                        <h3>Variable de entorno Retención</h3>
                         <p>Contenido 2</p>
                     </div>
                     <div class="card">
-                        <h3>KPI 3</h3>
+                        <h3>Variable de entorno Entidad facturación</h3>
                         <p>Contenido 3</p>
                     </div>
-                    <div class="card">
-                        <h3>KPI 4</h3>
-                        <p>Contenido 4</p>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <form class="form-modern">
-                        <div class="input-group">
-                            <label>Correo</label>
-                            <div class="input-icon">
-                                <span class="material-icons">mail</span>
-                                <input type="email" placeholder="ejemplo@correo.com">
-                            </div>
-                        </div>
-                        <div class="form-buttons">
-                            <button class="btn btn-aceptar" type="submit">Enviar</button>
-                            <button class="btn btn-cancelar" type="button">Cancelar</button>
-                        </div>
-                    </form>
                 </div>
             </section>
         </div>
