@@ -5,7 +5,8 @@ ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
 
-__DIR__ . '/../core/SessionManager.php';
+require_once __DIR__ . '/../core/SessionManager.php';
+
 SessionManager::start();
 
 $user = SessionManager::getUser();
