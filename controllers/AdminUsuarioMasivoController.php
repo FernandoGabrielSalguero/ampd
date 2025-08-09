@@ -97,6 +97,7 @@ try {
                 'titular_c',
                 'banco_c'
             ];
+            error_log('CSV headers: ' . json_encode($headers, JSON_UNESCAPED_UNICODE));
             foreach ($required as $r) {
                 if (!in_array($r, $headers, true)) {
                     throw new InvalidArgumentException("Falta la columna requerida: {$r}");
