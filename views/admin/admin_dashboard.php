@@ -15,8 +15,8 @@ if (!$user) {
 }
 
 // Verificar rol
-if (!isset($user['role']) || $user['role'] !== 'admin') {
-    die("🚫 Acceso restringido: esta página es solo para usuarios Administrador.");
+if (!isset($user['role']) || $user['role'] !== 'Super_admin') {
+    die("🚫 Acceso restringido: esta página es solo para usuarios Super_admin.");
 }
 
 // Opcional: datos del usuario

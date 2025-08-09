@@ -15,8 +15,8 @@ if (!$user) {
 }
 
 // Verificar rol
-if (!isset($user['role']) || $user['role'] !== 'client') {
-    die("🚫 Acceso restringido: esta página es solo para nuestros clientes.");
+if (!isset($user['role']) || $user['role'] !== 'Administrativo') {
+    die("🚫 Acceso restringido: esta página es solo para usuarios Administrativo.");
 }
 
 // Opcional: datos del usuario
