@@ -90,7 +90,7 @@ $email = $user['email'] ?? 'Sin email';
                                 <label>Variables de impuesto al débito y crédito</label>
                                 <div class="input-icon">
                                     <span class="material-icons">mail</span>
-                                    <input type="number" placeholder="ejemplo@correo.com">
+                                    <input type="number" placeholder="1.2">
                                 </div>
                             </div>
 
@@ -107,7 +107,7 @@ $email = $user['email'] ?? 'Sin email';
                                 <label>Variables de retención</label>
                                 <div class="input-icon">
                                     <span class="material-icons">mail</span>
-                                    <input type="number" placeholder="ejemplo@correo.com">
+                                    <input type="number" placeholder="3">
                                 </div>
                             </div>
 
@@ -122,17 +122,18 @@ $email = $user['email'] ?? 'Sin email';
                         <form class="form-modern">
                             <div class="input-group">
                                 <label>Variables entidad de facturación</label>
+                                <label>Nombre</label>
                                 <div class="input-icon">
                                     <span class="material-icons">mail</span>
-                                    <input type="email" placeholder="ejemplo@correo.com">
+                                    <input type="text" placeholder="Asociación Mendocina por la danza">
                                 </div>
                             </div>
 
                             <div class="input-group">
-                                <label>Correo</label>
+                                <label>CUIT</label>
                                 <div class="input-icon">
                                     <span class="material-icons">mail</span>
-                                    <input type="email" placeholder="ejemplo@correo.com">
+                                    <input type="number" placeholder="877526591">
                                 </div>
                             </div>
                             <div class="form-buttons">
