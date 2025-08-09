@@ -102,7 +102,7 @@ $email = $user['email'] ?? 'Sin email';
                     </div>
 
                     <!-- tarjeta de retención -->
-                    <div class="card">
+                    <!-- <div class="card">
                         <strong>Variable de entorno de retenciones</strong>
                         <form class="form-modern">
                             <div class="input-group">
@@ -117,10 +117,10 @@ $email = $user['email'] ?? 'Sin email';
                                 <button class="btn btn-aceptar" type="submit">Crear retención</button>
                             </div>
                         </form>
-                    </div>
+                    </div> -->
 
                     <!-- variable de entidad de facturación -->
-                    <div class="card">
+                    <!-- <div class="card">
                         <strong>Variable de entorno entidades facturacion</strong>
                         <form class="form-modern">
                             <div class="input-group">
@@ -134,12 +134,11 @@ $email = $user['email'] ?? 'Sin email';
                                     <input type="number" placeholder="20255899657">
                                 </div>
                             </div>
-
                             <div class="form-buttons">
                                 <button class="btn btn-aceptar" type="submit">Crear entidad</button>
                             </div>
                         </form>
-                    </div>
+                    </div> -->
                 </div>
             </section>
         </div>
