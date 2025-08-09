@@ -13,35 +13,52 @@ SessionManager::start();
 $user = SessionManager::getUser();
 if (!$user || !isset($user['role']) || $user['role'] !== 'Super_admin') {
     http_response_code(403);
-    echo json_encode(['error'=>'Acceso denegado']);
+    echo json_encode(['error' => 'Acceso denegado']);
     exit;
 }
 
-$variablesModel = new VariablesModel();
+$model = new VariablesModel();
 
-// Acepto JSON body
-$raw = file_get_contents('php://input');
-$body = json_decode($raw, true) ?: [];
+// Acepto JSON en body
+$raw    = file_get_contents('php://input');
+$body   = json_decode($raw, true) ?: [];
 $action = $_GET['action'] ?? $body['action'] ?? $_POST['action'] ?? null;
 
 try {
     switch ($action) {
+        /* ===== Lecturas ===== */
         case 'get_values':
             echo json_encode([
-                'debit_credit'  => $variablesModel->getDebitCreditTax(),
-                'retention'     => $variablesModel->getRetention(),
-                'billing_entity'=> $variablesModel->getBillingEntity(),
+                'debit_credit'   => $model->getDebitCreditTax(),
+                'retention'      => $model->getRetention(),
+                'billing_entity' => $model->getBillingEntity(),
             ]);
             break;
 
+        case 'list_debit_credit':
+            $limit = (int)($body['limit'] ?? $_GET['limit'] ?? 50);
+            echo json_encode($model->listDebitCreditHistory($limit));
+            break;
+
+        case 'list_retention':
+            $limit = (int)($body['limit'] ?? $_GET['limit'] ?? 50);
+            echo json_encode($model->listRetentionHistory($limit));
+            break;
+
+        case 'list_billing_entities':
+            $limit = (int)($body['limit'] ?? $_GET['limit'] ?? 50);
+            echo json_encode($model->listBillingEntities($limit));
+            break;
+
+        /* ===== Escrituras (INSERT-only) ===== */
         case 'save_debit_credit_tax':
             $value = $body['value'] ?? $_POST['value'] ?? null;
             if ($value === null || !is_numeric($value) || $value < 0) {
                 throw new InvalidArgumentException('Valor inválido para impuesto Débito/Crédito.');
             }
             $v = round((float)$value, 4);
-            $saved = $variablesModel->saveDebitCreditTax($v);
-            echo json_encode(['ok'=>true,'data'=>$saved]);
+            $saved = $model->saveDebitCreditTax($v);
+            echo json_encode(['ok' => true, 'data' => $saved]);
             break;
 
         case 'save_retention':
@@ -50,8 +67,8 @@ try {
                 throw new InvalidArgumentException('Valor inválido para retención.');
             }
             $v = round((float)$value, 4);
-            $saved = $variablesModel->saveRetention($v);
-            echo json_encode(['ok'=>true,'data'=>$saved]);
+            $saved = $model->saveRetention($v);
+            echo json_encode(['ok' => true, 'data' => $saved]);
             break;
 
         case 'save_billing_entity':
@@ -63,15 +80,15 @@ try {
             if (!preg_match('/^\d{7,20}$/', $cuit)) {
                 throw new InvalidArgumentException('CUIT inválido. Solo dígitos (7 a 20).');
             }
-            $saved = $variablesModel->saveBillingEntity($name, $cuit);
-            echo json_encode(['ok'=>true,'data'=>$saved]);
+            $saved = $model->saveBillingEntity($name, $cuit);
+            echo json_encode(['ok' => true, 'data' => $saved]);
             break;
 
         default:
             http_response_code(400);
-            echo json_encode(['error'=>'Acción no soportada']);
+            echo json_encode(['error' => 'Acción no soportada']);
     }
 } catch (Throwable $e) {
     http_response_code(422);
-    echo json_encode(['error'=>$e->getMessage()]);
+    echo json_encode(['error' => $e->getMessage()]);
 }
