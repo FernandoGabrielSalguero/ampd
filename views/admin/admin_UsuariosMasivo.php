@@ -140,32 +140,46 @@ $email = $user['email'] ?? 'Sin email';
                     method: 'POST',
                     body: fd
                 });
-                const isJson = (resp.headers.get('content-type') || '').includes('application/json');
-                const payload = isJson ? await resp.json() : null;
+
+                const contentType = resp.headers.get('content-type') || '';
+                const raw = await resp.text(); // <-- leemos el body UNA sola vez
+                const isJson = contentType.includes('application/json');
+
+                let data = null;
+                if (isJson) {
+                    try {
+                        data = JSON.parse(raw);
+                    } catch (_) {}
+                }
 
                 if (!resp.ok) {
-                    console.error('Respuesta del servidor:', payload || (await resp.text()));
-                    throw new Error((payload && payload.error) || ('HTTP ' + resp.status));
+                    const errMsg = data?.error || raw || (`HTTP ${resp.status}`);
+                    throw new Error(errMsg);
                 }
-                const data = isJson ? await resp.json() : {};
-                if (!data.ok) throw new Error(data.error || 'Error desconocido');
+
+                if (!data?.ok) {
+                    // el servidor respondió 200 pero con ok=false o sin payload válido
+                    const errMsg = data?.error || 'Error desconocido';
+                    throw new Error(errMsg);
+                }
 
                 const s = data.summary;
                 let html = `
-      <div>Filas en CSV: <strong>${s.rows_in_csv}</strong></div>
-      <div>Filas bancarias procesadas (A/B/C): <strong>${s.bank_rows_to_process}</strong></div>
-      <div>Insertados: <strong>${s.inserted}</strong> · Actualizados: <strong>${s.updated}</strong></div>
-    `;
+    <div>Filas en CSV: <strong>${s.rows_in_csv}</strong></div>
+    <div>Filas bancarias procesadas (A/B/C): <strong>${s.bank_rows_to_process}</strong></div>
+    <div>Insertados: <strong>${s.inserted}</strong> · Actualizados: <strong>${s.updated}</strong></div>
+  `;
                 if (s.errors && s.errors.length) {
                     html += `<div style="color:#dc2626;margin-top:.5rem">Errores:<br>${s.errors.map(x=>'- '+x).join('<br>')}</div>`;
                 }
-                resEl.innerHTML = html;
+                document.getElementById('upload-result').innerHTML = html;
                 alert('Carga masiva finalizada.');
             } catch (err) {
                 console.error(err);
-                resEl.innerHTML = `<span style="color:#dc2626">Error: ${err.message}</span>`;
+                document.getElementById('upload-result').innerHTML = `<span style="color:#dc2626">Error: ${err.message}</span>`;
                 alert('Ocurrió un error al procesar el CSV:\n' + err.message);
             }
+
         });
     </script>
 
