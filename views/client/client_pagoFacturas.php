@@ -83,7 +83,7 @@ $email = $user['email'] ?? 'Sin email';
             <section class="content">
                 <div class="card">
                     <h2>Hola 👋 <?= htmlspecialchars($usuario) ?></h2>
-                    <p>En esta página, vamos a tener KPI.</p>
+                    <p>En esta página, vas a poder cargar los pagos que los socios solicitan.</p>
                 </div>
 
                 <div class="card-grid grid-4">
