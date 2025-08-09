@@ -85,60 +85,57 @@ $email = $user['email'] ?? 'Sin email';
 
                     <!-- tarjeta de impuesto al débito y crédito -->
                     <div class="card">
-                        <strong>Variable de entorno Impuesto al débito y crédito</strong>
                         <form class="form-modern">
                             <div class="input-group">
-                                <label>Nuevo impuesto al débito y al crédito</label>
+                                <label>Correo</label>
                                 <div class="input-icon">
-                                    <span class="material-icons">Impuesto en %</span>
-                                    <input type="number" placeholder="1.2">
+                                    <span class="material-icons">mail</span>
+                                    <input type="email" placeholder="ejemplo@correo.com">
                                 </div>
                             </div>
 
                             <div class="form-buttons">
-                                <button class="btn btn-aceptar" type="submit">Crear impuesto</button>
+                                <button class="btn btn-aceptar" type="submit">Enviar</button>
+                                <button class="btn btn-cancelar" type="button">Cancelar</button>
                             </div>
                         </form>
                     </div>
 
                     <!-- tarjeta de retención -->
-                    <!-- <div class="card">
-                        <strong>Variable de entorno de retenciones</strong>
+                    <div class="card">
                         <form class="form-modern">
                             <div class="input-group">
-                                <label>Nuevo iretención</label>
+                                <label>Correo</label>
                                 <div class="input-icon">
-                                    <span class="material-icons">Impuesto en %</span>
-                                    <input type="number" placeholder="1.2">
+                                    <span class="material-icons">mail</span>
+                                    <input type="email" placeholder="ejemplo@correo.com">
                                 </div>
                             </div>
 
                             <div class="form-buttons">
-                                <button class="btn btn-aceptar" type="submit">Crear retención</button>
+                                <button class="btn btn-aceptar" type="submit">Enviar</button>
+                                <button class="btn btn-cancelar" type="button">Cancelar</button>
                             </div>
                         </form>
-                    </div> -->
+                    </div>
 
                     <!-- variable de entidad de facturación -->
-                    <!-- <div class="card">
-                        <strong>Variable de entorno entidades facturacion</strong>
+                    <div class="card">
                         <form class="form-modern">
                             <div class="input-group">
-                                <label>Nueva entidad de facturación</label>
+                                <label>Correo</label>
                                 <div class="input-icon">
-                                    <span class="material-icons">Nombre</span>
-                                    <input type="text" placeholder="Asociación mendocina de la daza">
-                                </div>
-                                <div class="input-icon">
-                                    <span class="material-icons">CUIT</span>
-                                    <input type="number" placeholder="20255899657">
+                                    <span class="material-icons">mail</span>
+                                    <input type="email" placeholder="ejemplo@correo.com">
                                 </div>
                             </div>
+
                             <div class="form-buttons">
-                                <button class="btn btn-aceptar" type="submit">Crear entidad</button>
+                                <button class="btn btn-aceptar" type="submit">Enviar</button>
+                                <button class="btn btn-cancelar" type="button">Cancelar</button>
                             </div>
                         </form>
-                    </div> -->
+                    </div>
                 </div>
             </section>
         </div>
