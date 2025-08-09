@@ -82,19 +82,40 @@ $email = $user['email'] ?? 'Sin email';
                 </div>
 
                 <div class="card-grid grid-3">
+                    <!-- Tarjeta 1: Débito/Crédito -->
                     <div class="card">
                         <h3>Variable de entorno Impuesto al débito y crédito</h3>
-                        <p>Contenido 1</p>
+                        <form id="form-dc" class="form-inline gap-2 mt-2">
+                            <input type="text" class="input" name="value" placeholder="Valor (ej. 1,2000)" required>
+                            <button class="btn">Crear</button>
+                        </form>
+                        <div id="list-dc" class="mt-3"></div>
                     </div>
+
+                    <!-- Tarjeta 2: Retención -->
                     <div class="card">
                         <h3>Variable de entorno Retención</h3>
-                        <p>Contenido 2</p>
+                        <form id="form-ret" class="form-inline gap-2 mt-2">
+                            <input type="text" class="input" name="value" placeholder="Valor (ej. 3,5000)" required>
+                            <button class="btn">Crear</button>
+                        </form>
+                        <div id="list-ret" class="mt-3"></div>
                     </div>
+
+                    <!-- Tarjeta 3: Entidad de facturación -->
                     <div class="card">
                         <h3>Variable de entorno Entidad facturación</h3>
-                        <p>Contenido 3</p>
+                        <form id="form-bill" class="form-grid mt-2">
+                            <div class="grid grid-2 gap-2">
+                                <input type="text" class="input" name="name" placeholder="Nombre" required>
+                                <input type="text" class="input" name="cuit" placeholder="CUIT" required>
+                            </div>
+                            <button class="btn mt-2">Crear</button>
+                        </form>
+                        <div id="list-bill" class="mt-3"></div>
                     </div>
                 </div>
+
             </section>
         </div>
     </div>
