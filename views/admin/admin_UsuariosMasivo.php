@@ -142,9 +142,11 @@ $email = $user['email'] ?? 'Sin email';
                     body: fd
                 });
                 const isJson = (resp.headers.get('content-type') || '').includes('application/json');
+                const payload = isJson ? await resp.json() : null;
+
                 if (!resp.ok) {
-                    const errMsg = isJson ? (await resp.json()).error : await resp.text();
-                    throw new Error(errMsg || ('HTTP ' + resp.status));
+                    console.error('Respuesta del servidor:', payload || (await resp.text()));
+                    throw new Error((payload && payload.error) || ('HTTP ' + resp.status));
                 }
                 const data = isJson ? await resp.json() : {};
                 if (!data.ok) throw new Error(data.error || 'Error desconocido');

@@ -61,16 +61,21 @@ try {
                 return strtolower($h);
             }, $headers);
 
-            // ===== Debug opcional: mostrar cabeceras detectadas =====
-            if ($debugHeaders) {
-                echo json_encode([
-                    'error'          => 'Cabeceras detectadas',
-                    'raw_headers'    => $headers,
-                    'headers'        => $normalizedHeaders,
-                    'delimiter_used' => ($delimiter === "\t" ? 'TAB' : $delimiter),
-                ], JSON_UNESCAPED_UNICODE);
-                exit;
-            }
+// ======= DEBUG OPCIONAL: devolver cabeceras detectadas =======
+if ($debugHeaders) {
+    $delimTxt = ($delimiter === "\t" ? 'TAB' : $delimiter);
+    // armamos un mensaje plano para que salga en el alert()
+    $msg = "Cabeceras detectadas\n" .
+           "delimiter: {$delimTxt}\n" .
+           "raw: " . implode(' | ', array_map(function($h){ return (string)$h; }, $headers)) . "\n" .
+           "norm: " . implode(' | ', $normalizedHeaders);
+
+    http_response_code(422); // así tu JS lo trata como error y muestra el alert
+    echo json_encode(['error' => $msg], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+// =============================================================
+
 
             // Validación de columnas necesarias
             $required = [
