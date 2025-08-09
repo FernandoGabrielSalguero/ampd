@@ -22,6 +22,10 @@ try {
         getenv('DB_PASS')
     );
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Forzar zona horaria en MySQL a Argentina (-03:00)
+    $pdo->exec("SET time_zone = '-03:00'");
+
 } catch (PDOException $e) {
     die('Error de conexión: ' . $e->getMessage());
 }
