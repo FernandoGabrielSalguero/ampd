@@ -162,13 +162,15 @@ $email   = $user['email'] ?? 'Sin email';
                     </div>
 
                 </div>
+                <!-- Alert -->
+                <div class="alert-container" id="alertContainer"></div>
             </section>
         </div>
     </div>
 
     <script src="../../views/partials/spinner-global.js"></script>
-    
-    <script>
+
+<script>
     const ctrlUrl = '../../controllers/AdminVariablesController.php';
 
     function flash(msg, ok = true) {
@@ -178,6 +180,10 @@ $email   = $user['email'] ?? 'Sin email';
         el.classList.remove('ok', 'err');
         el.classList.add(ok ? 'ok' : 'err');
         setTimeout(() => { el.textContent = ''; }, 5000);
+    }
+
+    function showAlert(msg) {
+        alert(msg);
     }
 
     async function api(action, payload = {}, method = 'POST') {
@@ -193,6 +199,7 @@ $email   = $user['email'] ?? 'Sin email';
         return data;
     }
 
+    // Carga inicial (solo al abrir la página)
     async function cargarValoresIniciales() {
         try {
             const data = await api('get_values', {}, 'POST');
@@ -225,6 +232,11 @@ $email   = $user['email'] ?? 'Sin email';
     function fmt4(n) {
         const v = Number(n);
         return isFinite(v) ? v.toFixed(4) : n;
+    }
+
+    function resetForm(formId) {
+        const form = document.getElementById(formId);
+        if (form) form.reset();
     }
 
     /* ---------- Render de listas ---------- */
@@ -338,6 +350,7 @@ $email   = $user['email'] ?? 'Sin email';
         try {
             await api(map[kind], { id });
             flash('Favorito actualizado.');
+            showAlert('success', 'Favorito actualizado correctamente.');
             await renderLists();
         } catch (e) {
             console.error(e);
@@ -355,6 +368,7 @@ $email   = $user['email'] ?? 'Sin email';
         try {
             await api(map[kind], { id });
             flash('Registro eliminado.');
+            showAlert('success', 'Registro eliminado correctamente.');
             await renderLists();
         } catch (e) {
             console.error(e);
@@ -362,7 +376,7 @@ $email   = $user['email'] ?? 'Sin email';
         }
     }
 
-    /* ---------- Submits (guardan + refrescan la lista correspondiente) ---------- */
+    /* ---------- Submits (guardan + limpian el formulario + refrescan lista) ---------- */
     document.getElementById('form-debit-credit').addEventListener('submit', async (e) => {
         e.preventDefault();
         const value = parseFloat(document.getElementById('dc_value').value);
@@ -370,7 +384,10 @@ $email   = $user['email'] ?? 'Sin email';
         try {
             await api('save_debit_credit_tax', { value });
             flash('Impuesto guardado.');
-            await renderDebitCredit();
+            showAlert('success', 'Nueva variable de Débito/Crédito creada correctamente.');
+            resetForm('form-debit-credit');                 // limpiar formulario
+            await renderDebitCredit();                      // actualizar historial
+            // Nota: NO recargamos valores en el input para evitar confusión
         } catch (err) {
             console.error(err);
             flash(err.message, false);
@@ -384,7 +401,9 @@ $email   = $user['email'] ?? 'Sin email';
         try {
             await api('save_retention', { value });
             flash('Retención guardada.');
-            await renderRetention();
+            showAlert('success', 'Nueva variable de Retención creada correctamente.');
+            resetForm('form-retention');                    // limpiar formulario
+            await renderRetention();                        // actualizar historial
         } catch (err) {
             console.error(err);
             flash(err.message, false);
@@ -400,7 +419,9 @@ $email   = $user['email'] ?? 'Sin email';
         try {
             await api('save_billing_entity', { name, cuit });
             flash('Entidad de facturación guardada.');
-            await renderBilling();
+            showAlert('success', 'Nueva entidad de facturación creada correctamente.');
+            resetForm('form-billing');                      // limpiar formulario
+            await renderBilling();                          // actualizar historial
         } catch (err) {
             console.error(err);
             flash(err.message, false);
@@ -408,9 +429,10 @@ $email   = $user['email'] ?? 'Sin email';
     });
 
     /* ---------- Init ---------- */
-    cargarValoresIniciales();
+    cargarValoresIniciales();  // solo al entrar en la pantalla
     renderLists();
 </script>
+
 
 
     <script>
