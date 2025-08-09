@@ -17,15 +17,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($auth->login($username, $password)) {
         $user = SessionManager::getUser();
-        switch ($user['role']) {
-            case 'admin':
+        $role = $user['role'] ?? '';
+
+        switch ($role) {
+            case 'Super_admin':
                 header("Location: /views/admin/admin_dashboard.php");
                 break;
-            case 'client':
+            case 'socio':
+                header("Location: /views/asociado/asociado_dashboard.php");
+                break;
+            case 'Administrativo':
                 header("Location: /views/client/client_dashboard.php");
                 break;
             default:
-                die("Rol no reconocido");
+                http_response_code(403);
+                echo "Rol no reconocido: " . htmlspecialchars($role);
         }
         exit;
     } else {

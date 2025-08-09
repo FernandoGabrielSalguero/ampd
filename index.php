@@ -2,7 +2,7 @@
 if (isset($_GET['expired']) && $_GET['expired'] == 1) {
     $error = "La sesión expiró por inactividad. Por favor, iniciá sesión nuevamente.";
 } elseif (isset($_GET['error'])) {
-    switch ($_GET['error']) {
+    switch ((int)$_GET['error']) {
         case 1:
             $error = "Usuario o contraseña incorrectos.";
             break;
@@ -15,13 +15,6 @@ if (isset($_GET['expired']) && $_GET['expired'] == 1) {
     }
 } elseif (isset($_GET['registered']) && $_GET['registered'] == 1) {
     $success = "✅ Registro exitoso. Ya podés iniciar sesión.";
-}
-
-
-if (isset($_GET['expired']) && $_GET['expired'] == 1) {
-    $error = "La sesión expiró por inactividad. Por favor, iniciá sesión nuevamente.";
-} elseif (isset($_GET['error']) && $_GET['error'] == 1) {
-    $error = "Usuario o contraseña incorrectos.";
 }
 ?>
 <!DOCTYPE html>
@@ -151,9 +144,9 @@ if (isset($_GET['expired']) && $_GET['expired'] == 1) {
             <form action="/login_handler.php" method="POST" class="login-form active">
                 <h1>Iniciar Sesión</h1>
                 <?php if (!empty($error)): ?>
-                    <div class="error"><?= $error ?></div>
+                    <div class="error"><?= htmlspecialchars($error) ?></div>
                 <?php elseif (!empty($success)): ?>
-                    <div class="success"><?= $success ?></div>
+                    <div class="success"><?= htmlspecialchars($success) ?></div>
                 <?php endif; ?>
                 <div class="form-group">
                     <label for="usuario">Usuario:</label>

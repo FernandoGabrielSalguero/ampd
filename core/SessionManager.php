@@ -17,7 +17,6 @@ class SessionManager
 
         session_start();
 
-        // Expira por inactividad
         if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY']) > self::SESSION_TIMEOUT) {
             self::destroy();
             header("Location: /index.php?expired=1");
@@ -41,11 +40,11 @@ class SessionManager
     }
 
     public static function setUser(array $userData)
-{
-    session_regenerate_id(true);
-    $_SESSION['user'] = $userData;
-    $_SESSION['LAST_ACTIVITY'] = time();
-}
+    {
+        session_regenerate_id(true);
+        $_SESSION['user'] = $userData;
+        $_SESSION['LAST_ACTIVITY'] = time();
+    }
 
     public static function getUser()
     {
@@ -64,10 +63,4 @@ class SessionManager
             exit;
         }
     }
-
-    public static function hasPermission(string $permission): bool
-{
-    $user = self::getUser();
-    return in_array($permission, $user['permissions'] ?? []);
-}
 }
