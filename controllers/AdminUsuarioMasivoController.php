@@ -11,7 +11,7 @@ header('Content-Type: application/json; charset=utf-8');
 
 SessionManager::start();
 $user = SessionManager::getUser();
-// Esta pantalla suele ser para Super_admin; mantener así. (Los usuarios creados tendrán rol 'socio')
+// Solo Super_admin
 if (!$user || !isset($user['role']) || $user['role'] !== 'Super_admin') {
     http_response_code(403);
     echo json_encode(['error' => 'Acceso denegado']);
@@ -32,47 +32,49 @@ try {
             $fh = fopen($_FILES['file']['tmp_name'], 'r');
             if (!$fh) throw new RuntimeException('No se pudo leer el archivo.');
 
-            // ---------- Cabeceras con autodetección de BOM y delimitador ----------
-            $delimiter = ','; // por defecto
+            // ===== Cabeceras con autodetección robusta de BOM y delimitador =====
+            $first = fgets($fh);
+            if ($first === false) {
+                throw new RuntimeException('CSV vacío.');
+            }
+
+            // Quitar BOM si lo hay
+            $first = preg_replace('/^\xEF\xBB\xBF/u', '', $first);
+
+            // Detectar delimitador por ocurrencias (prefiere el de mayor conteo)
+            $counts = [
+                ';'  => substr_count($first, ';'),
+                ','  => substr_count($first, ','),
+                "\t" => substr_count($first, "\t"),
+            ];
+            arsort($counts);
+            $delimiter = key($counts);
+            if ($counts[$delimiter] === 0) {
+                // fallback seguro
+                $delimiter = ',';
+            }
+
+            // Reposicionar y leer cabeceras con el delimitador correcto
+            rewind($fh);
             $headers = fgetcsv($fh, 0, $delimiter, '"');
             if ($headers === false) {
                 throw new RuntimeException('CSV sin cabecera.');
             }
-
-            // Quitar BOM si viene en el primer header
             if (isset($headers[0])) {
                 $headers[0] = preg_replace('/^\xEF\xBB\xBF/u', '', $headers[0]);
             }
 
-            // Si solo vino 1 columna, probablemente es por delimitador diferente.
-            // Reintento con ; y con TAB.
-            if (count($headers) === 1) {
-                $line = $headers[0];
-
-                if (strpos($line, ';') !== false) {
-                    $delimiter = ';';
-                    // Volvemos al inicio del archivo y releemos cabeceras con ;
-                    rewind($fh);
-                    $headers = fgetcsv($fh, 0, $delimiter, '"');
-                    if (isset($headers[0])) {
-                        $headers[0] = preg_replace('/^\xEF\xBB\xBF/u', '', $headers[0]);
-                    }
-                } elseif (strpos($line, "\t") !== false) {
-                    $delimiter = "\t";
-                    rewind($fh);
-                    $headers = fgetcsv($fh, 0, $delimiter, '"');
-                    if (isset($headers[0])) {
-                        $headers[0] = preg_replace('/^\xEF\xBB\xBF/u', '', $headers[0]);
-                    }
-                }
-            }
-
+            // Normalizar nombres de columna
             $headers = array_map(function ($h) {
-                $h = trim($h);
+                $h = trim((string)$h);
                 $h = preg_replace('/\s+/', '_', $h);
                 return strtolower($h);
             }, $headers);
 
+            // (Opcional) Log para debug si algo falla en prod
+            // error_log('CSV headers: ' . json_encode($headers, JSON_UNESCAPED_UNICODE));
+
+            // Validar columnas requeridas
             $required = [
                 'email',
                 'first_name',
@@ -102,18 +104,18 @@ try {
             }
             $idx = array_flip($headers);
 
-            // ---------- Helpers ----------
+            // ===== Helpers =====
             $norm = function ($v) {
                 $v = trim((string)$v);
                 if ($v === '' || preg_match('/^sin\s+/i', $v)) return null;
                 return $v;
             };
 
-            $rows = [];
+            $rows   = [];
             $errors = [];
-            $line = 1;
+            $line   = 1;
 
-            // ---------- Lectura de filas con el mismo delimitador detectado ----------
+            // ===== Lectura de filas =====
             while (($row = fgetcsv($fh, 0, $delimiter, '"')) !== false) {
                 $line++;
 
@@ -181,7 +183,7 @@ try {
             }
             fclose($fh);
 
-
+            // UPSERT de cuentas bancarias
             $result = $model->upsertBatch($rows, $replace);
 
             echo json_encode([
