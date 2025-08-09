@@ -81,14 +81,88 @@ $email = $user['email'] ?? 'Sin email';
             <section class="content">
                 <div class="card">
                     <h2>Hola 👋 <?= htmlspecialchars($usuario) ?></h2>
-                    <p>En esta página, vamos a tener KPI.</p>
+                    <p>En esta página, vamos a cargar masivamente los usuarios de la asociación</p>
+                </div>
+
+                <!-- carga masiva de usuarios (rol Socio) y sus cuentas bancarias desde CSV. -->
+                <div class="card">
+                    <h3>Subir CSV de usuarios</h3>
+                    <p class="hint">Formato UTF‑8 con cabecera. Columnas esperadas: <code>email, first_name, dni, n_socio, contact_phone, cbu_a, alias_a, titular_a, banco_a, user_name, pass, cuit_a, cbu_b, alias_b, titular_b, banco_b, cbu_c, alias_c, titular_c, banco_c</code></p>
+
+                    <form id="form-csv" class="form-modern" enctype="multipart/form-data">
+                        <div class="input-group">
+                            <label>Archivo CSV</label>
+                            <div class="input-icon">
+                                <span class="material-icons">upload_file</span>
+                                <input id="csv_file" name="file" type="file" accept=".csv" required>
+                            </div>
+                        </div>
+                        <div class="input-group" style="display:flex;align-items:center;gap:.5rem;">
+                            <input id="replace" name="replace" type="checkbox" checked>
+                            <label for="replace">Reemplazar existentes (DNI + cuenta A/B/C)</label>
+                        </div>
+
+                        <div class="form-buttons">
+                            <button class="btn btn-aceptar" type="submit">Procesar CSV</button>
+                        </div>
+                    </form>
+
+                    <div id="upload-result" class="hint" style="margin-top:1rem"></div>
                 </div>
 
             </section>
         </div>
+
+        <!-- Alert -->
+        <div class="alert-container" id="alertContainer"></div>
     </div>
 
     <script src="../../views/partials/spinner-global.js"></script>
+
+    <script>
+        const bulkCtrl = '../../controllers/AdminUsuarioMasivoController.php';
+
+        document.getElementById('form-csv').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fileInput = document.getElementById('csv_file');
+            if (!fileInput.files.length) return alert('Seleccioná un archivo CSV.');
+
+            const fd = new FormData();
+            fd.append('action', 'upload_csv');
+            fd.append('file', fileInput.files[0]);
+            fd.append('replace', document.getElementById('replace').checked ? '1' : '0');
+
+            const resEl = document.getElementById('upload-result');
+            resEl.textContent = 'Procesando...';
+
+            try {
+                const resp = await fetch(`${bulkCtrl}`, {
+                    method: 'POST',
+                    body: fd
+                });
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                const data = await resp.json();
+                if (!data.ok) throw new Error(data.error || 'Error desconocido');
+
+                const s = data.summary;
+                let html = `
+      <div>Filas en CSV: <strong>${s.rows_in_csv}</strong></div>
+      <div>Filas bancarias procesadas (A/B/C): <strong>${s.bank_rows_to_process}</strong></div>
+      <div>Insertados: <strong>${s.inserted}</strong> · Actualizados: <strong>${s.updated}</strong></div>
+    `;
+                if (s.errors && s.errors.length) {
+                    html += `<div style="color:#dc2626;margin-top:.5rem">Errores:<br>${s.errors.map(x=>'- '+x).join('<br>')}</div>`;
+                }
+                resEl.innerHTML = html;
+                alert('Carga masiva finalizada.');
+            } catch (err) {
+                console.error(err);
+                resEl.innerHTML = `<span style="color:#dc2626">Error: ${err.message}</span>`;
+                alert('Ocurrió un error al procesar el CSV.');
+            }
+        });
+    </script>
+
 
     <script>
         console.log(<?php echo json_encode($_SESSION); ?>);
