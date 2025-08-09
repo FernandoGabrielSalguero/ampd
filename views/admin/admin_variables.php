@@ -84,18 +84,18 @@ $email = $user['email'] ?? 'Sin email';
                 <div class="card-grid grid-2">
                     <div class="card">
                             <strong>Variable de entorno Impuesto al débito y crédito</strong>
-                            <form class="form-grid grid-4" id="form-publicacion" enctype="multipart/form-data">
+                            <form class="form-grid grid-1" id="form-ImpuestoDebitoCredito">
                                 <!-- Título -->
                                 <div class="input-group">
-                                    <label for="titulo">Título</label>
+                                    <label for="titulo">Creamos un nuevo valor de impuesto</label>
                                     <div class="input-icon">
                                         <span class="material-icons">title</span>
-                                        <input type="text" name="titulo" id="titulo" required>
+                                        <input type="number" name="impuesto_DebitoCredito" id="impuesto_DebitoCredito" required>
                                     </div>
                                 </div>
                                 <!-- Botón guardar -->
-                                <div style="grid-column: span 4; text-align: right;">
-                                    <button type="submit" class="btn btn-disabled" id="btn-guardar" disabled>Guardar publicación</button>
+                                <div style="grid-column: span 1; text-align: right;">
+                                    <button type="submit" class="btn btn-aceptar" id="btn-guardar_impuestoDebitoCredito">Crear nuevo impuesto</button>
                                 </div>
                             </form>
                     </div>
