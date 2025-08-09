@@ -314,372 +314,328 @@ $email = $user['email'] ?? 'Sin email';
 
 
     <!-- script de funcionalidades -->
-    <script>
-        const API = '/controllers/AdminVariablesController.php';
+<script>
+    const API = '/controllers/AdminVariablesController.php';
 
-        async function apiList(type) {
-            const r = await fetch(`${API}?type=${type}&action=list`, {
-                credentials: 'same-origin'
+    // Helper defensivo: parsea JSON o muestra HTML de error
+    async function parseJsonOrThrow(response) {
+        const text = await response.text();
+        try {
+            return JSON.parse(text);
+        } catch {
+            // Mostrar en consola el HTML recibido para depuración
+            console.error("Respuesta no-JSON recibida:", text);
+            throw new Error(`Respuesta no-JSON del servidor (HTTP ${response.status}).\n${text.slice(0, 200)}…`);
+        }
+    }
+
+    // ===== API helpers =====
+    async function apiList(type) {
+        const r = await fetch(`${API}?type=${type}&action=list`, {
+            credentials: 'same-origin'
+        });
+        return parseJsonOrThrow(r);
+    }
+
+    async function apiPost(type, action, payload) {
+        const r = await fetch(`${API}?type=${type}&action=${action}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams(payload),
+            credentials: 'same-origin'
+        });
+        return parseJsonOrThrow(r);
+    }
+
+    // ===== Utilidades =====
+    function showAlert(tipo, mensaje) {
+        const contenedor = document.getElementById('alertContainer');
+        const alerta = document.createElement('div');
+        alerta.className = `toast ${tipo === 'success' ? 'success' : tipo === 'error' ? 'error' : 'info'}`;
+        alerta.textContent = mensaje;
+        if (!document.getElementById('toast-container')) {
+            const tc = document.createElement('div');
+            tc.id = 'toast-container';
+            document.body.appendChild(tc);
+        }
+        document.getElementById('toast-container').appendChild(alerta);
+        setTimeout(() => alerta.remove(), 4800);
+    }
+
+    function openModal(id) {
+        document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.add('hidden');
+    }
+
+    const fmt = n => Number(n).toLocaleString('es-AR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 4
+    });
+
+    // ====== Cargar tablas ======
+    async function cargarDC() {
+        const tbody = document.getElementById('tabla-dc');
+        tbody.innerHTML = '<tr><td colspan="5">Cargando...</td></tr>';
+        try {
+            const res = await apiList('debit_credit_tax');
+            if (!res.ok) throw new Error(res.error || 'Error al listar');
+            tbody.innerHTML = '';
+            (res.data || []).forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.id}</td>
+                    <td>${fmt(row.value)}</td>
+                    <td>${row.created_at ?? ''}</td>
+                    <td>${row.updated_at ?? ''}</td>
+                    <td>
+                        <button class="btn-icon" data-tooltip="Editar" onclick="editarDC(${row.id}, '${row.value}')">
+                            <i class="material-icons">edit</i>
+                        </button>
+                        <button class="btn-icon" data-tooltip="Eliminar" onclick="eliminarDC(${row.id})">
+                            <i class="material-icons" style="color:red;">delete</i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
             });
-            return parseJsonOrThrow(r);
+        } catch (e) {
+            tbody.innerHTML = `<tr><td colspan="5" style="color:red;">${e.message}</td></tr>`;
         }
-        async function apiPost(type, action, payload) {
-            const r = await fetch(`${API}?type=${type}&action=${action}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams(payload),
-                credentials: 'same-origin'
+    }
+
+    async function cargarRet() {
+        const tbody = document.getElementById('tabla-ret');
+        tbody.innerHTML = '<tr><td colspan="5">Cargando...</td></tr>';
+        try {
+            const res = await apiList('retention');
+            if (!res.ok) throw new Error(res.error || 'Error al listar');
+            tbody.innerHTML = '';
+            (res.data || []).forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.id}</td>
+                    <td>${fmt(row.value)}</td>
+                    <td>${row.created_at ?? ''}</td>
+                    <td>${row.updated_at ?? ''}</td>
+                    <td>
+                        <button class="btn-icon" data-tooltip="Editar" onclick="editarRet(${row.id}, '${row.value}')">
+                            <i class="material-icons">edit</i>
+                        </button>
+                        <button class="btn-icon" data-tooltip="Eliminar" onclick="eliminarRet(${row.id})">
+                            <i class="material-icons" style="color:red;">delete</i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
             });
-            return parseJsonOrThrow(r);
+        } catch (e) {
+            tbody.innerHTML = `<tr><td colspan="5" style="color:red;">${e.message}</td></tr>`;
         }
+    }
 
-        // Helper defensivo: si viene HTML (404, PHP notice, etc.) lo muestra como error legible
-        async function parseJsonOrThrow(response) {
-            const text = await response.text();
-            try {
-                return JSON.parse(text);
-            } catch {
-                throw new Error(`Respuesta no-JSON del servidor (HTTP ${response.status}).\n${text.slice(0, 200)}…`);
-            }
-        }
-
-        // ===== Utilidades =====
-        function showAlert(tipo, mensaje) {
-            const contenedor = document.getElementById('alertContainer');
-            const alerta = document.createElement('div');
-            alerta.className = `toast ${tipo === 'success' ? 'success' : tipo === 'error' ? 'error' : 'info'}`;
-            alerta.textContent = mensaje;
-            // Fallback si tu página no trae el contenedor de toastify:
-            if (!document.getElementById('toast-container')) {
-                const tc = document.createElement('div');
-                tc.id = 'toast-container';
-                document.body.appendChild(tc);
-            }
-            document.getElementById('toast-container').appendChild(alerta);
-            setTimeout(() => alerta.remove(), 4800);
-        }
-
-        function openModal(id) {
-            document.getElementById(id).classList.remove('hidden');
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-        }
-
-        const fmt = n => Number(n).toLocaleString('es-AR', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 4
-        });
-
-        // ====== API helpers ======
-        async function apiList(type) {
-            const r = await fetch(`${API}?type=${type}&action=list`, {
-                credentials: 'same-origin'
+    async function cargarBill() {
+        const tbody = document.getElementById('tabla-bill');
+        tbody.innerHTML = '<tr><td colspan="6">Cargando...</td></tr>';
+        try {
+            const res = await apiList('billing_entity');
+            if (!res.ok) throw new Error(res.error || 'Error al listar');
+            tbody.innerHTML = '';
+            (res.data || []).forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.id}</td>
+                    <td>${row.name}</td>
+                    <td>${row.cuit}</td>
+                    <td>${row.created_at ?? ''}</td>
+                    <td>${row.updated_at ?? ''}</td>
+                    <td>
+                        <button class="btn-icon" data-tooltip="Editar" onclick="editarBill(${row.id}, ${JSON.stringify(row.name)}, ${JSON.stringify(row.cuit)})">
+                            <i class="material-icons">edit</i>
+                        </button>
+                        <button class="btn-icon" data-tooltip="Eliminar" onclick="eliminarBill(${row.id})">
+                            <i class="material-icons" style="color:red;">delete</i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
             });
-            return r.json();
+        } catch (e) {
+            tbody.innerHTML = `<tr><td colspan="6" style="color:red;">${e.message}</td></tr>`;
         }
-        async function apiPost(type, action, payload) {
-            const r = await fetch(`${API}?type=${type}&action=${action}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams(payload),
-                credentials: 'same-origin'
-            });
-            return r.json();
-        }
+    }
 
-        // ====== Cargar tablas ======
-        async function cargarDC() {
-            const tbody = document.getElementById('tabla-dc');
-            tbody.innerHTML = '<tr><td colspan="5">Cargando...</td></tr>';
-            try {
-                const res = await apiList('debit_credit_tax');
-                if (!res.ok) throw new Error(res.error || 'Error al listar');
-                tbody.innerHTML = '';
-                (res.data || []).forEach(row => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-        <td>${row.id}</td>
-        <td>${fmt(row.value)}</td>
-        <td>${row.created_at ?? ''}</td>
-        <td>${row.updated_at ?? ''}</td>
-        <td>
-          <button class="btn-icon" data-tooltip="Editar" onclick="editarDC(${row.id}, '${row.value}')">
-            <i class="material-icons">edit</i>
-          </button>
-          <button class="btn-icon" data-tooltip="Eliminar" onclick="eliminarDC(${row.id})">
-            <i class="material-icons" style="color:red;">delete</i>
-          </button>
-        </td>
-      `;
-                    tbody.appendChild(tr);
-                });
-            } catch (e) {
-                tbody.innerHTML = `<tr><td colspan="5" style="color:red;">${e.message}</td></tr>`;
-            }
-        }
-
-        async function cargarRet() {
-            const tbody = document.getElementById('tabla-ret');
-            tbody.innerHTML = '<tr><td colspan="5">Cargando...</td></tr>';
-            try {
-                const res = await apiList('retention');
-                if (!res.ok) throw new Error(res.error || 'Error al listar');
-                tbody.innerHTML = '';
-                (res.data || []).forEach(row => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-        <td>${row.id}</td>
-        <td>${fmt(row.value)}</td>
-        <td>${row.created_at ?? ''}</td>
-        <td>${row.updated_at ?? ''}</td>
-        <td>
-          <button class="btn-icon" data-tooltip="Editar" onclick="editarRet(${row.id}, '${row.value}')">
-            <i class="material-icons">edit</i>
-          </button>
-          <button class="btn-icon" data-tooltip="Eliminar" onclick="eliminarRet(${row.id})">
-            <i class="material-icons" style="color:red;">delete</i>
-          </button>
-        </td>
-      `;
-                    tbody.appendChild(tr);
-                });
-            } catch (e) {
-                tbody.innerHTML = `<tr><td colspan="5" style="color:red;">${e.message}</td></tr>`;
-            }
-        }
-
-        async function cargarBill() {
-            const tbody = document.getElementById('tabla-bill');
-            tbody.innerHTML = '<tr><td colspan="6">Cargando...</td></tr>';
-            try {
-                const res = await apiList('billing_entity');
-                if (!res.ok) throw new Error(res.error || 'Error al listar');
-                tbody.innerHTML = '';
-                (res.data || []).forEach(row => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-        <td>${row.id}</td>
-        <td>${row.name}</td>
-        <td>${row.cuit}</td>
-        <td>${row.created_at ?? ''}</td>
-        <td>${row.updated_at ?? ''}</td>
-        <td>
-          <button class="btn-icon" data-tooltip="Editar" onclick="editarBill(${row.id}, ${JSON.stringify(row.name)}, ${JSON.stringify(row.cuit)})">
-            <i class="material-icons">edit</i>
-          </button>
-          <button class="btn-icon" data-tooltip="Eliminar" onclick="eliminarBill(${row.id})">
-            <i class="material-icons" style="color:red;">delete</i>
-          </button>
-        </td>
-      `;
-                    tbody.appendChild(tr);
-                });
-            } catch (e) {
-                tbody.innerHTML = `<tr><td colspan="6" style="color:red;">${e.message}</td></tr>`;
-            }
-        }
-
-        // ====== Crear (submit formularios) ======
-        document.getElementById('form-dc').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const value = e.target.value.value.trim();
-            try {
-                const res = await apiPost('debit_credit_tax', 'create', {
-                    value
-                });
-                if (!res.ok) throw new Error(res.error || 'Error al crear');
-                e.target.reset();
-                showAlert('success', 'Valor creado correctamente');
-                cargarDC();
-            } catch (err) {
-                showAlert('error', err.message);
-            }
-        });
-
-        document.getElementById('form-ret').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const value = e.target.value.value.trim();
-            try {
-                const res = await apiPost('retention', 'create', {
-                    value
-                });
-                if (!res.ok) throw new Error(res.error || 'Error al crear');
-                e.target.reset();
-                showAlert('success', 'Valor creado correctamente');
-                cargarRet();
-            } catch (err) {
-                showAlert('error', err.message);
-            }
-        });
-
-        document.getElementById('form-bill').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = e.target.name.value.trim();
-            const cuit = e.target.cuit.value.trim();
-            try {
-                const res = await apiPost('billing_entity', 'create', {
-                    name,
-                    cuit
-                });
-                if (!res.ok) throw new Error(res.error || 'Error al crear');
-                e.target.reset();
-                showAlert('success', 'Entidad creada correctamente');
-                cargarBill();
-            } catch (err) {
-                showAlert('error', err.message);
-            }
-        });
-
-        // ====== Editar (abrir modales) ======
-        function editarDC(id, value) {
-            document.getElementById('edit_dc_id').value = id;
-            document.getElementById('edit_dc_value').value = value;
-            openModal('modalEditDC');
-        }
-
-        function editarRet(id, value) {
-            document.getElementById('edit_ret_id').value = id;
-            document.getElementById('edit_ret_value').value = value;
-            openModal('modalEditRet');
-        }
-
-        function editarBill(id, name, cuit) {
-            document.getElementById('edit_bill_id').value = id;
-            document.getElementById('edit_bill_name').value = name;
-            document.getElementById('edit_bill_cuit').value = cuit;
-            openModal('modalEditBill');
-        }
-
-        // ====== Guardar edición ======
-        document.getElementById('formEditDC').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const id = document.getElementById('edit_dc_id').value;
-            const value = document.getElementById('edit_dc_value').value.trim();
-            try {
-                const res = await apiPost('debit_credit_tax', 'update', {
-                    id,
-                    value
-                });
-                if (!res.ok) throw new Error(res.error || 'Error al actualizar');
-                closeModal('modalEditDC');
-                showAlert('success', 'Valor actualizado');
-                cargarDC();
-            } catch (err) {
-                showAlert('error', err.message);
-            }
-        });
-
-        document.getElementById('formEditRet').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const id = document.getElementById('edit_ret_id').value;
-            const value = document.getElementById('edit_ret_value').value.trim();
-            try {
-                const res = await apiPost('retention', 'update', {
-                    id,
-                    value
-                });
-                if (!res.ok) throw new Error(res.error || 'Error al actualizar');
-                closeModal('modalEditRet');
-                showAlert('success', 'Valor actualizado');
-                cargarRet();
-            } catch (err) {
-                showAlert('error', err.message);
-            }
-        });
-
-        document.getElementById('formEditBill').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const id = document.getElementById('edit_bill_id').value;
-            const name = document.getElementById('edit_bill_name').value.trim();
-            const cuit = document.getElementById('edit_bill_cuit').value.trim();
-            try {
-                const res = await apiPost('billing_entity', 'update', {
-                    id,
-                    name,
-                    cuit
-                });
-                if (!res.ok) throw new Error(res.error || 'Error al actualizar');
-                closeModal('modalEditBill');
-                showAlert('success', 'Entidad actualizada');
-                cargarBill();
-            } catch (err) {
-                showAlert('error', err.message);
-            }
-        });
-
-        // ====== Eliminar (abrir modales) ======
-        function eliminarDC(id) {
-            document.getElementById('del_dc_id').value = id;
-            openModal('modalDelDC');
-        }
-
-        function eliminarRet(id) {
-            document.getElementById('del_ret_id').value = id;
-            openModal('modalDelRet');
-        }
-
-        function eliminarBill(id) {
-            document.getElementById('del_bill_id').value = id;
-            openModal('modalDelBill');
-        }
-
-        // ====== Confirmar eliminar ======
-        async function confirmDelDC() {
-            const id = document.getElementById('del_dc_id').value;
-            try {
-                const res = await apiPost('debit_credit_tax', 'delete', {
-                    id
-                });
-                if (!res.ok) throw new Error(res.error || 'Error al eliminar');
-                closeModal('modalDelDC');
-                showAlert('success', 'Eliminado correctamente');
-                cargarDC();
-            } catch (err) {
-                showAlert('error', err.message);
-            }
-        }
-        async function confirmDelRet() {
-            const id = document.getElementById('del_ret_id').value;
-            try {
-                const res = await apiPost('retention', 'delete', {
-                    id
-                });
-                if (!res.ok) throw new Error(res.error || 'Error al eliminar');
-                closeModal('modalDelRet');
-                showAlert('success', 'Eliminado correctamente');
-                cargarRet();
-            } catch (err) {
-                showAlert('error', err.message);
-            }
-        }
-        async function confirmDelBill() {
-            const id = document.getElementById('del_bill_id').value;
-            try {
-                const res = await apiPost('billing_entity', 'delete', {
-                    id
-                });
-                if (!res.ok) throw new Error(res.error || 'Error al eliminar');
-                closeModal('modalDelBill');
-                showAlert('success', 'Entidad eliminada');
-                cargarBill();
-            } catch (err) {
-                showAlert('error', err.message);
-            }
-        }
-
-        // ====== Inicial ======
-        document.addEventListener('DOMContentLoaded', () => {
+    // ====== Crear ======
+    document.getElementById('form-dc').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const value = e.target.value.value.trim();
+        try {
+            const res = await apiPost('debit_credit_tax', 'create', { value });
+            if (!res.ok) throw new Error(res.error || 'Error al crear');
+            e.target.reset();
+            showAlert('success', 'Valor creado correctamente');
             cargarDC();
+        } catch (err) {
+            showAlert('error', err.message);
+        }
+    });
+
+    document.getElementById('form-ret').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const value = e.target.value.value.trim();
+        try {
+            const res = await apiPost('retention', 'create', { value });
+            if (!res.ok) throw new Error(res.error || 'Error al crear');
+            e.target.reset();
+            showAlert('success', 'Valor creado correctamente');
             cargarRet();
+        } catch (err) {
+            showAlert('error', err.message);
+        }
+    });
+
+    document.getElementById('form-bill').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = e.target.name.value.trim();
+        const cuit = e.target.cuit.value.trim();
+        try {
+            const res = await apiPost('billing_entity', 'create', { name, cuit });
+            if (!res.ok) throw new Error(res.error || 'Error al crear');
+            e.target.reset();
+            showAlert('success', 'Entidad creada correctamente');
             cargarBill();
-        });
-    </script>
+        } catch (err) {
+            showAlert('error', err.message);
+        }
+    });
+
+    // ====== Editar ======
+    function editarDC(id, value) {
+        document.getElementById('edit_dc_id').value = id;
+        document.getElementById('edit_dc_value').value = value;
+        openModal('modalEditDC');
+    }
+    function editarRet(id, value) {
+        document.getElementById('edit_ret_id').value = id;
+        document.getElementById('edit_ret_value').value = value;
+        openModal('modalEditRet');
+    }
+    function editarBill(id, name, cuit) {
+        document.getElementById('edit_bill_id').value = id;
+        document.getElementById('edit_bill_name').value = name;
+        document.getElementById('edit_bill_cuit').value = cuit;
+        openModal('modalEditBill');
+    }
+
+    document.getElementById('formEditDC').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('edit_dc_id').value;
+        const value = document.getElementById('edit_dc_value').value.trim();
+        try {
+            const res = await apiPost('debit_credit_tax', 'update', { id, value });
+            if (!res.ok) throw new Error(res.error || 'Error al actualizar');
+            closeModal('modalEditDC');
+            showAlert('success', 'Valor actualizado');
+            cargarDC();
+        } catch (err) {
+            showAlert('error', err.message);
+        }
+    });
+
+    document.getElementById('formEditRet').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('edit_ret_id').value;
+        const value = document.getElementById('edit_ret_value').value.trim();
+        try {
+            const res = await apiPost('retention', 'update', { id, value });
+            if (!res.ok) throw new Error(res.error || 'Error al actualizar');
+            closeModal('modalEditRet');
+            showAlert('success', 'Valor actualizado');
+            cargarRet();
+        } catch (err) {
+            showAlert('error', err.message);
+        }
+    });
+
+    document.getElementById('formEditBill').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('edit_bill_id').value;
+        const name = document.getElementById('edit_bill_name').value.trim();
+        const cuit = document.getElementById('edit_bill_cuit').value.trim();
+        try {
+            const res = await apiPost('billing_entity', 'update', { id, name, cuit });
+            if (!res.ok) throw new Error(res.error || 'Error al actualizar');
+            closeModal('modalEditBill');
+            showAlert('success', 'Entidad actualizada');
+            cargarBill();
+        } catch (err) {
+            showAlert('error', err.message);
+        }
+    });
+
+    // ====== Eliminar ======
+    function eliminarDC(id) {
+        document.getElementById('del_dc_id').value = id;
+        openModal('modalDelDC');
+    }
+    function eliminarRet(id) {
+        document.getElementById('del_ret_id').value = id;
+        openModal('modalDelRet');
+    }
+    function eliminarBill(id) {
+        document.getElementById('del_bill_id').value = id;
+        openModal('modalDelBill');
+    }
+
+    async function confirmDelDC() {
+        const id = document.getElementById('del_dc_id').value;
+        try {
+            const res = await apiPost('debit_credit_tax', 'delete', { id });
+            if (!res.ok) throw new Error(res.error || 'Error al eliminar');
+            closeModal('modalDelDC');
+            showAlert('success', 'Eliminado correctamente');
+            cargarDC();
+        } catch (err) {
+            showAlert('error', err.message);
+        }
+    }
+    async function confirmDelRet() {
+        const id = document.getElementById('del_ret_id').value;
+        try {
+            const res = await apiPost('retention', 'delete', { id });
+            if (!res.ok) throw new Error(res.error || 'Error al eliminar');
+            closeModal('modalDelRet');
+            showAlert('success', 'Eliminado correctamente');
+            cargarRet();
+        } catch (err) {
+            showAlert('error', err.message);
+        }
+    }
+    async function confirmDelBill() {
+        const id = document.getElementById('del_bill_id').value;
+        try {
+            const res = await apiPost('billing_entity', 'delete', { id });
+            if (!res.ok) throw new Error(res.error || 'Error al eliminar');
+            closeModal('modalDelBill');
+            showAlert('success', 'Entidad eliminada');
+            cargarBill();
+        } catch (err) {
+            showAlert('error', err.message);
+        }
+    }
+
+    // ====== Inicial ======
+    document.addEventListener('DOMContentLoaded', () => {
+        cargarDC();
+        cargarRet();
+        cargarBill();
+    });
+</script>
+
 
 
 
