@@ -224,14 +224,12 @@ $email = $user['email'] ?? 'Sin email';
                                 <tr>
                                     <td>Carlos</td>
                                     <td>32569852</td>
-                                    <td>Carlos</td>
                                     <td><span class="badge success">Cuentas completas</span></td>
                                     <td><span class="badge warning">Cuota adeudada</span></td>
                                 </tr>
                                 <tr>
                                     <td>Laura</td>
                                     <td>56987563</td>
-                                    <td>Laura</td>
                                     <td><span class="badge warning">Cuentas incompletas</span></td>
                                     <td><span class="badge success">Cuota adeudada</span></td>
                                 </tr>
