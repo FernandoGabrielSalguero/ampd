@@ -55,7 +55,7 @@ $email = $user['email'] ?? 'Sin email';
                         <span class="material-icons" style="color: #5b21b6;">tune</span><span class="link-text">Variables de entorno</span>
                     </li>
                     <li onclick="location.href='admin_UsuariosMasivo.php'">
-                        <span class="material-icons" style="color: #5b21b6;">user</span><span class="link-text">Usuarios Masivos</span>
+                        <span class="material-icons" style="color: #5b21b6;">person</span><span class="link-text">Usuarios Masivos</span>
                     </li>
                     <!-- Boton de exit -->
                     <li onclick="location.href='../../../logout.php'">
@@ -84,40 +84,6 @@ $email = $user['email'] ?? 'Sin email';
                     <p>En esta página, vamos a tener KPI.</p>
                 </div>
 
-                <div class="card-grid grid-4">
-                    <div class="card">
-                        <h3>KPI 1</h3>
-                        <p>Contenido 1</p>
-                    </div>
-                    <div class="card">
-                        <h3>KPI 2</h3>
-                        <p>Contenido 2</p>
-                    </div>
-                    <div class="card">
-                        <h3>KPI 3</h3>
-                        <p>Contenido 3</p>
-                    </div>
-                    <div class="card">
-                        <h3>KPI 4</h3>
-                        <p>Contenido 4</p>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <form class="form-modern">
-                        <div class="input-group">
-                            <label>Correo</label>
-                            <div class="input-icon">
-                                <span class="material-icons">mail</span>
-                                <input type="email" placeholder="ejemplo@correo.com">
-                            </div>
-                        </div>
-                        <div class="form-buttons">
-                            <button class="btn btn-aceptar" type="submit">Enviar</button>
-                            <button class="btn btn-cancelar" type="button">Cancelar</button>
-                        </div>
-                    </form>
-                </div>
             </section>
         </div>
     </div>
