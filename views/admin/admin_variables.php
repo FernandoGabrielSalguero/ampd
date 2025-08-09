@@ -94,7 +94,7 @@ $email = $user['email'] ?? 'Sin email';
                                     </div>
                                 </div>
                                 <!-- Botón guardar -->
-                                <div style="grid-column: span 1; text-align: right;">
+                                <div style="form-buttons">
                                     <button type="submit" class="btn btn-aceptar" id="btn-guardar_impuestoDebitoCredito">Crear nuevo impuesto</button>
                                 </div>
                             </form>
