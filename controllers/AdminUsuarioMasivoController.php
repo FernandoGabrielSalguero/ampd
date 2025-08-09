@@ -11,7 +11,6 @@ header('Content-Type: application/json; charset=utf-8');
 
 SessionManager::start();
 $user = SessionManager::getUser();
-// Solo Super_admin
 if (!$user || !isset($user['role']) || $user['role'] !== 'Super_admin') {
     http_response_code(403);
     echo json_encode(['error' => 'Acceso denegado']);
@@ -27,98 +26,78 @@ try {
             if (!isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
                 throw new RuntimeException('No se recibió archivo o hubo un error de subida.');
             }
-            $replace = isset($_POST['replace']) ? filter_var($_POST['replace'], FILTER_VALIDATE_BOOLEAN) : true;
 
-            $fh = fopen($_FILES['file']['tmp_name'], 'r');
+            $replace      = isset($_POST['replace']) ? filter_var($_POST['replace'], FILTER_VALIDATE_BOOLEAN) : true;
+            $debugHeaders = isset($_POST['debug_headers']) && $_POST['debug_headers'] === '1';
+
+            // Abrir archivo tal cual (CSV)
+            $tmpForRead = $_FILES['file']['tmp_name'];
+            $fh = fopen($tmpForRead, 'r');
             if (!$fh) throw new RuntimeException('No se pudo leer el archivo.');
 
-            // ===== Cabeceras con autodetección robusta de BOM y delimitador =====
+            // ===== Autodetección de BOM + delimitador =====
             $first = fgets($fh);
-            if ($first === false) {
-                throw new RuntimeException('CSV vacío.');
-            }
+            if ($first === false) throw new RuntimeException('CSV vacío.');
+            $firstNoBom = preg_replace('/^\xEF\xBB\xBF/u', '', $first);
 
-            // Quitar BOM si lo hay
-            $first = preg_replace('/^\xEF\xBB\xBF/u', '', $first);
-
-            // Detectar delimitador por ocurrencias (prefiere el de mayor conteo)
             $counts = [
-                ';'  => substr_count($first, ';'),
-                ','  => substr_count($first, ','),
-                "\t" => substr_count($first, "\t"),
+                ';'  => substr_count($firstNoBom, ';'),
+                ','  => substr_count($firstNoBom, ','),
+                "\t" => substr_count($firstNoBom, "\t"),
             ];
             arsort($counts);
             $delimiter = key($counts);
-            if ($counts[$delimiter] === 0) {
-                // fallback seguro
-                $delimiter = ',';
-            }
+            if ($counts[$delimiter] === 0) $delimiter = ','; // fallback
 
-            // Reposicionar y leer cabeceras con el delimitador correcto
             rewind($fh);
             $headers = fgetcsv($fh, 0, $delimiter, '"');
-            if ($headers === false) {
-                throw new RuntimeException('CSV sin cabecera.');
-            }
-            if (isset($headers[0])) {
-                $headers[0] = preg_replace('/^\xEF\xBB\xBF/u', '', $headers[0]);
-            }
+            if ($headers === false) throw new RuntimeException('CSV sin cabecera.');
+            if (isset($headers[0])) $headers[0] = preg_replace('/^\xEF\xBB\xBF/u', '', $headers[0]);
 
-            // Normalizar nombres de columna
-            $headers = array_map(function ($h) {
+            // Normalizar cabeceras
+            $normalizedHeaders = array_map(function ($h) {
                 $h = trim((string)$h);
                 $h = preg_replace('/\s+/', '_', $h);
                 return strtolower($h);
             }, $headers);
 
-            // (Opcional) Log para debug si algo falla en prod
-            // error_log('CSV headers: ' . json_encode($headers, JSON_UNESCAPED_UNICODE));
+            // ===== Debug opcional: mostrar cabeceras detectadas =====
+            if ($debugHeaders) {
+                echo json_encode([
+                    'error'          => 'Cabeceras detectadas',
+                    'raw_headers'    => $headers,
+                    'headers'        => $normalizedHeaders,
+                    'delimiter_used' => ($delimiter === "\t" ? 'TAB' : $delimiter),
+                ], JSON_UNESCAPED_UNICODE);
+                exit;
+            }
 
-            // Validar columnas requeridas
+            // Validación de columnas necesarias
             $required = [
-                'email',
-                'first_name',
-                'dni',
-                'n_socio',
-                'contact_phone',
-                'cbu_a',
-                'alias_a',
-                'titular_a',
-                'banco_a',
-                'user_name',
-                'pass',
-                'cuit_a',
-                'cbu_b',
-                'alias_b',
-                'titular_b',
-                'banco_b',
-                'cbu_c',
-                'alias_c',
-                'titular_c',
-                'banco_c'
+                'email','first_name','dni','n_socio','contact_phone',
+                'cbu_a','alias_a','titular_a','banco_a','user_name','pass','cuit_a',
+                'cbu_b','alias_b','titular_b','banco_b',
+                'cbu_c','alias_c','titular_c','banco_c'
             ];
-            // DEBUG: mostrar en la respuesta para ver cabeceras detectadas
-echo json_encode(['error' => 'Cabeceras detectadas', 'headers' => $headers]);
-exit;
             foreach ($required as $r) {
-                if (!in_array($r, $headers, true)) {
+                if (!in_array($r, $normalizedHeaders, true)) {
                     throw new InvalidArgumentException("Falta la columna requerida: {$r}");
                 }
             }
-            $idx = array_flip($headers);
+            $idx = array_flip($normalizedHeaders);
 
-            // ===== Helpers =====
+            // Helper
             $norm = function ($v) {
                 $v = trim((string)$v);
                 if ($v === '' || preg_match('/^sin\s+/i', $v)) return null;
                 return $v;
             };
 
-            $rows   = [];
+            $rows = [];
             $errors = [];
-            $line   = 1;
+            $line = 1;
 
-            // ===== Lectura de filas =====
+            // Leer filas
             while (($row = fgetcsv($fh, 0, $delimiter, '"')) !== false) {
                 $line++;
 
@@ -127,76 +106,55 @@ exit;
                 $email  = $norm($row[$idx['email']] ?? '');
                 $pass   = (string)($row[$idx['pass']] ?? '');
 
-                if (!$dni || !preg_match('/^\d+$/', $dni)) {
-                    $errors[] = "Línea {$line}: DNI inválido.";
-                    continue;
-                }
-                if (!$nSocio || !preg_match('/^\d+$/', $nSocio)) {
-                    $errors[] = "Línea {$line}: n_socio inválido.";
-                    continue;
-                }
-                if ($pass === '') {
-                    $errors[] = "Línea {$line}: pass vacío.";
-                    continue;
-                }
+                if (!$dni || !preg_match('/^\d+$/', $dni)) { $errors[] = "Línea {$line}: DNI inválido."; continue; }
+                if (!$nSocio || !preg_match('/^\d+$/', $nSocio)) { $errors[] = "Línea {$line}: n_socio inválido."; continue; }
+                if ($pass === '') { $errors[] = "Línea {$line}: pass vacío."; continue; }
 
-                // Crear usuario (si no existe) y asegurar rol 'socio'
+                // Usuario + rol
                 $userId = $model->createUserIfMissing($dni, $email, $pass);
                 $model->ensureUserHasSocioRole($userId);
 
-                // Map A/B/C -> slots 1/2/3
+                // Cuentas A/B/C -> slots 1/2/3
                 $accounts = [
                     1 => [
-                        'cbu'     => $norm($row[$idx['cbu_a']] ?? ''),
-                        'alias'   => $norm($row[$idx['alias_a']] ?? ''),
-                        'titular' => $norm($row[$idx['titular_a']] ?? ''),
-                        'banco'   => $norm($row[$idx['banco_a']] ?? ''),
-                        'cuit'    => $norm($row[$idx['cuit_a']] ?? ''),
+                        'cbu' => $norm($row[$idx['cbu_a']] ?? ''), 'alias' => $norm($row[$idx['alias_a']] ?? ''),
+                        'titular' => $norm($row[$idx['titular_a']] ?? ''), 'banco' => $norm($row[$idx['banco_a']] ?? ''),
+                        'cuit' => $norm($row[$idx['cuit_a']] ?? ''),
                     ],
                     2 => [
-                        'cbu'     => $norm($row[$idx['cbu_b']] ?? ''),
-                        'alias'   => $norm($row[$idx['alias_b']] ?? ''),
-                        'titular' => $norm($row[$idx['titular_b']] ?? ''),
-                        'banco'   => $norm($row[$idx['banco_b']] ?? ''),
-                        'cuit'    => null,
+                        'cbu' => $norm($row[$idx['cbu_b']] ?? ''), 'alias' => $norm($row[$idx['alias_b']] ?? ''),
+                        'titular' => $norm($row[$idx['titular_b']] ?? ''), 'banco' => $norm($row[$idx['banco_b']] ?? ''),
+                        'cuit' => null,
                     ],
                     3 => [
-                        'cbu'     => $norm($row[$idx['cbu_c']] ?? ''),
-                        'alias'   => $norm($row[$idx['alias_c']] ?? ''),
-                        'titular' => $norm($row[$idx['titular_c']] ?? ''),
-                        'banco'   => $norm($row[$idx['banco_c']] ?? ''),
-                        'cuit'    => null,
+                        'cbu' => $norm($row[$idx['cbu_c']] ?? ''), 'alias' => $norm($row[$idx['alias_c']] ?? ''),
+                        'titular' => $norm($row[$idx['titular_c']] ?? ''), 'banco' => $norm($row[$idx['banco_c']] ?? ''),
+                        'cuit' => null,
                     ],
                 ];
 
                 foreach ($accounts as $slot => $a) {
                     if ($a['cbu'] || $a['alias'] || $a['titular'] || $a['banco'] || $a['cuit']) {
                         $rows[] = [
-                            'dni'     => $dni,
-                            'n_socio' => (int)$nSocio,
-                            'slot'    => (int)$slot,
-                            'cbu'     => $a['cbu'],
-                            'alias'   => $a['alias'],
-                            'titular' => $a['titular'],
-                            'banco'   => $a['banco'],
-                            'cuit'    => $a['cuit'],
+                            'dni' => $dni, 'n_socio' => (int)$nSocio, 'slot' => (int)$slot,
+                            'cbu' => $a['cbu'], 'alias' => $a['alias'], 'titular' => $a['titular'],
+                            'banco' => $a['banco'], 'cuit' => $a['cuit'],
                         ];
                     }
                 }
             }
             fclose($fh);
 
-            // UPSERT de cuentas bancarias
             $result = $model->upsertBatch($rows, $replace);
 
             echo json_encode([
                 'ok' => true,
                 'summary' => [
-                    'rows_in_csv'          => $line - 1,
+                    'rows_in_csv' => $line - 1,
                     'bank_rows_to_process' => count($rows),
-                    'inserted'             => $result['inserted'],
-                    'updated'              => $result['updated'],
-                    'errors'               => $errors
+                    'inserted' => $result['inserted'],
+                    'updated'  => $result['updated'],
+                    'errors'   => $errors
                 ]
             ]);
             break;
