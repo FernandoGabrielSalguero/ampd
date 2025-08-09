@@ -80,24 +80,23 @@ $email = $user['email'] ?? 'Sin email';
                     <h2>Hola 👋 <?= htmlspecialchars($usuario) ?></h2>
                     <p>En esta página, vamos a manejar las variables de entorno de toda la plataforma AMPD</p>
                 </div>
-
+                
                 <div class="card-grid grid-2">
+                    <strong>Variable de entorno Impuesto al débito y crédito</strong>
                     <div class="card">
-                            <strong>Variable de entorno Impuesto al débito y crédito</strong>
-                            <form class="form-grid grid-1" id="form-ImpuestoDebitoCredito">
-                                <!-- Título -->
-                                <div class="input-group">
-                                    <label for="titulo">Creamos un nuevo valor de impuesto</label>
-                                    <div class="input-icon">
-                                        <span class="material-icons">title</span>
-                                        <input type="number" name="impuesto_DebitoCredito" id="impuesto_DebitoCredito" required>
-                                    </div>
+                        <form class="form-modern">
+                            <div class="input-group">
+                                <label>Correo</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">mail</span>
+                                    <input type="email" placeholder="ejemplo@correo.com">
                                 </div>
-                                <!-- Botón guardar -->
-                                <div style="form-buttons">
-                                    <button type="submit" class="btn btn-aceptar" id="btn-guardar_impuestoDebitoCredito">Crear nuevo impuesto</button>
-                                </div>
-                            </form>
+                            </div>
+
+                            <div class="form-buttons">
+                                <button class="btn btn-aceptar" type="submit">Enviar</button>
+                            </div>
+                        </form>
                     </div>
                     <div class="card">
                         <h3>Variable de entorno Retención</h3>
