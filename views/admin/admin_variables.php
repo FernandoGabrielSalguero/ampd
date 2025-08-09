@@ -81,7 +81,7 @@ $email = $user['email'] ?? 'Sin email';
                     <p>En esta página, vamos a manejar las variables de entorno de toda la plataforma AMPD</p>
                 </div>
 
-                <div class="card-grid grid-3">
+                <div class="card-grid grid-2">
                     <div class="card">
                         <h3>Variable de entorno Impuesto al débito y crédito</h3>
                         <p>Contenido 1</p>
