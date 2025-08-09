@@ -84,10 +84,77 @@ $email = $user['email'] ?? 'Sin email';
                 <div class="card-grid grid-2">
                     <div class="card">
                             <strong>Variable de entorno Impuesto al débito y crédito</strong>
-                            <div class="subcat-form">
-                                <input type="text" id="nueva-categoria" class="input" placeholder="Nombre categoría" />
-                                <button class="btn-aceptar full-width" onclick="crearImpuestoAlDebito()">Agregar</button>
-                            </div>
+                            <form class="form-grid grid-4" id="form-publicacion" enctype="multipart/form-data">
+                                <!-- Título -->
+                                <div class="input-group">
+                                    <label for="titulo">Título</label>
+                                    <div class="input-icon">
+                                        <span class="material-icons">title</span>
+                                        <input type="text" name="titulo" id="titulo" required>
+                                    </div>
+                                </div>
+
+                                <!-- Subtítulo -->
+                                <div class="input-group">
+                                    <label for="subtitulo">Subtítulo</label>
+                                    <div class="input-icon">
+                                        <span class="material-icons">subtitles</span>
+                                        <input type="text" name="subtitulo" id="subtitulo" required>
+                                    </div>
+                                </div>
+
+                                <!-- Autor -->
+                                <div class="input-group">
+                                    <label for="autor">Autor</label>
+                                    <div class="input-icon">
+                                        <span class="material-icons">person</span>
+                                        <input type="text" name="autor" id="autor" required>
+                                    </div>
+                                </div>
+
+                                <!-- Categoría -->
+                                <div class="input-group">
+                                    <label for="categoria_id">Categoría</label>
+                                    <div class="input-icon">
+                                        <span class="material-icons">category</span>
+                                        <select name="categoria_id" id="select-categoria" required>
+                                            <option value="">Seleccionar categoría</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Subcategoría -->
+                                <div class="input-group">
+                                    <label for="subcategoria_id">Subcategoría</label>
+                                    <div class="input-icon">
+                                        <span class="material-icons">category</span>
+                                        <select name="subcategoria_id" id="select-subcategoria" required disabled>
+                                            <option value="">Seleccionar subcategoría</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Archivo -->
+                                <div class="input-group">
+                                    <label for="archivo">Archivo</label>
+                                    <div class="input-icon">
+                                        <span class="material-icons">attach_file</span>
+                                        <input type="file" name="archivo" id="archivo" accept=".pdf" required>
+                                    </div>
+                                </div>
+
+                                <!-- Descripción -->
+                                <div class="input-group" style="grid-column: span 4;">
+                                    <label for="descripcion">Descripción</label>
+                                    <textarea name="descripcion" id="descripcion" rows="4"
+                                        placeholder="Descripción de la publicación..." required></textarea>
+                                </div>
+
+                                <!-- Botón guardar -->
+                                <div style="grid-column: span 4; text-align: right;">
+                                    <button type="submit" class="btn btn-disabled" id="btn-guardar" disabled>Guardar publicación</button>
+                                </div>
+                            </form>
                     </div>
                     <div class="card">
                         <h3>Variable de entorno Retención</h3>
