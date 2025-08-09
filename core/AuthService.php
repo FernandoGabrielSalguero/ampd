@@ -18,7 +18,7 @@ class AuthService
     public function login(string $username, string $password): bool
     {
         $user = $this->authModel->login($username, $password);
-        if (!$user) return false;
+        if (!is_array($user)) return false;
 
         $userSessionData = [
             'id'       => $user['id'],

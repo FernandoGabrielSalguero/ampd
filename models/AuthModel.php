@@ -34,20 +34,15 @@ class AuthModel
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['usuario' => $usuario]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$user) return false;
 
-        if (!$user) return false;
+    $hash = $user['pass'] ?? '';
+    $isHashed = preg_match('/^\$2y\$/', $hash);
 
-        $hash = $user['pass'] ?? '';
-        $isHashed = preg_match('/^\$2y\$/', $hash);
-
-        if (
-            (!$isHashed && $hash === $contrasenaIngresada) ||
-            ($isHashed && password_verify($contrasenaIngresada, $hash))
-        ) {
-            return $user;
-        }
-
-        return false;
+    if ((!$isHashed && $hash === $contrasenaIngresada) || ($isHashed && password_verify($contrasenaIngresada, $hash))) {
+        return $user; // array
+    }
+    return false;
     }
 }
