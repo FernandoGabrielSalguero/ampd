@@ -82,8 +82,8 @@ $email = $user['email'] ?? 'Sin email';
                 </div>
                 
                 <div class="card-grid grid-2">
-                    <strong>Variable de entorno Impuesto al débito y crédito</strong>
                     <div class="card">
+                        <strong>Variable de entorno Impuesto al débito y crédito</strong>
                         <form class="form-modern">
                             <div class="input-group">
                                 <label>Correo</label>
