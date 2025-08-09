@@ -304,7 +304,7 @@ $email = $user['email'] ?? 'Sin email';
                     </div>
                 </div>
 
-                <!-- Contenedor de alertas (mismo patrón SVE) -->
+                <!-- Contenedor de alertas -->
                 <div class="alert-container" id="alertContainer"></div>
 
             </section>
@@ -315,9 +315,37 @@ $email = $user['email'] ?? 'Sin email';
 
     <!-- script de funcionalidades -->
     <script>
-        const API = 'AdminVariablesController.php';
+        const API = '/controllers/AdminVariablesController.php';
 
-        // ===== Utilidades SVE =====
+        async function apiList(type) {
+            const r = await fetch(`${API}?type=${type}&action=list`, {
+                credentials: 'same-origin'
+            });
+            return parseJsonOrThrow(r);
+        }
+        async function apiPost(type, action, payload) {
+            const r = await fetch(`${API}?type=${type}&action=${action}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams(payload),
+                credentials: 'same-origin'
+            });
+            return parseJsonOrThrow(r);
+        }
+
+        // Helper defensivo: si viene HTML (404, PHP notice, etc.) lo muestra como error legible
+        async function parseJsonOrThrow(response) {
+            const text = await response.text();
+            try {
+                return JSON.parse(text);
+            } catch {
+                throw new Error(`Respuesta no-JSON del servidor (HTTP ${response.status}).\n${text.slice(0, 200)}…`);
+            }
+        }
+
+        // ===== Utilidades =====
         function showAlert(tipo, mensaje) {
             const contenedor = document.getElementById('alertContainer');
             const alerta = document.createElement('div');
