@@ -90,13 +90,12 @@ $email = $user['email'] ?? 'Sin email';
                                 <label>Correo</label>
                                 <div class="input-icon">
                                     <span class="material-icons">mail</span>
-                                    <input type="email" placeholder="ejemplo@correo.com">
+                                    <input type="number" placeholder="ejemplo@correo.com">
                                 </div>
                             </div>
 
                             <div class="form-buttons">
-                                <button class="btn btn-aceptar" type="submit">Enviar</button>
-                                <button class="btn btn-cancelar" type="button">Cancelar</button>
+                                <button class="btn btn-aceptar" type="submit">Crear impuesto</button>
                             </div>
                         </form>
                     </div>
@@ -108,13 +107,12 @@ $email = $user['email'] ?? 'Sin email';
                                 <label>Correo</label>
                                 <div class="input-icon">
                                     <span class="material-icons">mail</span>
-                                    <input type="email" placeholder="ejemplo@correo.com">
+                                    <input type="number" placeholder="ejemplo@correo.com">
                                 </div>
                             </div>
 
                             <div class="form-buttons">
-                                <button class="btn btn-aceptar" type="submit">Enviar</button>
-                                <button class="btn btn-cancelar" type="button">Cancelar</button>
+                                <button class="btn btn-aceptar" type="submit">Crear Retención</button>
                             </div>
                         </form>
                     </div>
@@ -130,9 +128,15 @@ $email = $user['email'] ?? 'Sin email';
                                 </div>
                             </div>
 
+                                                        <div class="input-group">
+                                <label>Correo</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">mail</span>
+                                    <input type="email" placeholder="ejemplo@correo.com">
+                                </div>
+                            </div>
                             <div class="form-buttons">
-                                <button class="btn btn-aceptar" type="submit">Enviar</button>
-                                <button class="btn btn-cancelar" type="button">Cancelar</button>
+                                <button class="btn btn-aceptar" type="submit">Crear Entidad</button>
                             </div>
                         </form>
                     </div>
