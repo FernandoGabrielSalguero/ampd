@@ -87,7 +87,7 @@ $email = $user['email'] ?? 'Sin email';
                     <div class="card">
                         <form class="form-modern">
                             <div class="input-group">
-                                <label>Correo</label>
+                                <label>Variables de impuesto al débito y crédito</label>
                                 <div class="input-icon">
                                     <span class="material-icons">mail</span>
                                     <input type="number" placeholder="ejemplo@correo.com">
@@ -104,7 +104,7 @@ $email = $user['email'] ?? 'Sin email';
                     <div class="card">
                         <form class="form-modern">
                             <div class="input-group">
-                                <label>Correo</label>
+                                <label>Variables de retención</label>
                                 <div class="input-icon">
                                     <span class="material-icons">mail</span>
                                     <input type="number" placeholder="ejemplo@correo.com">
@@ -121,14 +121,14 @@ $email = $user['email'] ?? 'Sin email';
                     <div class="card">
                         <form class="form-modern">
                             <div class="input-group">
-                                <label>Correo</label>
+                                <label>Variables entidad de facturación</label>
                                 <div class="input-icon">
                                     <span class="material-icons">mail</span>
                                     <input type="email" placeholder="ejemplo@correo.com">
                                 </div>
                             </div>
 
-                                                        <div class="input-group">
+                            <div class="input-group">
                                 <label>Correo</label>
                                 <div class="input-icon">
                                     <span class="material-icons">mail</span>
