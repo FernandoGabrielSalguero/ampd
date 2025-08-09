@@ -1,0 +1,11 @@
+🧠 Lógica de manejo de roles y permisos (explicación para prompts)
+En esta plataforma, la gestión de acceso se basa en un sistema flexible de roles y permisos normalizados.
+La tabla users almacena la información principal del usuario. Cada usuario puede tener uno o varios roles,
+definidos en la tabla roles, y esta relación se gestiona mediante la tabla intermedia user_roles.
+A su vez, cada rol puede tener asignados uno o varios permisos, definidos en la tabla permissions,
+y esta relación se establece mediante la tabla role_permissions. Al iniciar sesión, el sistema recupera el usuario,
+su rol principal (el primero encontrado en user_roles) y todos los permisos asociados a ese rol (desde role_permissions).
+Esta información se guarda en la sesión del usuario ($_SESSION),
+permitiendo que el sistema verifique el acceso a páginas protegidas en base al rol ($user['role']) o incluso a permisos específicos.
+La autenticación se maneja con AuthModel, AuthService y SessionManager, y la autorización por rol o permiso se hace en cada vista.
+Se considera como base un rol por defecto (client) que se asigna automáticamente al registrarse.
