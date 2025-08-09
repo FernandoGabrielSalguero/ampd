@@ -85,36 +85,87 @@ $email = $user['email'] ?? 'Sin email';
                     <!-- Tarjeta 1: Débito/Crédito -->
                     <div class="card">
                         <h3>Variable de entorno Impuesto al débito y crédito</h3>
-                        <form id="form-dc" class="form-inline gap-2 mt-2">
-                            <input type="text" class="input" name="value" placeholder="Valor (ej. 1,2000)" required>
-                            <button class="btn btn-primary">Crear</button>
+
+                        <form id="form-dc" class="form-grid mt-2">
+                            <div class="form-group" style="max-width:320px;">
+                                <label>Valor</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">percent</span>
+                                    <input type="text" name="value" placeholder="Ej: 1,2000" required>
+                                </div>
+                                <div class="input-error-text" id="err-dc"></div>
+                            </div>
+
+                            <div class="form-buttons">
+                                <button class="btn btn-info" type="submit">Crear</button>
+                            </div>
                         </form>
-                        <div id="list-dc" class="mt-3"></div>
+
+                        <div class="tabla-wrapper mt-3" id="list-dc">
+                            <!-- tabla se inyecta por JS -->
+                        </div>
                     </div>
 
                     <!-- Tarjeta 2: Retención -->
                     <div class="card">
                         <h3>Variable de entorno Retención</h3>
-                        <form id="form-ret" class="form-inline gap-2 mt-2">
-                            <input type="text" class="input" name="value" placeholder="Valor (ej. 3,5000)" required>
-                            <button class="btn btn-primary">Crear</button>
+
+                        <form id="form-ret" class="form-grid mt-2">
+                            <div class="form-group" style="max-width:320px;">
+                                <label>Valor</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">payments</span>
+                                    <input type="text" name="value" placeholder="Ej: 3,5000" required>
+                                </div>
+                                <div class="input-error-text" id="err-ret"></div>
+                            </div>
+
+                            <div class="form-buttons">
+                                <button class="btn btn-info" type="submit">Crear</button>
+                            </div>
                         </form>
-                        <div id="list-ret" class="mt-3"></div>
+
+                        <div class="tabla-wrapper mt-3" id="list-ret">
+                            <!-- tabla se inyecta por JS -->
+                        </div>
                     </div>
 
                     <!-- Tarjeta 3: Entidad de facturación -->
                     <div class="card">
                         <h3>Variable de entorno Entidad facturación</h3>
+
                         <form id="form-bill" class="form-grid mt-2">
-                            <div class="grid grid-2 gap-2">
-                                <input type="text" class="input" name="name" placeholder="Nombre" required>
-                                <input type="text" class="input" name="cuit" placeholder="CUIT" required>
+                            <div class="form-grid grid-2" style="width:100%;max-width:700px;">
+                                <div class="form-group">
+                                    <label>Nombre</label>
+                                    <div class="input-icon">
+                                        <span class="material-icons">apartment</span>
+                                        <input type="text" name="name" placeholder="Razón social" required>
+                                    </div>
+                                    <div class="input-error-text" id="err-bill-name"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>CUIT</label>
+                                    <div class="input-icon">
+                                        <span class="material-icons">badge</span>
+                                        <input type="text" name="cuit" placeholder="CUIT (solo números o con guiones)" required>
+                                    </div>
+                                    <div class="input-error-text" id="err-bill-cuit"></div>
+                                </div>
                             </div>
-                            <button class="btn btn-primary mt-2">Crear</button>
+
+                            <div class="form-buttons">
+                                <button class="btn btn-info" type="submit">Crear</button>
+                            </div>
                         </form>
-                        <div id="list-bill" class="mt-3"></div>
+
+                        <div class="tabla-wrapper mt-3" id="list-bill">
+                            <!-- tabla se inyecta por JS -->
+                        </div>
                     </div>
                 </div>
+
 
 
             </section>
