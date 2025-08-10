@@ -110,14 +110,6 @@ $email = $user['email'] ?? 'Sin email';
                                 </div>
                             </div>
 
-                            <!-- Fecha de nacimiento -->
-                            <div class="input-group">
-                                <label for="fecha">Fecha de nacimiento</label>
-                                <div class="input-icon input-icon-date">
-                                    <input id="fecha" name="fecha" />
-                                </div>
-                            </div>
-
                             <!-- Teléfono -->
                             <div class="input-group">
                                 <label for="telefono">Teléfono</label>
