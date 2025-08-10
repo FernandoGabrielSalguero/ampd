@@ -319,6 +319,146 @@ $usuario = $user['username'] ?? 'Sin usuario';
         </div>
     </div>
 
+    <!-- Modales  -->
+
+    <!-- MODAL: Editar usuario -->
+    <div id="modalEditar" class="modal hidden">
+        <div class="modal-content card">
+            <h3>Editar Socio</h3>
+            <form id="formEditarSocio">
+                <input type="hidden" id="edit_user_id" name="user_id">
+
+                <div class="form-grid grid-3">
+                    <!-- Users -->
+                    <div class="input-group">
+                        <label for="edit_dni">DNI (login)</label>
+                        <div class="input-icon">
+                            <span class="material-icons">credit_card</span>
+                            <input type="text" id="edit_dni" name="dni" required inputmode="numeric" pattern="^\d{6,10}$" maxlength="10">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="edit_email">Email</label>
+                        <div class="input-icon">
+                            <span class="material-icons">alternate_email</span>
+                            <input type="email" id="edit_email" name="email" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="edit_role">Rol</label>
+                        <div class="input-icon">
+                            <span class="material-icons">security</span>
+                            <select id="edit_role" name="role" required>
+                                <option value="Socio">Socio</option>
+                                <option value="Administrativo">Administrativo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Profile -->
+                    <div class="input-group">
+                        <label for="edit_nombre">Nombre</label>
+                        <div class="input-icon">
+                            <span class="material-icons">badge</span>
+                            <input type="text" id="edit_nombre" name="first_name" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="edit_telefono">Teléfono</label>
+                        <div class="input-icon">
+                            <span class="material-icons">phone</span>
+                            <input type="tel" id="edit_telefono" name="phone">
+                        </div>
+                    </div>
+
+                    <!-- Bank -->
+                    <div class="input-group">
+                        <label for="edit_cuit">CUIT</label>
+                        <div class="input-icon">
+                            <span class="material-icons">assignment_ind</span>
+                            <input type="text" id="edit_cuit" name="cuit" inputmode="numeric" pattern="^\d{11}$" maxlength="11">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="edit_cbu">CBU</label>
+                        <div class="input-icon">
+                            <span class="material-icons">account_balance</span>
+                            <input type="text" id="edit_cbu" name="cbu" inputmode="numeric" pattern="^\d{22}$" maxlength="22">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="edit_alias">Alias</label>
+                        <div class="input-icon">
+                            <span class="material-icons">alternate_email</span>
+                            <input type="text" id="edit_alias" name="alias">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="edit_titular">Titular</label>
+                        <div class="input-icon">
+                            <span class="material-icons">person</span>
+                            <input type="text" id="edit_titular" name="titular">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-aceptar">Guardar</button>
+                    <button type="button" class="btn btn-cancelar" onclick="closeAppModal('modalEditar')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Alta de pago -->
+    <div id="modalPago" class="modal hidden">
+        <div class="modal-content card">
+            <h3>Registrar pago de cuota</h3>
+            <form id="formPago">
+                <input type="hidden" id="pay_user_id" name="user_id">
+                <div class="form-grid grid-2">
+                    <div class="input-group">
+                        <label for="pay_year">Año</label>
+                        <div class="input-icon">
+                            <span class="material-icons">event</span>
+                            <input type="number" id="pay_year" name="year" min="2000" max="2100" required>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="pay_fecha">Fecha de pago</label>
+                        <div class="input-icon">
+                            <span class="material-icons">schedule</span>
+                            <input type="datetime-local" id="pay_fecha" name="paid_at">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-aceptar">Registrar</button>
+                    <button type="button" class="btn btn-cancelar" onclick="closeAppModal('modalPago')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Confirmar eliminación -->
+    <div id="modalEliminar" class="modal hidden">
+        <div class="modal-content card">
+            <h3>Eliminar socio</h3>
+            <p>¿Seguro que deseas eliminar este usuario y toda su información asociada?</p>
+            <input type="hidden" id="delete_user_id">
+            <div class="form-buttons">
+                <button type="button" class="btn danger" id="btnConfirmDelete">Eliminar</button>
+                <button type="button" class="btn btn-cancelar" onclick="closeAppModal('modalEliminar')">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- spinner global -->
     <script src="../../views/partials/spinner-global.js"></script>
 
@@ -444,16 +584,23 @@ $usuario = $user['username'] ?? 'Sin usuario';
         cargarSocios();
 
         // --- MODALES (prefijo App para no chocar con el CDN) ---
-function openAppModal(id) {
-  const el = document.getElementById(id);
-  if (!el) { console.warn('Modal no encontrado:', id); return; }
-  el.classList.remove('hidden');
-}
-function closeAppModal(id) {
-  const el = document.getElementById(id);
-  if (!el) { console.warn('Modal no encontrado:', id); return; }
-  el.classList.add('hidden');
-}
+        function openAppModal(id) {
+            const el = document.getElementById(id);
+            if (!el) {
+                console.warn('Modal no encontrado:', id);
+                return;
+            }
+            el.classList.remove('hidden');
+        }
+
+        function closeAppModal(id) {
+            const el = document.getElementById(id);
+            if (!el) {
+                console.warn('Modal no encontrado:', id);
+                return;
+            }
+            el.classList.add('hidden');
+        }
 
         // hook botones de acciones
         document.getElementById('tbody-socios').addEventListener('click', async (e) => {
@@ -634,145 +781,6 @@ function closeAppModal(id) {
         // console.log(<?php //echo json_encode($_SESSION); 
                         ?>);
     </script>
-
-    <!-- MODAL: Editar usuario -->
-    <div id="modalEditar" class="modal hidden">
-        <div class="modal-content card">
-            <h3>Editar Socio</h3>
-            <form id="formEditarSocio">
-                <input type="hidden" id="edit_user_id" name="user_id">
-
-                <div class="form-grid grid-3">
-                    <!-- Users -->
-                    <div class="input-group">
-                        <label for="edit_dni">DNI (login)</label>
-                        <div class="input-icon">
-                            <span class="material-icons">credit_card</span>
-                            <input type="text" id="edit_dni" name="dni" required inputmode="numeric" pattern="^\d{6,10}$" maxlength="10">
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="edit_email">Email</label>
-                        <div class="input-icon">
-                            <span class="material-icons">alternate_email</span>
-                            <input type="email" id="edit_email" name="email" required>
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="edit_role">Rol</label>
-                        <div class="input-icon">
-                            <span class="material-icons">security</span>
-                            <select id="edit_role" name="role" required>
-                                <option value="Socio">Socio</option>
-                                <option value="Administrativo">Administrativo</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Profile -->
-                    <div class="input-group">
-                        <label for="edit_nombre">Nombre</label>
-                        <div class="input-icon">
-                            <span class="material-icons">badge</span>
-                            <input type="text" id="edit_nombre" name="first_name" required>
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="edit_telefono">Teléfono</label>
-                        <div class="input-icon">
-                            <span class="material-icons">phone</span>
-                            <input type="tel" id="edit_telefono" name="phone">
-                        </div>
-                    </div>
-
-                    <!-- Bank -->
-                    <div class="input-group">
-                        <label for="edit_cuit">CUIT</label>
-                        <div class="input-icon">
-                            <span class="material-icons">assignment_ind</span>
-                            <input type="text" id="edit_cuit" name="cuit" inputmode="numeric" pattern="^\d{11}$" maxlength="11">
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="edit_cbu">CBU</label>
-                        <div class="input-icon">
-                            <span class="material-icons">account_balance</span>
-                            <input type="text" id="edit_cbu" name="cbu" inputmode="numeric" pattern="^\d{22}$" maxlength="22">
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="edit_alias">Alias</label>
-                        <div class="input-icon">
-                            <span class="material-icons">alternate_email</span>
-                            <input type="text" id="edit_alias" name="alias">
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="edit_titular">Titular</label>
-                        <div class="input-icon">
-                            <span class="material-icons">person</span>
-                            <input type="text" id="edit_titular" name="titular">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-buttons">
-                    <button type="submit" class="btn btn-aceptar">Guardar</button>
-                    <button type="button" class="btn btn-cancelar" onclick="closeAppModal('modalEditar')">Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL: Alta de pago -->
-    <div id="modalPago" class="modal hidden">
-        <div class="modal-content card">
-            <h3>Registrar pago de cuota</h3>
-            <form id="formPago">
-                <input type="hidden" id="pay_user_id" name="user_id">
-                <div class="form-grid grid-2">
-                    <div class="input-group">
-                        <label for="pay_year">Año</label>
-                        <div class="input-icon">
-                            <span class="material-icons">event</span>
-                            <input type="number" id="pay_year" name="year" min="2000" max="2100" required>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label for="pay_fecha">Fecha de pago</label>
-                        <div class="input-icon">
-                            <span class="material-icons">schedule</span>
-                            <input type="datetime-local" id="pay_fecha" name="paid_at">
-                        </div>
-                    </div>
-                </div>
-                <div class="form-buttons">
-                    <button type="submit" class="btn btn-aceptar">Registrar</button>
-                    <button type="button" class="btn btn-cancelar" onclick="closeAppModal('modalPago')">Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL: Confirmar eliminación -->
-    <div id="modalEliminar" class="modal hidden">
-        <div class="modal-content card">
-            <h3>Eliminar socio</h3>
-            <p>¿Seguro que deseas eliminar este usuario y toda su información asociada?</p>
-            <input type="hidden" id="delete_user_id">
-            <div class="form-buttons">
-                <button type="button" class="btn danger" id="btnConfirmDelete">Eliminar</button>
-                <button type="button" class="btn btn-cancelar" onclick="closeAppModal('modalEliminar')">Cancelar</button>
-            </div>
-        </div>
-    </div>
-
 </body>
 
 </html>
