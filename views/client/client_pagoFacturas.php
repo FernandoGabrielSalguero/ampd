@@ -329,12 +329,18 @@ $usuario = $user['username'] ?? 'Sin usuario';
 
                 // Impuesto DC (favorito por defecto)
                 const selTax = document.getElementById('impuesto_dc');
-                selTax.innerHTML = TAXES.map(t => `<option value="${t.value}" ${t.is_favorite?'selected':''}>${t.value}%</option>`).join('');
+                selTax.innerHTML = TAXES.map(t => {
+                    const v = parseFloat(t.value);
+                    return `<option value="${t.value}" ${t.is_favorite ? 'selected' : ''}>${v.toFixed(2)}%</option>`;
+                }).join('');
                 selTax.addEventListener('change', recompute);
 
                 // Retención (favorito por defecto)
                 const selRet = document.getElementById('retencion');
-                selRet.innerHTML = RETS.map(r => `<option value="${r.value}" ${r.is_favorite?'selected':''}>${r.value}%</option>`).join('');
+                selRet.innerHTML = RETS.map(r => {
+                    const v = parseFloat(r.value);
+                    return `<option value="${r.value}" ${r.is_favorite ? 'selected' : ''}>${v.toFixed(2)}%</option>`;
+                }).join('');
                 selRet.addEventListener('change', recompute);
 
             } catch (err) {
