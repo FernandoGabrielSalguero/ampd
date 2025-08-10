@@ -90,7 +90,7 @@ $email = $user['email'] ?? 'Sin email';
 
                 <!-- Formulario -->
                 <div class="card">
-                    <h2>Formularios</h2>
+                    <h2>Formulario para dar de alta un nuevo socio</h2>
                     <form class="form-modern">
                         <div class="form-grid grid-4">
 
@@ -106,7 +106,7 @@ $email = $user['email'] ?? 'Sin email';
                             <div class="input-group">
                                 <label for="email">Correo electrónico</label>
                                 <div class="input-icon input-icon-email">
-                                    <input id="email" name="email" placeholder="usuario@correo.com" />
+                                    <input id="email" name="email" placeholder="usuario@correo.com" required />
                                 </div>
                             </div>
 
@@ -122,7 +122,7 @@ $email = $user['email'] ?? 'Sin email';
                             <div class="input-group">
                                 <label for="telefono">Teléfono</label>
                                 <div class="input-icon input-icon-phone">
-                                    <input id="telefono" name="telefono" />
+                                    <input id="telefono" name="telefono" required />
                                 </div>
                             </div>
 
@@ -130,15 +130,7 @@ $email = $user['email'] ?? 'Sin email';
                             <div class="input-group">
                                 <label for="dni">DNI</label>
                                 <div class="input-icon input-icon-dni">
-                                    <input id="dni" name="dni" />
-                                </div>
-                            </div>
-
-                            <!-- Edad -->
-                            <div class="input-group">
-                                <label for="edad">Edad</label>
-                                <div class="input-icon input-icon-age">
-                                    <input id="edad" name="edad" />
+                                    <input id="dni" name="dni" required />
                                 </div>
                             </div>
 
@@ -146,61 +138,37 @@ $email = $user['email'] ?? 'Sin email';
                             <div class="input-group">
                                 <label for="cuit">CUIT</label>
                                 <div class="input-icon input-icon-cuit">
-                                    <input id="cuit" name="cuit" />
+                                    <input id="cuit" name="cuit" required />
                                 </div>
                             </div>
 
-                            <!-- Provincia -->
+                            <!-- CBU -->
                             <div class="input-group">
-                                <label for="provincia">Provincia</label>
-                                <div class="input-icon input-icon-globe">
-                                    <select id="provincia" name="provincia" required>
-                                        <option value="">Seleccionar</option>
-                                        <option>Buenos Aires</option>
-                                        <option>Córdoba</option>
-                                        <option>Santa Fe</option>
-                                    </select>
+                                <label for="localidad">CBU</label>
+                                <div class="input-icon input-icon">
+                                    <input type="number" id="cbu" name="cbu" required />
                                 </div>
                             </div>
 
-                            <!-- Localidad -->
+                            <!-- Alias -->
                             <div class="input-group">
-                                <label for="localidad">Localidad</label>
-                                <div class="input-icon input-icon-city">
-                                    <input type="text" id="localidad" name="localidad" required />
+                                <label for="cp">Alias</label>
+                                <div class="input-icon input-icon">
+                                    <input type="text" id="alias" name="alias" required />
                                 </div>
                             </div>
 
-                            <!-- Código Postal -->
+                            <!-- Titular de la cuenta -->
                             <div class="input-group">
-                                <label for="cp">Código Postal</label>
-                                <div class="input-icon input-icon-cp">
-                                    <input type="text" id="cp" name="cp" />
-                                </div>
-                            </div>
-
-                            <!-- Dirección -->
-                            <div class="input-group">
-                                <label for="direccion">Dirección</label>
-                                <div class="input-icon input-icon-address">
-                                    <input type="text" id="direccion" name="direccion" required />
+                                <label for="direccion">Titular de la cuenta</label>
+                                <div class="input-icon input-icon">
+                                    <input type="text" id="titular_cuenta" name="titular_cuenta" required />
                                 </div>
                             </div>
                         </div>
-                        <!-- Observaciones -->
-                        <div class="input-group">
-                            <label for="observaciones">Observaciones</label>
-                            <div class="input-icon input-icon-comment">
-                                <textarea id="observaciones" name="observaciones" maxlength="233" rows="3"
-                                    placeholder="Escribí un comentario..."></textarea>
-                            </div>
-                            <small class="char-count" data-for="observaciones">Quedan 233 caracteres.</small>
-                        </div>
-
                         <!-- Botones -->
                         <div class="form-buttons">
-                            <button class="btn btn-aceptar" type="submit">Enviar</button>
-                            <button class="btn btn-cancelar" type="reset">Cancelar</button>
+                            <button class="btn btn-aceptar" type="submit">Asociar</button>
                         </div>
                     </form>
                 </div>
