@@ -38,17 +38,15 @@ class client_pagoFacturasModel
         $u = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$u) throw new Exception('No existe el socio con ese DNI', 404);
 
-        // banco (slot 1)
         $sqlB = "SELECT cuit, cbu, alias, titular FROM user_bank_accounts WHERE n_socio = :uid AND slot = 1 LIMIT 1";
         $stmtB = $this->conn->prepare($sqlB);
         $stmtB->execute([':uid' => $u['user_id']]);
         $bank = $stmtB->fetch(PDO::FETCH_ASSOC) ?: ['cuit' => null, 'cbu' => null, 'alias' => null, 'titular' => null];
 
-        // cuota año actual
         $year = (int)date('Y');
         $stmtF = $this->conn->prepare("SELECT paid_at FROM membership_fees WHERE user_id = ? AND year = ? LIMIT 1");
         $stmtF->execute([$u['user_id'], $year]);
-        $fee = $stmtF->fetch(PDO::FETCH_ASSOC);
+        $fee  = $stmtF->fetch(PDO::FETCH_ASSOC);
         $paid = $fee && !empty($fee['paid_at']);
 
         return [
@@ -69,13 +67,11 @@ class client_pagoFacturasModel
     /* ==== Crear pago + subir archivos + actualizar datos faltantes ==== */
     public function crearPago(array $d, array $files): array
     {
-        // Validaciones
         if (!$d['dni'])         throw new Exception('DNI requerido', 422);
         if (!$d['evento'])      throw new Exception('Evento requerido', 422);
         if ($d['monto'] <= 0)   throw new Exception('Monto inválido', 422);
         if (!$d['dest_entity']) throw new Exception('Seleccione razón social destinatario', 422);
 
-        // Resolver usuario por DNI si no vino user_id
         if (empty($d['user_id'])) {
             $stmt = $this->conn->prepare("SELECT id FROM users WHERE user_name = ?");
             $stmt->execute([$d['dni']]);
@@ -83,13 +79,11 @@ class client_pagoFacturasModel
             if (!$d['user_id']) throw new Exception('Socio inexistente para ese DNI', 404);
         }
 
-        // Entidad destinataria
         $stmt = $this->conn->prepare("SELECT name, cuit FROM env_billing_entities WHERE id = ?");
         $stmt->execute([$d['dest_entity']]);
         $ent = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$ent) throw new Exception('Razón social inválida', 422);
 
-        // Cálculos
         $monto   = round((float)$d['monto'], 2);
         $sellado = round(max(0, (float)$d['sellado']), 2);
         $taxPct  = (float)$d['impuesto_dc'];
@@ -100,7 +94,7 @@ class client_pagoFacturasModel
 
         $this->conn->beginTransaction();
         try {
-            /* 1) PERFIL: upsert suave (completa si hay vacío; crea si no existe) */
+            // PERFIL: upsert suave
             $stmt = $this->conn->prepare("SELECT first_name, contact_phone FROM user_profile WHERE user_id = ?");
             $stmt->execute([$d['user_id']]);
             $prof = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -126,7 +120,7 @@ class client_pagoFacturasModel
                 ]);
             }
 
-            /* 2) BANK slot=1: upsert si falta/campo vacío */
+            // BANK slot=1: upsert si falta/campo vacío
             $stmt = $this->conn->prepare("SELECT id, cuit, cbu, alias FROM user_bank_accounts WHERE n_socio = ? AND slot = 1");
             $stmt->execute([$d['user_id']]);
             $bank = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -156,7 +150,7 @@ class client_pagoFacturasModel
                 ]);
             }
 
-            /* 3) INSERT del pago */
+            // INSERT del pago
             $sql = "INSERT INTO payments
                     (user_id, event, contract_amount, stamp_amount, debit_credit_tax_rate, debit_credit_tax_amount,
                      retention_rate, retention_amount, total_to_user,
@@ -170,28 +164,28 @@ class client_pagoFacturasModel
                      NULL, NULL, :created_by, NOW())";
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([
-                ':uid'      => $d['user_id'],
-                ':event'    => $d['evento'],
-                ':amount'   => $monto,
-                ':stamp'    => $sellado,
-                ':taxr'     => $taxPct,
-                ':taxa'     => $taxAmt,
-                ':retr'     => $retPct,
-                ':reta'     => $retAmt,
-                ':total'    => $total,
-                ':bcuit'    => $d['cuit_ben'] ?: null,
-                ':bcbu'     => $d['cbu_ben'] ?: null,
-                ':balias'   => $d['alias_ben'] ?: null,
-                ':phone'    => $d['telefono'] ?: null,
-                ':deid'     => $d['dest_entity'],
-                ':dename'   => $ent['name'],
-                ':decuit'   => $ent['cuit'],
+                ':uid'        => $d['user_id'],
+                ':event'      => $d['evento'],
+                ':amount'     => $monto,
+                ':stamp'      => $sellado,
+                ':taxr'       => $taxPct,
+                ':taxa'       => $taxAmt,
+                ':retr'       => $retPct,
+                ':reta'       => $retAmt,
+                ':total'      => $total,
+                ':bcuit'      => $d['cuit_ben'] ?: null,
+                ':bcbu'       => $d['cbu_ben'] ?: null,
+                ':balias'     => $d['alias_ben'] ?: null,
+                ':phone'      => $d['telefono'] ?: null,
+                ':deid'       => $d['dest_entity'],
+                ':dename'     => $ent['name'],
+                ':decuit'     => $ent['cuit'],
                 ':created_by' => $d['created_by'] ?: null
             ]);
             $payment_id = (int)$this->conn->lastInsertId();
 
-            /* 4) Subir PDFs (si existen) */
-            $paths = $this->savePdfFiles($payment_id, $files);
+            // Subir PDFs a /uploads/tax_invoices con nombre {DNI}-{YYYYMMDD_HHMMSS}-{tipo}-{pid}.pdf
+            $paths = $this->savePdfFiles($payment_id, $files, $d['dni']);
             if ($paths['pedido'] || $paths['factura']) {
                 $this->conn->prepare("UPDATE payments SET pedido_pdf_path = ?, factura_pdf_path = ? WHERE id = ?")
                     ->execute([$paths['pedido'], $paths['factura'], $payment_id]);
@@ -205,44 +199,57 @@ class client_pagoFacturasModel
         }
     }
 
-    /* ==== Subida de PDFs ==== */
-    private function savePdfFiles(int $payment_id, array $files): array
+    private function savePdfFiles(int $payment_id, array $files, string $dni): array
     {
-        $baseDir = realpath(__DIR__ . '/../..');
+        // Con tu estructura: /models -> (sube 1) -> raíz del proyecto
+        $baseDir = realpath(__DIR__ . '/..');
         if ($baseDir === false) {
-            // Fallback si realpath falla
-            $baseDir = dirname(__DIR__, 2);
+            $baseDir = dirname(__DIR__, 1);
         }
-        $uploadDir = $baseDir . '/uploads/pagos';
-        if (!is_dir($uploadDir)) mkdir($uploadDir, 0775, true);
+
+        $uploadDir = $baseDir . '/uploads/tax_invoices';
+        if (!is_dir($uploadDir)) {
+            @mkdir($uploadDir, 0775, true);
+        }
 
         $out = ['pedido' => null, 'factura' => null];
+        $dniSafe = preg_replace('/\D+/', '', $dni) ?: 'dni';
+
         foreach (['pedido', 'factura'] as $key) {
             if (empty($files[$key]) || (is_array($files[$key]) && ($files[$key]['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE)) continue;
+
             $f = $files[$key];
-            if (($f['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) throw new Exception('Error al subir PDF: ' . $key, 400);
-            if (($f['size'] ?? 0) > 10 * 1024 * 1024) throw new Exception('PDF supera 10MB: ' . $key, 400);
+            if (($f['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+                throw new Exception('Error al subir PDF: ' . $key, 400);
+            }
+            if (($f['size'] ?? 0) > 10 * 1024 * 1024) {
+                throw new Exception('PDF supera 10MB: ' . $key, 400);
+            }
 
             $ext = strtolower(pathinfo($f['name'] ?? '', PATHINFO_EXTENSION));
-            if ($ext !== 'pdf') throw new Exception('Solo se permiten PDF: ' . $key, 415);
+            if ($ext !== 'pdf') {
+                throw new Exception('Solo se permiten PDF: ' . $key, 415);
+            }
 
-            $safe = 'p' . $payment_id . '_' . $key . '_' . date('Ymd_His') . '_' . bin2hex(random_bytes(4)) . '.pdf';
-            $dest = $uploadDir . '/' . $safe;
-            if (!move_uploaded_file($f['tmp_name'], $dest)) throw new Exception('No se pudo guardar archivo: ' . $key, 500);
+            $stamp = date('Ymd_His');
+            $safe  = "{$dniSafe}-{$stamp}-{$key}-{$payment_id}.pdf";
+            $dest  = $uploadDir . '/' . $safe;
 
-            // ruta pública relativa
-            $out[$key] = '/uploads/pagos/' . $safe;
+            if (!move_uploaded_file($f['tmp_name'], $dest)) {
+                throw new Exception('No se pudo guardar archivo: ' . $key, 500);
+            }
+
+            $out[$key] = '/uploads/tax_invoices/' . $safe; // ruta pública
         }
         return $out;
     }
 
-    /* ==== Cuota ==== */
     public function registrarPagoCuota(int $user_id, int $year, ?string $paid_at = null): void
     {
         if ($year < 2000 || $year > 2100) throw new Exception('Año inválido', 422);
         $paid = $paid_at ? date('Y-m-d H:i:s', strtotime($paid_at)) : date('Y-m-d H:i:s');
 
-        // Hacemos idempotente sin depender de índice único
+        // Idempotente sin índice único
         $stmt = $this->conn->prepare("SELECT id FROM membership_fees WHERE user_id = ? AND year = ? LIMIT 1");
         $stmt->execute([$user_id, $year]);
         $id = $stmt->fetchColumn();
