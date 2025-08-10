@@ -328,7 +328,7 @@ $usuario = $user['username'] ?? 'Sin usuario';
             <form id="formEditarSocio">
                 <input type="hidden" id="edit_user_id" name="user_id">
 
-                <div class="form-grid grid-3">
+                <div class="form-grid grid-2">
                     <!-- Users -->
                     <div class="input-group">
                         <label for="edit_dni">DNI (login)</label>
