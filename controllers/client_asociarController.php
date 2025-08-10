@@ -81,6 +81,14 @@ try {
             echo json_encode(['success' => true]);
             break;
 
+        case 'unpay':
+            $user_id = (int)($input['user_id'] ?? 0);
+            $year = (int)($input['year'] ?? date('Y'));
+            if ($user_id <= 0) throw new Exception('user_id inválido', 400);
+            $model->desmarcarPagoCuota($user_id, $year);
+            echo json_encode(['success' => true]);
+            break;
+
 
         default:
             http_response_code(400);

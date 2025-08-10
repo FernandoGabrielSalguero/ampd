@@ -443,13 +443,17 @@ $usuario = $user['username'] ?? 'Sin usuario';
         // Primera carga
         cargarSocios();
 
-        function openModal(id) {
-            document.getElementById(id).classList.remove('hidden');
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-        }
+        // --- MODALES (prefijo App para no chocar con el CDN) ---
+function openAppModal(id) {
+  const el = document.getElementById(id);
+  if (!el) { console.warn('Modal no encontrado:', id); return; }
+  el.classList.remove('hidden');
+}
+function closeAppModal(id) {
+  const el = document.getElementById(id);
+  if (!el) { console.warn('Modal no encontrado:', id); return; }
+  el.classList.add('hidden');
+}
 
         // hook botones de acciones
         document.getElementById('tbody-socios').addEventListener('click', async (e) => {

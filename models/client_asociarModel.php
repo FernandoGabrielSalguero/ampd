@@ -287,4 +287,14 @@ class client_asociarModel
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([':uid' => $user_id, ':y' => $year, ':p' => $paid]);
     }
+
+    public function desmarcarPagoCuota(int $user_id, int $year): void
+    {
+        if ($year < 2000 || $year > 2100) throw new Exception('Año inválido', 422);
+        $sql = "INSERT INTO membership_fees (user_id, year, paid_at)
+            VALUES (:uid, :y, NULL)
+            ON DUPLICATE KEY UPDATE paid_at = NULL";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':uid' => $user_id, ':y' => $year]);
+    }
 }
