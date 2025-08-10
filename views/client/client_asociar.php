@@ -80,7 +80,7 @@ $email = $user['email'] ?? 'Sin email';
                 <div class="navbar-title">Inicio</div>
             </header>
 
-            < class="content">
+            <div class="content">
                 <div class="card">
                     <h2>Hola 👋 <?= htmlspecialchars($usuario) ?></h2>
                     <p>En esta página, vas a poder registrar un nuevo socio</p>
@@ -168,7 +168,7 @@ $email = $user['email'] ?? 'Sin email';
 
                 <!-- Tabla con socios registrados -->
                 <div class="card tabla-card">
-                    <h2>Tablas</h2>
+                    <h2>Tabla de socios</h2>
                     <div class="tabla-wrapper">
                         <table class="data-table">
                             <thead>
