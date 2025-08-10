@@ -88,7 +88,7 @@ $email = $user['email'] ?? 'Sin email';
 
 
 
-                <!-- Formulario -->
+                <!-- Formulario para asociar a una persona -->
                 <div class="card">
                     <h2>Formulario para dar de alta un nuevo socio</h2>
                     <form class="form-modern">
@@ -165,6 +165,31 @@ $email = $user['email'] ?? 'Sin email';
                     </form>
                 </div>
 
+                <!-- Formulario para asociar a una persona -->
+                <div class="card">
+                    <h2>Filtros para buscar a un socio</h2>
+                    <form class="form-modern">
+                        <div class="form-grid grid-2">
+                            <!-- Nombre completo -->
+                            <div class="input-group">
+                                <label for="nombre">Buscar por nombre</label>
+                                <div class="input-icon input-icon-name">
+                                    <input type="text" id="search_nombre" name="search_nombre" placeholder="Juan Pérez" required />
+                                </div>
+                            </div>
+
+                            <!-- DNI -->
+                            <div class="input-group">
+                                <label for="dni">Buscar por DNI</label>
+                                <div class="input-icon input-icon-dni">
+                                    <input id="search_dni" name="search_dni" required />
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+
 
                 <!-- Tabla con socios registrados -->
                 <div class="card tabla-card">
@@ -197,14 +222,14 @@ $email = $user['email'] ?? 'Sin email';
                         </table>
                     </div>
                 </div>
+            </div>
         </div>
-    </div>
 
-    <script src="../../views/partials/spinner-global.js"></script>
+        <script src="../../views/partials/spinner-global.js"></script>
 
-    <script>
-        console.log(<?php echo json_encode($_SESSION); ?>);
-    </script>
+        <script>
+            console.log(<?php echo json_encode($_SESSION); ?>);
+        </script>
 </body>
 
 </html>
