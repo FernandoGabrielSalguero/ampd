@@ -80,7 +80,7 @@ $email = $user['email'] ?? 'Sin email';
                 <div class="navbar-title">Inicio</div>
             </header>
 
-            <div class="content">
+            <section class="content">
                 <div class="card">
                     <h2>Hola 👋 <?= htmlspecialchars($usuario) ?></h2>
                     <p>En esta página, vas a poder registrar un nuevo socio</p>
@@ -222,10 +222,27 @@ $email = $user['email'] ?? 'Sin email';
                         </table>
                     </div>
                 </div>
-            </div>
+                <!-- Alert -->
+                <div class="alert-container" id="alertContainer"></div>
+            </section>
         </div>
 
-        <script src="../../views/partials/spinner-global.js"></script>
+        <!-- scripts para envio de formularios, filtros y tablas -->
+            <script>
+        const bulkCtrl = '../../controllers/client_asociarController.php';
+
+        document.getElementById('form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+                showAlert('succes', 'formulario enviado correctamente');
+            }
+
+        );
+    </script>
+
+        <!-- spinner global -->
+        <script
+            src="../../views/partials/spinner-global.js">
+        </script>
 
         <script>
             console.log(<?php echo json_encode($_SESSION); ?>);

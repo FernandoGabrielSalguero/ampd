@@ -168,7 +168,7 @@ $email = $user['email'] ?? 'Sin email';
     <div>Filas en CSV: <strong>${s.rows_in_csv}</strong></div>
     <div>Filas bancarias procesadas (A/B/C): <strong>${s.bank_rows_to_process}</strong></div>
     <div>Insertados: <strong>${s.inserted}</strong> · Actualizados: <strong>${s.updated}</strong></div>
-  `;
+`;
                 if (s.errors && s.errors.length) {
                     html += `<div style="color:#dc2626;margin-top:.5rem">Errores:<br>${s.errors.map(x=>'- '+x).join('<br>')}</div>`;
                 }
