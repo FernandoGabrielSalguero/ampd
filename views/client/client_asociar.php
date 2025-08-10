@@ -96,6 +96,40 @@ $usuario = $user['username'] ?? 'Sin usuario';
         .input-icon-wrapper input {
             padding-left: 36px !important;
         }
+
+        /* Íconos de acciones en tabla */
+        .action-icon {
+            cursor: pointer;
+            margin-right: 10px;
+            vertical-align: middle;
+            transition: transform .1s, opacity .1s
+        }
+
+        .action-icon:hover {
+            opacity: .85;
+            transform: translateY(-1px)
+        }
+
+        .action-icon.edit {
+            color: #5b21b6;
+        }
+
+        /* violeta */
+        .action-icon.pay {
+            color: #16a34a;
+        }
+
+        /* verde pagar */
+        .action-icon.unpay {
+            color: #f59e0b;
+        }
+
+        /* ámbar impagar */
+        .action-icon.delete {
+            color: #ef4444;
+        }
+
+        /* rojo borrar */
     </style>
 </head>
 
@@ -384,60 +418,27 @@ $usuario = $user['username'] ?? 'Sin usuario';
                 const estadoCuotas = r.fee_paid ? badge(`Cuota ${r.fee_year} paga`, 'success') : badge('Cuota no paga', 'warning');
 
                 const tr = document.createElement('tr');
+                const btnPagoIcon = r.fee_paid ?
+                    `<span class="material-icons action-icon unpay" title="Marcar impaga" data-action="unpay" data-id="${r.user_id}" data-year="${r.fee_year}">money_off</span>` :
+                    `<span class="material-icons action-icon pay" title="Registrar pago" data-action="pay" data-id="${r.user_id}" data-year="${r.fee_year}">payments</span>`;
+
                 tr.innerHTML = `
-            <td>${r.first_name || '-'}</td>
-            <td>${r.dni || '-'}</td>
-            <td>${estadoBancario}</td>
-            <td>${estadoCuotas}</td>
-<td class="acciones">
-<button class="btn" data-action="edit" data-id="${r.user_id}">
-    <span class="material-icons">edit</span>
-</button>
-<button class="btn success" data-action="pay" data-id="${r.user_id}">
-    <span class="material-icons">payments</span>
-</button>
-<button class="btn danger" data-action="delete" data-id="${r.user_id}">
-    <span class="material-icons">delete</span>
-</button>
-</td>
-        `;
+  <td>${r.first_name || '-'}</td>
+  <td>${r.dni || '-'}</td>
+  <td>${estadoBancario}</td>
+  <td>${estadoCuotas}</td>
+  <td class="acciones">
+    <span class="material-icons action-icon edit" title="Editar" data-action="edit" data-id="${r.user_id}">edit</span>
+    ${btnPagoIcon}
+    <span class="material-icons action-icon delete" title="Eliminar" data-action="delete" data-id="${r.user_id}">delete</span>
+  </td>
+`;
+
                 tb.appendChild(tr);
             }
         }
 
-        // Delegación eventos botones acciones
-        document.getElementById('tbody-socios').addEventListener('click', async (e) => {
-            const btn = e.target.closest('button[data-action]');
-            if (!btn) return;
-            const action = btn.dataset.action;
-            const user_id = btn.dataset.id;
 
-            if (action === 'delete') {
-                if (!confirm('¿Eliminar este usuario y sus datos asociados?')) return;
-                try {
-                    const res = await fetch(API, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            action: 'delete',
-                            user_id
-                        })
-                    });
-                    const data = await res.json();
-                    if (!data.success) throw new Error(data.message || 'No se pudo eliminar');
-                    showAlert('success', 'Usuario eliminado');
-                    await cargarSocios();
-                } catch (err) {
-                    console.error(err);
-                    showAlert('danger', err.message);
-                }
-            } else if (action === 'edit') {
-                // En esta entrega dejamos el hook listo; en la próxima te paso modal/edición completa.
-                showAlert('info', 'Edición: pronto activamos el formulario completo de edición.');
-            }
-        });
 
         // Primera carga
         cargarSocios();
@@ -452,17 +453,18 @@ $usuario = $user['username'] ?? 'Sin usuario';
 
         // hook botones de acciones
         document.getElementById('tbody-socios').addEventListener('click', async (e) => {
-            const btn = e.target.closest('button[data-action]');
-            if (!btn) return;
-            const action = btn.dataset.action;
-            const user_id = btn.dataset.id;
+            const el = e.target.closest('[data-action]');
+            if (!el) return;
+            const action = el.dataset.action;
+            const user_id = el.dataset.id;
 
             if (action === 'delete') {
                 document.getElementById('delete_user_id').value = user_id;
-                openModal('modalEliminar');
+                openAppModal('modalEliminar');
+                return;
             }
+
             if (action === 'edit') {
-                // pedir datos
                 try {
                     const res = await fetch(API, {
                         method: 'POST',
@@ -490,19 +492,50 @@ $usuario = $user['username'] ?? 'Sin usuario';
                     document.getElementById('edit_cbu').value = row.cbu || '';
                     document.getElementById('edit_alias').value = row.alias || '';
                     document.getElementById('edit_titular').value = row.titular || '';
-                    openModal('modalEditar');
+                    openAppModal('modalEditar');
                 } catch (err) {
                     console.error(err);
                     showAlert('danger', err.message);
                 }
+                return;
             }
+
             if (action === 'pay') {
                 document.getElementById('pay_user_id').value = user_id;
-                document.getElementById('pay_year').value = (new Date()).getFullYear();
+                const year = parseInt(el.dataset.year || (new Date()).getFullYear(), 10);
+                document.getElementById('pay_year').value = year;
                 document.getElementById('pay_fecha').value = '';
-                openModal('modalPago');
+                openAppModal('modalPago');
+                return;
+            }
+
+            if (action === 'unpay') {
+                const year = parseInt(el.dataset.year, 10);
+                if (!confirm(`¿Marcar como IMPAGA la cuota ${year}?`)) return;
+                try {
+                    const res = await fetch(API, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            action: 'unpay',
+                            user_id,
+                            year
+                        })
+                    });
+                    const data = await res.json();
+                    if (!data.success) throw new Error(data.message || 'No se pudo desmarcar el pago');
+                    showAlert('success', `Cuota ${year} marcada como impaga`);
+                    await cargarSocios();
+                } catch (err) {
+                    console.error(err);
+                    showAlert('danger', err.message);
+                }
+                return;
             }
         });
+
 
         // Confirmación eliminar
         document.getElementById('btnConfirmDelete').addEventListener('click', async () => {
@@ -521,7 +554,7 @@ $usuario = $user['username'] ?? 'Sin usuario';
                 const data = await res.json();
                 if (!data.success) throw new Error(data.message || 'No se pudo eliminar');
                 showAlert('success', 'Usuario eliminado');
-                closeModal('modalEliminar');
+                closeAppModal('modalEliminar')
                 await cargarSocios();
             } catch (err) {
                 console.error(err);
@@ -556,7 +589,7 @@ $usuario = $user['username'] ?? 'Sin usuario';
                 const data = await res.json();
                 if (!data.success) throw new Error(data.message || 'No se pudo actualizar');
                 showAlert('success', 'Datos actualizados');
-                closeModal('modalEditar');
+                closeAppModal('modalEditar')
                 await cargarSocios();
             } catch (err) {
                 console.error(err);
@@ -584,7 +617,7 @@ $usuario = $user['username'] ?? 'Sin usuario';
                 const data = await res.json();
                 if (!data.success) throw new Error(data.message || 'No se pudo registrar el pago');
                 showAlert('success', 'Pago registrado');
-                closeModal('modalPago');
+                closeAppModal('modalPago')
                 await cargarSocios();
             } catch (err) {
                 console.error(err);
@@ -687,7 +720,7 @@ $usuario = $user['username'] ?? 'Sin usuario';
 
                 <div class="form-buttons">
                     <button type="submit" class="btn btn-aceptar">Guardar</button>
-                    <button type="button" class="btn btn-cancelar" onclick="closeModal('modalEditar')">Cancelar</button>
+                    <button type="button" class="btn btn-cancelar" onclick="closeAppModal('modalEditar')">Cancelar</button>
                 </div>
             </form>
         </div>
@@ -717,7 +750,7 @@ $usuario = $user['username'] ?? 'Sin usuario';
                 </div>
                 <div class="form-buttons">
                     <button type="submit" class="btn btn-aceptar">Registrar</button>
-                    <button type="button" class="btn btn-cancelar" onclick="closeModal('modalPago')">Cancelar</button>
+                    <button type="button" class="btn btn-cancelar" onclick="closeAppModal('modalPago')">Cancelar</button>
                 </div>
             </form>
         </div>
@@ -731,7 +764,7 @@ $usuario = $user['username'] ?? 'Sin usuario';
             <input type="hidden" id="delete_user_id">
             <div class="form-buttons">
                 <button type="button" class="btn danger" id="btnConfirmDelete">Eliminar</button>
-                <button type="button" class="btn btn-cancelar" onclick="closeModal('modalEliminar')">Cancelar</button>
+                <button type="button" class="btn btn-cancelar" onclick="closeAppModal('modalEliminar')">Cancelar</button>
             </div>
         </div>
     </div>
