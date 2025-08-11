@@ -86,40 +86,54 @@ $email = $user['email'] ?? 'Sin email';
                     <p>En esta página, vas a poder visualizar las ordenes de pago que ya estan cargadas y conocer en que estado se encuentran.</p>
                 </div>
 
-                <div class="card-grid grid-4">
-                    <div class="card">
-                        <h3>KPI 1</h3>
-                        <p>Contenido 1</p>
-                    </div>
-                    <div class="card">
-                        <h3>KPI 2</h3>
-                        <p>Contenido 2</p>
-                    </div>
-                    <div class="card">
-                        <h3>KPI 3</h3>
-                        <p>Contenido 3</p>
-                    </div>
-                    <div class="card">
-                        <h3>KPI 4</h3>
-                        <p>Contenido 4</p>
-                    </div>
-                </div>
-
+ <!-- Filtros -->
                 <div class="card">
-                    <form class="form-modern">
-                        <div class="input-group">
-                            <label>Correo</label>
-                            <div class="input-icon">
-                                <span class="material-icons">mail</span>
-                                <input type="email" placeholder="ejemplo@correo.com">
+                    <h2>Filtros para buscar a un socio</h2>
+                    <form class="form-modern" id="form-filtros">
+                        <div class="form-grid grid-2">
+
+                            <div class="input-group">
+                                <label for="search_nombre">Buscar por nombre</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">search</span>
+                                    <input type="text" id="search_nombre" name="search_nombre" placeholder="Juan" />
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-buttons">
-                            <button class="btn btn-aceptar" type="submit">Enviar</button>
-                            <button class="btn btn-cancelar" type="button">Cancelar</button>
+
+                            <div class="input-group">
+                                <label for="search_dni">Buscar por DNI</label>
+                                <div class="input-icon">
+                                    <span class="material-icons">search</span>
+                                    <input type="text" id="search_dni" name="search_dni" inputmode="numeric" pattern="^\d{0,10}$" maxlength="10" placeholder="DNI" />
+                                </div>
+                            </div>
+
                         </div>
                     </form>
                 </div>
+
+                <!-- Tabla -->
+                <div class="card tabla-card">
+                    <h2>Tabla de socios</h2>
+                    <div class="tabla-wrapper">
+                        <table class="data-table" id="tabla-socios">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>DNI</th>
+                                    <th>Estado Bancario</th>
+                                    <th>Estado Cuotas</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-socios">
+                                <!-- filas dinámicas -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="alert-container" id="alertContainer"></div>
             </section>
         </div>
     </div>
