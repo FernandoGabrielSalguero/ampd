@@ -53,6 +53,7 @@ $usuario = $user['username'] ?? 'Sin usuario';
         .data-table tbody td {
             padding: 12px 14px;
             white-space: nowrap;
+            vertical-align: top;
         }
 
         .data-table tbody {
@@ -107,6 +108,73 @@ $usuario = $user['username'] ?? 'Sin usuario';
         .modal .input-icon input,
         .modal .input-icon select {
             background: #f7f7fb;
+        }
+
+        /* ====== NUEVO: Acciones 2x2 con botones de color ====== */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .btn-action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 0;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform .08s ease, opacity .12s ease, box-shadow .12s ease;
+            box-shadow: 0 1px 0 rgba(0, 0, 0, .06);
+            white-space: nowrap;
+        }
+
+        .btn-action .material-icons {
+            font-size: 20px;
+        }
+
+        /* Paleta (editables) */
+        .btn-action.view {
+            background: #e0f2fe;
+            color: #0c4a6e;
+        }
+
+        .btn-action.edit {
+            background: #ede9fe;
+            color: #5b21b6;
+        }
+
+        .btn-action.delete {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn-action.pay {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .btn-action.download {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
+        .btn-action:hover {
+            opacity: .95;
+            transform: translateY(-1px);
+        }
+
+        .btn-action:active {
+            transform: translateY(0);
+        }
+
+        /* Estado más compacto en celdas */
+        .data-table td .badge {
+            font-size: .85em;
+            padding: 4px 8px;
+            border-radius: 999px;
         }
     </style>
 </head>
@@ -312,8 +380,23 @@ $usuario = $user['username'] ?? 'Sin usuario';
     </div>
 
     <script src="../../views/partials/spinner-global.js"></script>
+
     <script>
         const API = '../../controllers/client_listadoPagosController.php';
+
+        // ===== Fallback de modales si el framework no define openAppModal/closeAppModal =====
+        if (typeof window.openAppModal !== 'function') {
+            window.openAppModal = (id) => {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('hidden');
+            };
+        }
+        if (typeof window.closeAppModal !== 'function') {
+            window.closeAppModal = (id) => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            };
+        }
 
         // Utils
         const fmtMoney = n => new Intl.NumberFormat('es-AR', {
@@ -331,7 +414,7 @@ $usuario = $user['username'] ?? 'Sin usuario';
         }
 
         function badgePaid(isPaid) {
-            return `<span class="badge ${isPaid?'paid':'unpaid'}">${isPaid?'Factura pagada':'Factura sin abonar'}</span>`;
+            return `<span class="badge ${isPaid ? 'paid' : 'unpaid'}">${isPaid ? 'Abonada' : 'Sin abonar'}</span>`;
         }
 
         // Cargar lista
@@ -350,30 +433,51 @@ $usuario = $user['username'] ?? 'Sin usuario';
                         search_dni: dni
                     })
                 });
+
                 const data = await res.json();
                 const tbody = document.getElementById('tbody-pagos');
                 tbody.innerHTML = '';
+
                 (data.rows || []).forEach(r => {
                     const pedidoIcon = r.pedido_pdf_path ? `<span class="material-icons icon-link" title="Pedido" onclick="window.open('${r.pedido_pdf_path}','_blank')">description</span>` : `<span class="material-icons icon-link disabled" title="Sin pedido">description</span>`;
                     const facturaIcon = r.factura_pdf_path ? `<span class="material-icons icon-link" title="Factura" onclick="window.open('${r.factura_pdf_path}','_blank')">picture_as_pdf</span>` : `<span class="material-icons icon-link disabled" title="Sin factura">picture_as_pdf</span>`;
+
+                    const actionsHtml = `
+                        <div class="actions-grid">
+                            <button type="button" class="btn-action view" title="Detalle" onclick="openDetalle(${r.id})">
+                                <span class="material-icons">visibility</span><span>Detalle</span>
+                            </button>
+                            <button type="button" class="btn-action edit" title="Editar" onclick="openEditar(${r.id})">
+                                <span class="material-icons">edit</span><span>Editar</span>
+                            </button>
+                            <button type="button" class="btn-action delete" title="Eliminar" onclick="deletePago(${r.id})">
+                                <span class="material-icons">delete</span><span>Eliminar</span>
+                            </button>
+                            ${
+                                !Number(r.is_paid)
+                                ? `<button type="button" class="btn-action pay" title="Marcar pago" onclick="openPagar(${r.id})">
+                                     <span class="material-icons">price_check</span><span>Pagar</span>
+                                   </button>`
+                                : `<button type="button" class="btn-action download" title="Descargar JPG" onclick="downloadJpg(${r.id})">
+                                     <span class="material-icons">download</span><span>Descargar</span>
+                                   </button>`
+                            }
+                        </div>
+                    `;
+
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-        <td>#${r.id}</td>
-        <td>${r.created_at||''}</td>
-        <td>${r.first_name||''}</td>
-        <td>${r.dni||''}</td>
-        <td>$ ${fmtMoney(r.contract_amount)}</td>
-        <td>$ ${fmtMoney(r.total_to_user)}</td>
-        <td>${r.event||''}</td>
-        <td>${badgePaid(!!Number(r.is_paid))}</td>
-        <td>${pedidoIcon} ${facturaIcon}</td>
-        <td>
-          <span class="material-icons action-icon" title="Ver detalle" onclick="openDetalle(${r.id})">visibility</span>
-          <span class="material-icons action-icon" title="Modificar" onclick="openEditar(${r.id})">edit</span>
-          <span class="material-icons action-icon" title="Eliminar" onclick="deletePago(${r.id})">delete</span>
-          <span class="material-icons action-icon" title="Descargar JPG" onclick="downloadJpg(${r.id})">download</span>
-          ${!Number(r.is_paid) ? `<span class="material-icons action-icon" title="Marcar pago" onclick="openPagar(${r.id})">price_check</span>` : ``}
-        </td>`;
+                        <td>#${r.id}</td>
+                        <td>${r.created_at || ''}</td>
+                        <td>${r.first_name || ''}</td>
+                        <td>${r.dni || ''}</td>
+                        <td>$ ${fmtMoney(r.contract_amount)}</td>
+                        <td>$ ${fmtMoney(r.total_to_user)}</td>
+                        <td>${r.event || ''}</td>
+                        <td>${badgePaid(!!Number(r.is_paid))}</td>
+                        <td>${pedidoIcon} ${facturaIcon}</td>
+                        <td>${actionsHtml}</td>
+                    `;
                     tbody.appendChild(tr);
                 });
             } catch (e) {
@@ -387,19 +491,16 @@ $usuario = $user['username'] ?? 'Sin usuario';
             try {
                 const res = await fetch(API, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        action: 'get',
-                        id
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'get', id })
                 });
                 const data = await res.json();
+                if (!res.ok || data.success === false) throw new Error(data.message || 'Error');
                 document.getElementById('detalleJson').textContent = JSON.stringify(data.row, null, 2);
                 openAppModal('modalDetalle');
             } catch (e) {
-                showAlert('danger', 'No se pudo obtener el detalle');
+                console.error(e);
+                showAlert('danger', e.message || 'No se pudo obtener el detalle');
             }
         }
 
@@ -407,17 +508,13 @@ $usuario = $user['username'] ?? 'Sin usuario';
             try {
                 const res = await fetch(API, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        action: 'get',
-                        id
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'get', id })
                 });
-                const {
-                    row
-                } = await res.json();
+                const data = await res.json();
+                if (!res.ok || data.success === false) throw new Error(data.message || 'Error');
+
+                const { row } = data;
                 document.getElementById('edit_id').value = row.id;
                 document.getElementById('edit_event').value = row.event || '';
                 document.getElementById('edit_amount').value = row.contract_amount || 0;
@@ -426,7 +523,8 @@ $usuario = $user['username'] ?? 'Sin usuario';
                 document.getElementById('edit_retr').value = row.retention_rate || 0;
                 openAppModal('modalEditar');
             } catch (e) {
-                showAlert('danger', 'No se pudo abrir el editor');
+                console.error(e);
+                showAlert('danger', e.message || 'No se pudo abrir el editor');
             }
         }
 
@@ -434,46 +532,47 @@ $usuario = $user['username'] ?? 'Sin usuario';
             e.preventDefault();
             const fd = new FormData(e.target);
             try {
-                const res = await fetch(API, {
-                    method: 'POST',
-                    body: fd
-                });
+                const res = await fetch(API, { method: 'POST', body: fd });
                 const data = await res.json();
-                if (!data.success) throw new Error(data.message || 'Error');
+                if (!res.ok || data.success === false) throw new Error(data.message || 'Error');
                 closeAppModal('modalEditar');
                 showAlert('success', 'Orden actualizada');
                 loadList();
             } catch (err) {
-                showAlert('danger', err.message);
+                console.error(err);
+                showAlert('danger', err.message || 'No se pudo actualizar la orden');
             }
         });
 
         function openPagar(id) {
-            document.getElementById('pay_id').value = id;
-            // default now
-            const now = new Date();
-            const pad = n => String(n).padStart(2, '0');
-            const local = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
-            document.getElementById('pay_date').value = local;
-            document.getElementById('pay_txn').value = '';
-            openAppModal('modalPagar');
+            try {
+                document.getElementById('pay_id').value = id;
+                // default now
+                const now = new Date();
+                const pad = n => String(n).padStart(2, '0');
+                const local = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+                document.getElementById('pay_date').value = local;
+                document.getElementById('pay_txn').value = '';
+                openAppModal('modalPagar');
+            } catch (e) {
+                console.error(e);
+                showAlert('danger', 'No pude abrir el modal de pago');
+            }
         }
 
         document.getElementById('formPagar').addEventListener('submit', async (e) => {
             e.preventDefault();
             const fd = new FormData(e.target);
             try {
-                const res = await fetch(API, {
-                    method: 'POST',
-                    body: fd
-                });
+                const res = await fetch(API, { method: 'POST', body: fd });
                 const data = await res.json();
-                if (!data.success) throw new Error(data.message || 'Error');
+                if (!res.ok || data.success === false) throw new Error(data.message || 'Error');
                 closeAppModal('modalPagar');
                 showAlert('success', 'Factura marcada como pagada');
                 loadList();
             } catch (err) {
-                showAlert('danger', err.message);
+                console.error(err);
+                showAlert('danger', err.message || 'No se pudo registrar el pago');
             }
         });
 
@@ -482,20 +581,16 @@ $usuario = $user['username'] ?? 'Sin usuario';
             try {
                 const res = await fetch(API, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        action: 'delete',
-                        id
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'delete', id })
                 });
                 const data = await res.json();
-                if (!data.success) throw new Error(data.message || 'Error');
+                if (!res.ok || data.success === false) throw new Error(data.message || 'Error');
                 showAlert('success', 'Orden eliminada');
                 loadList();
             } catch (err) {
-                showAlert('danger', err.message);
+                console.error(err);
+                showAlert('danger', err.message || 'No se pudo eliminar la orden');
             }
         }
 
