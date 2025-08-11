@@ -86,14 +86,14 @@ $email = $user['email'] ?? 'Sin email';
                     <p>En esta página, vas a poder visualizar las ordenes de pago que ya estan cargadas y conocer en que estado se encuentran.</p>
                 </div>
 
- <!-- Filtros -->
+<!-- Filtros -->
                 <div class="card">
-                    <h2>Filtros para buscar a un socio</h2>
+                    <h2>Busquemos una factura</h2>
                     <form class="form-modern" id="form-filtros">
                         <div class="form-grid grid-2">
 
                             <div class="input-group">
-                                <label for="search_nombre">Buscar por nombre</label>
+                                <label for="search_nombre">Buscar por nombre del socio</label>
                                 <div class="input-icon">
                                     <span class="material-icons">search</span>
                                     <input type="text" id="search_nombre" name="search_nombre" placeholder="Juan" />
@@ -101,7 +101,7 @@ $email = $user['email'] ?? 'Sin email';
                             </div>
 
                             <div class="input-group">
-                                <label for="search_dni">Buscar por DNI</label>
+                                <label for="search_dni">Buscar por DNI del socio</label>
                                 <div class="input-icon">
                                     <span class="material-icons">search</span>
                                     <input type="text" id="search_dni" name="search_dni" inputmode="numeric" pattern="^\d{0,10}$" maxlength="10" placeholder="DNI" />
@@ -119,10 +119,11 @@ $email = $user['email'] ?? 'Sin email';
                         <table class="data-table" id="tabla-socios">
                             <thead>
                                 <tr>
-                                    <th>Nombre</th>
-                                    <th>DNI</th>
-                                    <th>Estado Bancario</th>
-                                    <th>Estado Cuotas</th>
+                                    <th>ID</th>
+                                    <th>Monto Real</th>
+                                    <th>Monto abonado</th>
+                                    <th>Evento</th>
+                                    <th>Estado</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
