@@ -110,71 +110,70 @@ $usuario = $user['username'] ?? 'Sin usuario';
             background: #f7f7fb;
         }
 
-        /* ====== NUEVO: Acciones 2x2 con botones de color ====== */
+        /* ====== Acciones SOLO ÍCONOS, 2x2 ====== */
         .actions-grid {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: repeat(2, 44px);
+            grid-auto-rows: 44px;
             gap: 10px;
+            justify-content: start;
         }
 
-        .btn-action {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: 0;
-            border-radius: 10px;
-            padding: 10px 12px;
-            font-weight: 600;
+        .icon-btn {
+            display: grid;
+            place-items: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
             cursor: pointer;
+            user-select: none;
             transition: transform .08s ease, opacity .12s ease, box-shadow .12s ease;
             box-shadow: 0 1px 0 rgba(0, 0, 0, .06);
-            white-space: nowrap;
         }
 
-        .btn-action .material-icons {
-            font-size: 20px;
+        .icon-btn .material-icons {
+            font-size: 22px;
         }
 
-        /* Paleta (editables) */
-        .btn-action.view {
+        /* Colores (podés modificarlos) */
+        .icon-btn.view {
             background: #e0f2fe;
             color: #0c4a6e;
         }
 
-        .btn-action.edit {
+        /* Detalle */
+        .icon-btn.edit {
             background: #ede9fe;
             color: #5b21b6;
         }
 
-        .btn-action.delete {
+        /* Editar */
+        .icon-btn.delete {
             background: #fee2e2;
             color: #991b1b;
         }
 
-        .btn-action.pay {
+        /* Eliminar */
+        .icon-btn.pay {
             background: #dcfce7;
             color: #166534;
         }
 
-        .btn-action.download {
+        /* Pagar */
+        .icon-btn.download {
             background: #fef9c3;
             color: #854d0e;
         }
 
-        .btn-action:hover {
+        /* Descargar */
+
+        .icon-btn:hover {
             opacity: .95;
             transform: translateY(-1px);
         }
 
-        .btn-action:active {
+        .icon-btn:active {
             transform: translateY(0);
-        }
-
-        /* Estado más compacto en celdas */
-        .data-table td .badge {
-            font-size: .85em;
-            padding: 4px 8px;
-            border-radius: 999px;
         }
     </style>
 </head>
@@ -443,27 +442,28 @@ $usuario = $user['username'] ?? 'Sin usuario';
                     const facturaIcon = r.factura_pdf_path ? `<span class="material-icons icon-link" title="Factura" onclick="window.open('${r.factura_pdf_path}','_blank')">picture_as_pdf</span>` : `<span class="material-icons icon-link disabled" title="Sin factura">picture_as_pdf</span>`;
 
                     const actionsHtml = `
-                        <div class="actions-grid">
-                            <button type="button" class="btn-action view" title="Detalle" onclick="openDetalle(${r.id})">
-                                <span class="material-icons">visibility</span><span>Detalle</span>
-                            </button>
-                            <button type="button" class="btn-action edit" title="Editar" onclick="openEditar(${r.id})">
-                                <span class="material-icons">edit</span><span>Editar</span>
-                            </button>
-                            <button type="button" class="btn-action delete" title="Eliminar" onclick="deletePago(${r.id})">
-                                <span class="material-icons">delete</span><span>Eliminar</span>
-                            </button>
-                            ${
-                                !Number(r.is_paid)
-                                ? `<button type="button" class="btn-action pay" title="Marcar pago" onclick="openPagar(${r.id})">
-                                     <span class="material-icons">price_check</span><span>Pagar</span>
-                                   </button>`
-                                : `<button type="button" class="btn-action download" title="Descargar JPG" onclick="downloadJpg(${r.id})">
-                                     <span class="material-icons">download</span><span>Descargar</span>
-                                   </button>`
-                            }
-                        </div>
-                    `;
+  <div class="actions-grid">
+    <div class="icon-btn view" title="Detalle" onclick="openDetalle(${r.id})">
+      <span class="material-icons">visibility</span>
+    </div>
+    <div class="icon-btn edit" title="Editar" onclick="openEditar(${r.id})">
+      <span class="material-icons">edit</span>
+    </div>
+    <div class="icon-btn delete" title="Eliminar" onclick="deletePago(${r.id})">
+      <span class="material-icons">delete</span>
+    </div>
+    ${
+      !Number(r.is_paid)
+        ? `<div class="icon-btn pay" title="Marcar pago" onclick="openPagar(${r.id})">
+             <span class="material-icons">price_check</span>
+           </div>`
+        : `<div class="icon-btn download" title="Descargar JPG" onclick="downloadJpg(${r.id})">
+             <span class="material-icons">download</span>
+           </div>`
+    }
+  </div>
+`;
+
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
@@ -491,8 +491,13 @@ $usuario = $user['username'] ?? 'Sin usuario';
             try {
                 const res = await fetch(API, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'get', id })
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'get',
+                        id
+                    })
                 });
                 const data = await res.json();
                 if (!res.ok || data.success === false) throw new Error(data.message || 'Error');
@@ -508,13 +513,20 @@ $usuario = $user['username'] ?? 'Sin usuario';
             try {
                 const res = await fetch(API, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'get', id })
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'get',
+                        id
+                    })
                 });
                 const data = await res.json();
                 if (!res.ok || data.success === false) throw new Error(data.message || 'Error');
 
-                const { row } = data;
+                const {
+                    row
+                } = data;
                 document.getElementById('edit_id').value = row.id;
                 document.getElementById('edit_event').value = row.event || '';
                 document.getElementById('edit_amount').value = row.contract_amount || 0;
@@ -532,7 +544,10 @@ $usuario = $user['username'] ?? 'Sin usuario';
             e.preventDefault();
             const fd = new FormData(e.target);
             try {
-                const res = await fetch(API, { method: 'POST', body: fd });
+                const res = await fetch(API, {
+                    method: 'POST',
+                    body: fd
+                });
                 const data = await res.json();
                 if (!res.ok || data.success === false) throw new Error(data.message || 'Error');
                 closeAppModal('modalEditar');
@@ -564,7 +579,10 @@ $usuario = $user['username'] ?? 'Sin usuario';
             e.preventDefault();
             const fd = new FormData(e.target);
             try {
-                const res = await fetch(API, { method: 'POST', body: fd });
+                const res = await fetch(API, {
+                    method: 'POST',
+                    body: fd
+                });
                 const data = await res.json();
                 if (!res.ok || data.success === false) throw new Error(data.message || 'Error');
                 closeAppModal('modalPagar');
@@ -581,8 +599,13 @@ $usuario = $user['username'] ?? 'Sin usuario';
             try {
                 const res = await fetch(API, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'delete', id })
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'delete',
+                        id
+                    })
                 });
                 const data = await res.json();
                 if (!res.ok || data.success === false) throw new Error(data.message || 'Error');
